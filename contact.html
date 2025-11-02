@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAL Thunders 9160 - Contact</title>
     <link rel="stylesheet" href="/style.css">
     
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -22,15 +29,37 @@
         
         <nav>
             <ul>
-                <li><a href="/news.html">NEWS</a></li>
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
-                <li><a href="/about.html">ABOUT US</a></li>
+                <li><a href="/news.html" >NEWS</a></li>
+                <li><a href="/index.html" >HOME</a></li>
+                <li><a href="/frc.html" >WHAT IS FRC</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/about.html" >
+                        ABOUT US 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
+                
                 <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html">EVENTS</a></li>
+                <li><a href="/events.html" >EVENTS</a></li> 
                 <li><a href="/contact.html" class="active">CONTACT</a></li>
             </ul>
         </nav>
+        <div class="language-switcher">
+            
+            
+            
+                <a href="/contact.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/contact.html" class="lang-tr">TR</a>
+            
+        </div>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
             <i class="fa-solid fa-moon"></i>
         </button>
@@ -71,6 +100,12 @@
                     Yeşilköy, Pembe Menekşe Sk. No:1, 34149<br>
                     Bakırköy/İstanbul
                 </p>
+                
+                <h3>Our School</h3>
+                <p>
+                    Yeşilköy Anatolian High School<br>
+                    <a href="https://yesilkoyanadolu.meb.k12.tr/" target="_blank" rel="noopener noreferrer">https://yesilkoyanadolu.meb.k12.tr/</a>
+                </p>
                 <p>To contact our team, visit our workshop, or discuss sponsorship, please contact our mentors or reach us via our email address.</p>
             </div>
         </div>
@@ -97,12 +132,12 @@
     <script>
         const storageKey = 'theme-preference';
         const toggle = document.getElementById('theme-toggle');
-
-        const getTheme = () => { return localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); };
-        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); };
+        const getTheme = () => { return document.documentElement.getAttribute('data-theme'); }
+        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
         const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } };
         if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
-        document.addEventListener('DOMContentLoaded', () => { setTheme(getTheme()); });
+        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
     </script>
+    
 </body>
 </html>

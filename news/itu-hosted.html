@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAL Thunders 9160 - As Yal Thunders, we hosted the Rector of ITU at our school.</title> 
     <link rel="stylesheet" href="/style.css"> 
     
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -18,23 +26,46 @@
             <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
-        <nav>
+       
+       <nav>
             <ul>
-                <li class="active"><a href="/news.html">NEWS</a></li> 
+                <li><a href="/news.html" class="active">NEWS</a></li> 
                 <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
-                <li><a href="/about.html">ABOUT US</a></li>
+                <li><a href="/frc.html">WHAT IS FRC?</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/about.html">
+                        ABOUT US 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
                 <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html">EVENTS</a></li>
+                <li><a href="/events.html">EVENTS</a></li> 
                 <li><a href="/contact.html">CONTACT</a></li>
             </ul>
         </nav>
+        <div class="language-switcher">
+            
+            
+            
+                <a href="/news/itu-hosted.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/news/itu-hosted.html" class="lang-tr">TR</a>
+            
+        </div>
+
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
             <i class="fa-solid fa-moon"></i>
         </button>
     </header>
 
-    <main class="content-post-detail-modern animated-section">
+    <main class="content-post-detail-modern">
         
         <div class="post-back-link-container">
             <a href="/news.html" class="back-link-modern"><i class="fa-solid fa-arrow-left"></i> Back to News</a>
@@ -42,7 +73,7 @@
 
         <div class="post-header-modern">
             <h1 class="post-title-modern">As Yal Thunders, we hosted the Rector of ITU at our school. ⚡️💚🐝</h1> 
-            <p class="post-date-modern">08 October 2025</p> 
+            <p class="post-date-modern">October 08, 2025</p> 
         </div>
 
         <div class="post-gallery-container">
@@ -61,15 +92,15 @@
         </div>
        
         <article class="post-content-area">
-             <p>As the Yal Thunders FRC team, we had the opportunity to meet with Prof. Dr. Hasan Mandal, the esteemed Rector of Istanbul Technical University, one of the most prestigious universities in our country, at our school. During this meeting, we had the chance to introduce our team and present the work we have done to our rector. Additionally, through his presentation, we gained valuable insights about Istanbul Technical University. We sincerely thank our rector for his visit and for sharing his knowledge and experience with us, helping us gain new perspectives as young individuals. ⚡️💚🐝</p>
+             <p>As the Yal Thunders FRC team, we had the opportunity to meet the esteemed Rector of Istanbul Technical University, one of our country's most prestigious universities, Prof. Dr. Hasan Mandal, at our school. During this meeting, we had the chance to introduce our team and present our work to the rector. Additionally, thanks to his presentation, we gained valuable information about Istanbul Technical University. We sincerely thank our rector for his visit and for sharing his knowledge and experience, which helped us, as young individuals, gain new perspectives. ⚡️💚🐝</p>
         </article>
         
         <div class="post-share-section-modern">
              <hr>
              <p>Share this post: 
-                 <a href="https://twitter.com/intent/tweet?text=As%20Yal%20Thunders%2C%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school.&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-twitter"></i></a>
+                 <a href="https://twitter.com/intent/tweet?text=As%20Yal%20Thunders,%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school.&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-twitter"></i></a>
                  <a href="https://www.facebook.com/sharer/sharer.php?u=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook-f"></i></a>
-                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html&title=As%20Yal%20Thunders%2C%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school." class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i></a>
+                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html&title=As%20Yal%20Thunders,%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school." class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i></a>
              </p>
         </div>
 
@@ -167,5 +198,6 @@
             showSlide(0);
         });
     </script>
+    
 </body>
 </html>

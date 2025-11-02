@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAL Thunders 9160 - News</title>
+    <title>YAL Thunders 9160 - Haberler</title>
     <link rel="stylesheet" href="/style.css"> 
     
     <script>
@@ -22,68 +22,69 @@
 <body>
 
     <header class="site-header">
-        <a href="/index.html" class="logo-container site-brand-link">
-            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/tr/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
         
         <nav>
             <ul>
-                <li><a href="/news.html" class="active">NEWS</a></li>
-                <li><a href="/index.html" >HOME</a></li>
-                <li><a href="/frc.html" >WHAT IS FRC</a></li> 
+                <li><a href="/tr/news.html" class="active">HABERLER</a></li>
+                <li><a href="/tr/index.html" >ANA SAYFA</a></li>
+                <li><a href="/tr/frc.html" >FRC NEDİR?</a></li> 
                 
                 <li class="dropdown">
-                    <a href="/about.html" >
-                        ABOUT US 
+                    <a href="/tr/about.html" >
+                        HAKKIMIZDA 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
-                        <li><a href="/about.html#our-story">Our Story</a></li>
-                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
-                        <li><a href="/about.html#achievements">Achievements</a></li>
-                        <li><a href="/about.html#alumni">Alumni</a></li>
+                        <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
+                        <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
+                        <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
+                        <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
                     </ul>
                 </li>
                 
-                <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html" >EVENTS</a></li> 
-                <li><a href="/contact.html" >CONTACT</a></li>
+                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/events.html" >ETKİNLİKLER</a></li> 
+                <li><a href="/tr/contact.html" >İLETİŞİM</a></li>
             </ul>
         </nav>
         <div class="language-switcher">
             
             
             
-                <a href="/news.html" class="lang-en lang-active">EN</a>
-                <a href="/tr/news.html" class="lang-tr">TR</a>
+                <a href="/news.html" class="lang-en">EN</a>
+                <a href="/tr/news.html" class="lang-tr lang-active">TR</a>
             
         </div>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
             <i class="fa-solid fa-moon"></i>
         </button>
     </header>
 
     <main class="content-news">
         <div class="news-header">
-            <h2>Latest News & Announcements</h2>
+            <h2>Son Haberler & Duyurular</h2>
         </div>
 
         <div class="news-list-grid">
             
-            <a href="/news/itu-hosted.html" class="news-card-link"> 
+            <a href="/tr/news/itu-hosted.html" class="news-card-link"> 
                 <div class="news-card-modern">
                     <div class="news-image-container">
-                        <img src="/itu1.jpg" alt="ITU Rector Visit" class="news-card-image-modern">
+                        <img src="/itu1.jpg" alt="İTÜ Rektörü Ziyareti" class="news-card-image-modern">
                     </div>
                     <div class="news-card-body-modern">
-                        <p class="news-date-modern">October 08, 2025</p>
-                        <h3>As Yal Thunders, we hosted the Rector of ITU at our school. ⚡️💚🐝</h3>
+                        <p class="news-date-modern">08 Ekim 2025</p>
+                        <h3>Yal Thunders olarak İTÜ Rektörünü okulumuzda ağırladık. ⚡️💚🐝</h3>
                         <div class="news-content-preview-modern">
-                            <p>As the Yal Thunders FRC team, we had the opportunity to meet the esteemed Rector of Istanbul Technical University...</p>
+                            <p>Yal Thunders FRC takımı olarak, okulumuzda ülkemizin en prestijli üniversitelerinden biri olan İstanbul Teknik Üniversitesi'nin...</p>
                         </div>
-                        <span class="read-more-cta">Read More →</span>
+                        <span class="read-more-cta">Devamını Oku →</span>
                     </div>
                 </div>
             </a>
@@ -94,8 +95,8 @@
 
     <footer class="site-footer-new">
         <div class="footer-content">
-            <a href="/index.html" class="footer-brand">
-                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small">
+            <a href="/tr/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="footer-logo-small">
                 <span class="footer-brand-text">
                     YAL THUNDERS<br>#9160
                 </span>
@@ -119,6 +120,6 @@
         if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
         document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
     </script>
-    
+
 </body>
 </html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAL Thunders 9160 - Hakkımızda</title>
+    
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="/tr/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
+            <span class="team-name">YAL THUNDERS 9160</span>
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="/tr/news.html" >HABERLER</a></li>
+                <li><a href="/tr/index.html" >ANA SAYFA</a></li>
+                <li><a href="/tr/frc.html" >FRC NEDİR?</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/tr/about.html" class="active">
+                        HAKKIMIZDA 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
+                        <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
+                        <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
+                        <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/events.html" >ETKİNLİKLER</a></li> 
+                <li><a href="/tr/contact.html" >İLETİŞİM</a></li>
+            </ul>
+        </nav>
+        <div class="language-switcher">
+            
+            
+            
+                <a href="/about.html" class="lang-en">EN</a>
+                <a href="/tr/about.html" class="lang-tr lang-active">TR</a>
+            
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </header>
+
+    <main class="content-about">
+        <div class="about-hero-section" id="who-we-are">
+            <img src="/team_photo.jpg" alt="YAL Thunders Takım Fotoğrafı" class="team-hero-image">
+            <div class="hero-overlay">
+                <h1>Biz Kimiz?</h1>
+            </div>
+        </div>
+
+        <div class="about-content-section">
+            <div class="text-block">
+                <p>2022 yılında 1 mentor ve 15 öğrenci ile kurulan YAL Thunders, şu anda 4 mentor ve 35 öğrenciye ulaşarak dinamik bir büyüme ve gelişme evresindedir.</p>
+                <p>Bugün, deneyimli mentorlarımız ve özverili, başarılı öğrencilerimiz arasındaki sinerji üzerine kurulu, büyüyen bir aile olarak faaliyet gösteriyoruz. Ekibimiz, hem ulusal hem de uluslararası sahnelerde başarıya ulaşma hedefiyle güçlü bir çalışma ahlakı ve sorgulayıcı doğasıyla karakterize olmuştur.</p>
+                <p>Kulübümüzü ileriye taşıma ortak hedefiyle birleşen ve takım ruhuna adanmış her üyemiz, bilim ve bilginin ışığında yürümeye yeminlidir.</p>
+            </div>
+            <div class="image-block">
+                <img src="/cat_robot.jpg" alt="Kedi ve Robot" class="cat-robot-image">
+            </div>
+        </div>
+        
+        <div class="about-content-section-alt" id="our-story">
+            <div class="image-block">
+                <img src="/resim4.jpg" alt="Takım yarışmada" class="story-image">
+            </div>
+            <div class="text-block">
+                <h3>Hikayemiz Nasıl Başladı?</h3>
+                <p>Okulumuzdaki bir grup öğrenci başlangıçta Teknofest'e katılmaya karar verdi ve teknoloji alanında çalışmalara başladı. Ancak çeşitli aksilikler nedeniyle bu alanda ilerleme kaydedemediler. Buna rağmen teknolojiye olan ilgilerini ve yaratma arzularını hiç kaybetmediler.</p>
+                <p>Bu süreçte kurucu üyelerimiz çevrelerinden FIRST Robotics Competition'ı (FRC) öğrendiler ve edindikleri ilhamla ekibimizi kurarak çalışmalarına başladılar. İlk yarışmamız olan Haliç Regional 2022 öncesinde aktif takımlarla iletişime geçerek deneyim kazandılar. Böylece hem teknik hem de takım çalışması açısından güçlü bir temel oluşturarak FRC yolculuğumuza adım attık.</p>
+            </div>
+        </div>
+
+        <div class="mission-vision-section mission-section" id="mission-vision">
+            <div class="mv-content">
+                <div class="mv-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="mv-text">
+                    <h2>Misyonumuz</h2>
+                    <p>Bölgemizdeki öğrencileri ve sponsorları FIRST'ün vurguladığı STEM değerleriyle buluşturmak, onları beslemek ve gelecek için ilgilendikleri sektörlere yönelik başarılı, donanımlı nesiller yaratmaktır.</p>
+                </div>
+            </div>
+            <div class="mv-image-wrapper">
+                <img src="/frc_team_robot_working.jpg" alt="YAL Thunders Takımı Robot Üzerinde Çalışıyor" class="mv-image">
+            </div>
+        </div>
+
+        <div class="mission-vision-section vision-section">
+            <div class="mv-image-wrapper">
+                <img src="/frc_team_robot_building.jpg" alt="YAL Thunders Takımı Robot İnşa Ediyor" class="mv-image">
+            </div>
+            <div class="mv-content">
+                <div class="mv-icon"><i class="fa-solid fa-eye"></i></div> 
+                <div class="mv-text">
+                    <h2>Vizyonumuz</h2>
+                    <p>Milletimizdeki öğrencilere STEM alanında dünya çapında başarı ve deneyim sağlamak, robotik takımımızla çeşitli yarışmalara katılarak hem okulumuzu hem de ülkemizi uluslararası alanda yüksek başarı seviyelerinde temsil etmek ve gelecek nesillere sürdürülebilir bir takım bırakmaktır.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-gallery-section" id="gallery">
+            <h3>Yolculuğumuzdan Anlar</h3>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="/resim5.jpg" alt="Takım robot kodu üzerinde çalışıyor">
+                </div>
+                <div class="gallery-item">
+                    <img src="/resim1.jpg" alt="Takım üyeleri motor üzerinde çalışıyor">
+                </div>
+                <div class="gallery-item">
+                    <img src="/resim2.jpg" alt="Mentor ve robot">
+                </div>
+                <div class="gallery-item">
+                    <img src="/resim3.jpg" alt="Amfide takım selfie'si">
+                </div>
+            </div>
+        </div>
+
+        <section class="alumni-section" id="alumni">
+            <h2 class="section-title">Alumnilerimiz</h2> 
+            <div class="alumni-grid">
+                <div class="alumni-card"><h4>METE YILMAZTÜRK</h4><p>İTÜ - Peyzaj Mimarlığı</p></div>
+                <div class="alumni-card"><h4>HÜSEYİN YILDIZ</h4><p>İTÜ - Moleküler Biyoloji</p></div>
+                <div class="alumni-card"><h4>AZİZ METE ŞAHİN</h4><p>İTÜ - Kontrol ve Otomasyon Mühendisliği</p></div>
+                <div class="alumni-card"><h4>KIVANÇ YAVUZ</h4><p>İstanbul Üniversitesi Çapa Tıp Fakültesi</p></div>
+                <div class="alumni-card"><h4>KEREM TAŞKIN</h4><p>Atatürk Üniversitesi - Tıp Fakültesi</p></div>
+                <div class="alumni-card"><h4>ELİF TAMAY BUDAK</h4><p>University of Sussex, Brighton - Genetik</p></div>
+            </div>
+        </section>
+
+        <section class="achievements-section" id="achievements">
+            <h2 class="section-title">Başarılarımız</h2>
+            <div class="achievement-item">
+                <div class="achievement-text">
+                    <h3>Esenler Off-Season Başarısı</h3>
+                    <p>Esenler Off-Season etkinliğinde, performansımızla en çok gelecek vaat eden çaylak takımına verilen Winner Ödülü ve Rookie Inspiration Ödülü'nü almaya layık görüldük.</p>
+                </div>
+                <div class="achievement-image-wrapper">
+                    <img src="/esenler_award.jpg" alt="Takım Esenler ödüllerini kutluyor" class="achievement-image">
+                </div>
+            </div>
+            <div class="achievement-item reverse">
+                 <div class="achievement-image-wrapper">
+                    <img src="/cezeri_award.jpg" alt="Takım Cezeri Robotik Turnuvası'nda poz veriyor" class="achievement-image">
+                </div>
+                <div class="achievement-text">
+                    <h3>Cezeri Off-Season'da Gracious Professionalism</h3>
+                    <p>Ülkemizin önemli Sezon Dışı etkinliklerinden biri olan Cezeri Robotik Turnuvası'na katıldık. Çevremize olan saygımız ve nazik profesyonellik anlayışımız bize Gracious Professionalism Ödülü'nü kazandırdı.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer-new">
+        <div class="footer-content">
+            <a href="/tr/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="footer-logo-small">
+                <span class="footer-brand-text">
+                    YAL THUNDERS<br>#9160
+                </span>
+            </a>
+            <div class="footer-social-links">
+                <a href="https://www.instagram.com/yalthunders/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
+                <a href="https://www.tiktok.com/@yalthunders" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
+                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
+                <a href="mailto:yalthunders@gmail.com" target="_blank" class="social-link-wrapper-footer"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        const storageKey = 'theme-preference';
+        const toggle = document.getElementById('theme-toggle');
+
+        const getTheme = () => { return document.documentElement.getAttribute('data-theme'); }
+        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
+        const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } };
+        if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
+        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
+    </script>
+
+</body>
+</html>

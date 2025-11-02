@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YAL Thunders 9160 - As Yal Thunders, we hosted the Rector of ITU at our school.</title> 
+    <title>YAL Thunders 9160 - Yal Thunders olarak İTÜ Rektörünü okulumuzda ağırladık.</title> 
     <link rel="stylesheet" href="/style.css"> 
     
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -14,62 +22,85 @@
 <body>
 
     <header class="site-header">
-        <a href="/index.html" class="logo-container site-brand-link">
-            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/tr/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
-        <nav>
+       
+       <nav>
             <ul>
-                <li class="active"><a href="/news.html">NEWS</a></li> 
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
-                <li><a href="/about.html">ABOUT US</a></li>
-                <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html">EVENTS</a></li>
-                <li><a href="/contact.html">CONTACT</a></li>
+                <li><a href="/tr/news.html" class="active">HABERLER</a></li> 
+                <li><a href="/tr/index.html">ANA SAYFA</a></li>
+                <li><a href="/tr/frc.html">FRC NEDİR?</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/tr/about.html">
+                        HAKKIMIZDA 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
+                        <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
+                        <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
+                        <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/events.html">ETKİNLİKLER</a></li> 
+                <li><a href="/tr/contact.html">İLETİŞİM</a></li>
             </ul>
         </nav>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <div class="language-switcher">
+            
+            
+            
+                <a href="/news/itu-hosted.html" class="lang-en">EN</a>
+                <a href="/tr/news/itu-hosted.html" class="lang-tr lang-active">TR</a>
+            
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
             <i class="fa-solid fa-moon"></i>
         </button>
     </header>
 
-    <main class="content-post-detail-modern animated-section">
+    <main class="content-post-detail-modern">
         
         <div class="post-back-link-container">
-            <a href="/news.html" class="back-link-modern"><i class="fa-solid fa-arrow-left"></i> Back to News</a>
+            <a href="/tr/news.html" class="back-link-modern"><i class="fa-solid fa-arrow-left"></i> Haberlere Geri Dön</a>
         </div>
 
         <div class="post-header-modern">
-            <h1 class="post-title-modern">As Yal Thunders, we hosted the Rector of ITU at our school. ⚡️💚🐝</h1> 
-            <p class="post-date-modern">08 October 2025</p> 
+            <h1 class="post-title-modern">Yal Thunders olarak İTÜ Rektörünü okulumuzda ağırladık. ⚡️💚🐝</h1> 
+            <p class="post-date-modern">08 Ekim 2025</p> 
         </div>
 
         <div class="post-gallery-container">
             <div class="post-gallery">
                 <div class="gallery-images">
-                    <img src="/itu1.jpg" alt="ITU Rector Visit - Image 1" class="gallery-slide active"> 
-                    <img src="/itu2.jpg" alt="ITU Rector Visit - Image 2" class="gallery-slide">
-                    <img src="/itu3.jpg" alt="ITU Rector Visit - Image 3" class="gallery-slide">
-                    <img src="/itu4.jpg" alt="ITU Rector Visit - Image 4" class="gallery-slide">
-                    <img src="/itu5.jpg" alt="ITU Rector Visit - Image 5" class="gallery-slide">
-                    <img src="/itu6.jpg" alt="ITU Rector Visit - Image 6" class="gallery-slide">
+                    <img src="/itu1.jpg" alt="İTÜ Rektör Ziyareti - Resim 1" class="gallery-slide active"> 
+                    <img src="/itu2.jpg" alt="İTÜ Rektör Ziyareti - Resim 2" class="gallery-slide">
+                    <img src="/itu3.jpg" alt="İTÜ Rektör Ziyareti - Resim 3" class="gallery-slide">
+                    <img src="/itu4.jpg" alt="İTÜ Rektör Ziyareti - Resim 4" class="gallery-slide">
+                    <img src="/itu5.jpg" alt="İTÜ Rektör Ziyareti - Resim 5" class="gallery-slide">
+                    <img src="/itu6.jpg" alt="İTÜ Rektör Ziyareti - Resim 6" class="gallery-slide">
                 </div>
-                <button class="gallery-nav prev" aria-label="Previous image"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="gallery-nav next" aria-label="Next image"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="gallery-nav prev" aria-label="Önceki resim"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="gallery-nav next" aria-label="Sonraki resim"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
        
         <article class="post-content-area">
-             <p>As the Yal Thunders FRC team, we had the opportunity to meet with Prof. Dr. Hasan Mandal, the esteemed Rector of Istanbul Technical University, one of the most prestigious universities in our country, at our school. During this meeting, we had the chance to introduce our team and present the work we have done to our rector. Additionally, through his presentation, we gained valuable insights about Istanbul Technical University. We sincerely thank our rector for his visit and for sharing his knowledge and experience with us, helping us gain new perspectives as young individuals. ⚡️💚🐝</p>
+             <p>Yal Thunders FRC takımı olarak, okulumuzda ülkemizin en prestijli üniversitelerinden biri olan İstanbul Teknik Üniversitesi'nin değerli Rektörü Prof. Dr. Hasan Mandal ile tanışma fırsatı bulduk. Bu görüşme sırasında rektörümüze takımımızı tanıtma ve yaptığımız çalışmaları sunma şansı yakaladık. Ayrıca, kendisinin sunumu sayesinde İstanbul Teknik Üniversitesi hakkında değerli bilgiler edindik. Rektörümüze ziyaretleri ve biz genç bireyler olarak yeni bakış açıları kazanmamıza yardımcı olan bilgi ve deneyimlerini paylaştığı için içtenlikle teşekkür ederiz. ⚡️💚🐝</p>
         </article>
         
         <div class="post-share-section-modern">
              <hr>
-             <p>Share this post: 
-                 <a href="https://twitter.com/intent/tweet?text=As%20Yal%20Thunders%2C%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school.&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-twitter"></i></a>
-                 <a href="https://www.facebook.com/sharer/sharer.php?u=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook-f"></i></a>
-                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://kuzeycankal.github.io/YalThundersWebsite/news/itu-hosted.html&title=As%20Yal%20Thunders%2C%20we%20hosted%20the%20Rector%20of%20ITU%20at%20our%20school." class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i></a>
+             <p>Bu haberi paylaş: 
+                 <a href="https://twitter.com/intent/tweet?text=Yal%20Thunders%20olarak%20İTÜ%20Rektörünü%20okulumuzda%20ağırladık.&url=https://kuzeycankal.github.io/YalThundersWebsite/tr/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-twitter"></i></a>
+                 <a href="https://www.facebook.com/sharer/sharer.php?u=https://kuzeycankal.github.io/YalThundersWebsite/tr/news/itu-hosted.html" class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook-f"></i></a>
+                 <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://kuzeycankal.github.io/YalThundersWebsite/tr/news/itu-hosted.html&title=Yal%20Thunders%20olarak%20İTÜ%20Rektörünü%20okulumuzda%20ağırladık." class="social-share" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin-in"></i></a>
              </p>
         </div>
 
@@ -77,8 +108,8 @@
 
     <footer class="site-footer-new">
        <div class="footer-content">
-            <a href="/index.html" class="footer-brand">
-                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small">
+            <a href="/tr/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="footer-logo-small">
                 <span class="footer-brand-text">YAL THUNDERS<br>#9160</span>
             </a>
             <div class="footer-social-links">
@@ -167,5 +198,6 @@
             showSlide(0);
         });
     </script>
+    
 </body>
 </html>

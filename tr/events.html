@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAL Thunders 9160 - Etkinlikler</title>
+    <link rel="stylesheet" href="/style.css">
+    
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+    <header class="site-header">
+        <a href="/tr/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
+            <span class="team-name">YAL THUNDERS 9160</span>
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="/tr/news.html" >HABERLER</a></li>
+                <li><a href="/tr/index.html" >ANA SAYFA</a></li>
+                <li><a href="/tr/frc.html" >FRC NEDİR?</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/tr/about.html" >
+                        HAKKIMIZDA 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
+                        <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
+                        <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
+                        <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/events.html" class="active">ETKİNLİKLER</a></li> 
+                <li><a href="/tr/contact.html" >İLETİŞİM</a></li>
+            </ul>
+        </nav>
+        <div class="language-switcher">
+            
+            
+            
+                <a href="/events.html" class="lang-en">EN</a>
+                <a href="/tr/events.html" class="lang-tr lang-active">TR</a>
+            
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </header>
+
+    <main class="content-events">
+        <div class="events-header">
+            <h2>Yaklaşan Etkinlikler</h2>
+        </div>
+
+        <div class="events-list">
+            
+            <div class="event-card kickoff-card">
+                <div class="event-image-container">
+                    <img src="/kickoff_event.jpg" alt="YAL Thunders Kick-Off Etkinliği" class="event-image">
+                </div>
+                <div class="event-details">
+                    <div class="event-date-highlight">
+                        10 Ocak 2026 
+                    </div>
+                    <h3 class="event-title">2026 2025-2026 FIRST AGE sezonu FIRST Robotics Competition REBUILT Kick-off</h3>
+                    <div class="event-countdown" id="kickoff-countdown">
+                        Geri sayım yükleniyor... 
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card orlando-card">
+                <div class="event-image-container">
+                    <img src="/orlando.jpg" alt="FRC Orlando Regional Logosu" class="event-image">
+                </div>
+                <div class="event-details">
+                    <div class="event-date-highlight">
+                        18-21 Mart 2026
+                    </div>
+                    <h3 class="event-title">2026 FRC Orlando Regional</h3>
+                    <div class="event-countdown" id="orlando-countdown"> 
+                        Geri sayım yükleniyor...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="site-footer-new">
+        <div class="footer-content">
+            <a href="/tr/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="footer-logo-small">
+                <span class="footer-brand-text">
+                    YAL THUNDERS<br>#9160
+                </span>
+            </a>
+            <div class="footer-social-links">
+                <a href="https://www.instagram.com/yalthunders/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
+                <a href="https://www.tiktok.com/@yalthunders" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
+                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
+                <a href="mailto:yalthunders@gmail.com" target="_blank" class="social-link-wrapper-footer"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        const storageKey = 'theme-preference';
+        const toggle = document.getElementById('theme-toggle');
+
+        const getTheme = () => { return document.documentElement.getAttribute('data-theme'); }
+        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
+        const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } };
+        if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
+        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            function initializeCountdown(elementId, targetDateString) {
+                const countdownElement = document.getElementById(elementId);
+                if (!countdownElement) return; 
+
+                const targetDate = new Date(targetDateString).getTime();
+
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+
+                    if (distance < 0) {
+                        countdownElement.innerHTML = "Etkinlik başladı!";
+                        clearInterval(interval); 
+                        return;
+                    }
+
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    countdownElement.innerHTML = `
+                        <span class="countdown-value">${days}</span><span class="countdown-label">gün</span>
+                        <span class="countdown-value">${hours}</span><span class="countdown-label">saat</span>
+                        <span class="countdown-value">${minutes}</span><span class="countdown-label">dak</span>
+                        <span class="countdown-value">${seconds}</span><span class="countdown-label">san</span>
+                    `;
+                }
+                
+                const interval = setInterval(updateCountdown, 1000);
+                updateCountdown(); 
+            }
+
+            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
+            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00'); 
+            
+        });
+    </script>
+
+</body>
+</html>
