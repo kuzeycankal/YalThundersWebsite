@@ -1,0 +1,38 @@
+name: Build and Deploy Eleventy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # main dalına her push yapıldığında çalıştır
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' 
+
+      - name: Install Dependencies
+        # Gerekli tüm paketleri kurar
+        run: npm install
+
+      - name: Run Eleventy Build
+        # Contentful verisini çeker ve siteyi _site klasörüne oluşturur
+        run: npm run build
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+
+      - name: Deploy to GitHub Pages
+        # _site klasörünü gh-pages dalına yayınlar
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site 
+          publish_branch: gh-pages # Yayınlama için yeni bir dal kullanır

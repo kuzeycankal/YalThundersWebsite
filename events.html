@@ -9,6 +9,14 @@ permalink: events.html
     <title>YAL Thunders 9160 - Events</title>
     <link rel="stylesheet" href="/style.css">
     
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -24,21 +32,46 @@ permalink: events.html
         
         <nav>
             <ul>
-                <li><a href="/news.html">NEWS</a></li>
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
-                <li><a href="/about.html">ABOUT US</a></li>
+                <li><a href="/news.html" {% if page.permalink == 'news.html' %}class="active"{% endif %}>NEWS</a></li>
+                <li><a href="/index.html" {% if page.permalink == 'index.html' %}class="active"{% endif %}>HOME</a></li>
+                <li><a href="/frc.html" {% if page.permalink == 'frc.html' %}class="active"{% endif %}>WHAT IS FRC</a></li> 
+                
+                <li class="dropdown">
+                    <a href="/about.html" {% if page.permalink == 'about.html' %}class="active"{% endif %}>
+                        ABOUT US 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
+                
                 <li><a href="#">MEDIA</a></li>
                 <li><a href="/events.html" class="active">EVENTS</a></li> 
-                <li><a href="/contact.html">CONTACT</a></li>
+                <li><a href="/contact.html" {% if page.permalink == 'contact.html' %}class="active"{% endif %}>CONTACT</a></li>
             </ul>
         </nav>
+        <div class="language-switcher">
+            {% assign current_path = page.url | remove_first: '/tr' %}
+            
+            {% if page.url contains '/tr/' %}
+                <a href="{{ current_path }}" class="lang-en">EN</a>
+                <a href="{{ page.url }}" class="lang-tr lang-active">TR</a>
+            {% else %}
+                <a href="{{ page.url }}" class="lang-en lang-active">EN</a>
+                <a href="/tr{{ current_path }}" class="lang-tr">TR</a>
+            {% endif %}
+        </div>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
             <i class="fa-solid fa-moon"></i>
         </button>
     </header>
 
-    <main class="content-events animated-section">
+    <main id="swup" class="content-events swup-transition-container">
         <div class="events-header">
             <h2>Upcoming Events</h2>
         </div>
@@ -76,7 +109,6 @@ permalink: events.html
             </div>
 
         </div>
-
     </main>
 
     <footer class="site-footer-new">
@@ -96,57 +128,148 @@ permalink: events.html
         </div>
     </footer>
     
+    <script src="https://unpkg.com/swup@4"></script>
+    
     <script>
-        const storageKey = 'theme-preference';
-        const toggle = document.getElementById('theme-toggle');
-
-        const getTheme = () => { return localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); };
-        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); };
-        const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } };
-        if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
-        document.addEventListener('DOMContentLoaded', () => { setTheme(getTheme()); });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        
+        /**
+         * Bu ana fonksiyon, bir sayfadaki tüm dinamik 
+         * script'leri (Tema, Galeri, Geri Sayım) başlatır.
+         */
+        function initPage() {
             
-            function initializeCountdown(elementId, targetDateString) {
+            // 1. TEMA DEĞİŞTİRME KODU
+            const storageKey = 'theme-preference';
+            const toggle = document.getElementById('theme-toggle');
+            
+            const getTheme = () => { 
+                return document.documentElement.getAttribute('data-theme') || 
+                       localStorage.getItem(storageKey) || 
+                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            }
+            
+            const setTheme = (theme) => {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem(storageKey, theme);
+                updateIcon(theme);
+            }
+            
+            const updateIcon = (theme) => {
+                if (toggle) { 
+                    if (theme === 'dark') {
+                        toggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                    } else {
+                        toggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                    }
+                }
+            }
+            
+            // Swup geçişlerinde çift listener eklemeyi engelle
+            if (toggle && !toggle.hasAttribute('data-listener-added')) { 
+                toggle.addEventListener('click', () => {
+                    const currentTheme = getTheme();
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    setTheme(newTheme);
+                });
+                toggle.setAttribute('data-listener-added', 'true');
+            }
+            updateIcon(getTheme()); // Her sayfa yüklemesinde ikonu güncelle
+
+            
+            // 2. COUNTDOWN KODU (events.html için)
+            function initializeCountdown(elementId, targetDateString, lang) {
                 const countdownElement = document.getElementById(elementId);
-                if (!countdownElement) return; 
+                if (!countdownElement) return; // Element yoksa çık
+                
+                // Sayfa geçişlerinde eski sayacı temizle
+                if (countdownElement.intervalId) {
+                    clearInterval(countdownElement.intervalId);
+                }
 
                 const targetDate = new Date(targetDateString).getTime();
+                const labels = (lang === 'tr') 
+                    ? { day: "gün", hour: "saat", min: "dak", sec: "san", started: "Etkinlik başladı!" }
+                    : { day: "days", hour: "hours", min: "min", sec: "sec", started: "Event has started!" };
 
                 function updateCountdown() {
                     const now = new Date().getTime();
                     const distance = targetDate - now;
-
                     if (distance < 0) {
-                        countdownElement.innerHTML = "Event has started!";
-                        clearInterval(interval); 
-                        return;
+                        countdownElement.innerHTML = labels.started;
+                        clearInterval(countdownElement.intervalId); return;
                     }
-
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
                     countdownElement.innerHTML = `
-                        <span class="countdown-value">${days}</span><span class="countdown-label">days</span>
-                        <span class="countdown-value">${hours}</span><span class="countdown-label">hours</span>
-                        <span class="countdown-value">${minutes}</span><span class="countdown-label">min</span>
-                        <span class="countdown-value">${seconds}</span><span class="countdown-label">sec</span>
+                        <span class="countdown-value">${days}</span><span class="countdown-label">${labels.day}</span>
+                        <span class="countdown-value">${hours}</span><span class="countdown-label">${labels.hour}</span>
+                        <span class="countdown-value">${minutes}</span><span class="countdown-label">${labels.min}</span>
+                        <span class="countdown-value">${seconds}</span><span class="countdown-label">${labels.sec}</span>
                     `;
                 }
-                
-                const interval = setInterval(updateCountdown, 1000);
-                updateCountdown(); 
+                countdownElement.intervalId = setInterval(updateCountdown, 1000);
+                updateCountdown();
             }
-
-            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
-            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00'); 
             
-        });
+            // Hangi dilde olduğumuzu kontrol et
+            const pageLang = document.documentElement.lang || 'en';
+            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
+            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
+
+
+            // 3. GALERİ KODU (itu-hosted.html için)
+            const gallery = document.querySelector('.post-gallery');
+            if (gallery) {
+                const slides = gallery.querySelectorAll('.gallery-slide');
+                const prevButton = gallery.querySelector('.gallery-nav.prev');
+                const nextButton = gallery.querySelector('.gallery-nav.next');
+                let currentSlideIndex = 0;
+                const totalSlides = slides.length;
+
+                function showSlide(index) {
+                    if (slides.length === 0) return;
+                    slides.forEach((slide) => {
+                        slide.classList.remove('active');
+                        slide.style.opacity = '0'; 
+                    });
+                    slides[index].classList.add('active');
+                    slides[index].style.opacity = '1';
+                    currentSlideIndex = index;
+                    if (prevButton) prevButton.disabled = index === 0;
+                    if (nextButton) nextButton.disabled = index === totalSlides - 1;
+                }
+                
+                // Çift listener eklemeyi engelle
+                if (nextButton && !nextButton.hasAttribute('data-listener-added')) {
+                    nextButton.addEventListener('click', () => {
+                        if (currentSlideIndex < totalSlides - 1) showSlide(currentSlideIndex + 1);
+                    });
+                    nextButton.setAttribute('data-listener-added', 'true');
+                }
+                if (prevButton && !prevButton.hasAttribute('data-listener-added')) {
+                    prevButton.addEventListener('click', () => {
+                        if (currentSlideIndex > 0) showSlide(currentSlideIndex - 1);
+                    });
+                    prevButton.setAttribute('data-listener-added', 'true');
+                }
+                if(slides.length > 0) showSlide(0);
+            }
+        }
+        
+        // --- SWUP BAŞLATMA ---
+
+        // 1. Swup'ı başlat
+        const swup = new Swup();
+        
+        // 2. Sayfa ilk yüklendiğinde script'leri çalıştır
+        document.addEventListener('DOMContentLoaded', initPage);
+        
+        // 3. Swup her yeni sayfayı yüklediğinde script'leri TEKRAR çalıştır
+        // "F5 atınca çalışma" sorununu bu çözer.
+        swup.hooks.on('page:view', initPage);
+        
     </script>
 </body>
 </html>

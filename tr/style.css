@@ -10,7 +10,7 @@ body {
     color: var(--color-text-primary, #4a6a4a);
 }
 
-/* --- Renk Değişkenleri (Variables) Tanımlama --- */
+/* --- Renk Değişkenleri (Variables) Tanımlama (YEŞİL TEMA) --- */
 :root {
     /* Açık Tema */
     --color-bg-primary: #e8f5e8; /* Ana Açık Yeşil Arka Plan */
@@ -60,17 +60,13 @@ body {
 .team-name { font-family: 'Cabin', sans-serif; font-weight: bold; font-size: 1.2em; color: var(--color-text-header); position: relative; top: 2px; }
 nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
 nav li { margin-left: 30px; }
-nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Cabin', sans-serif; font-weight: bold; font-size: 1.0em; padding: 20px 5px; display: block; letter-spacing: 0.5px; border-bottom: 3px solid transparent; position: relative; transition: transform 0.2s ease; outline: none; }
+nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Playfair Display', serif; font-weight: bold; font-size: 1.0em; padding: 20px 5px; display: block; letter-spacing: 0.5px; border-bottom: 3px solid transparent; position: relative; transition: transform 0.2s ease; outline: none; }
 nav a:not(.active):hover { transform: translateY(-2px); }
 nav a:focus-visible { background-color: rgba(181, 214, 181, 0.5); border-radius: 4px; outline: none; }
 nav a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 100%; height: 3px; background-color: var(--color-text-header); transform: scaleX(0); transform-origin: center; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
 nav a.active::after { transform: scaleX(1); }
 
-/* 'animation' kuralı buradan kaldırıldı */
-main { 
-    padding: 0; 
-    min-height: 80vh; 
-}
+main { padding: 0; min-height: 80vh; animation: fadeInPage 0.7s ease-in-out forwards; }
 
 /* --------------------------------- */
 /* HOME SAYFASI (ESKİ SADE HALİ) */
@@ -109,9 +105,8 @@ main {
 [data-theme="dark"] .mv-image-wrapper { background-color: var(--color-bg-primary); }
 .mv-text h2 { font-family: 'Playfair Display', serif; font-size: 2.8em; color: var(--color-text-header); margin-top: 0; margin-bottom: 20px; }
 .mv-text p { font-family: 'Cabin', sans-serif; font-size: 1.1em; line-height: 1.8; color: var(--color-text-primary); }
-
-/* .animated-section ve body .animated-section kuralları SİLİNDİ */
-
+.animated-section { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+body .animated-section { opacity: 1; transform: translateY(0); }
 @media (max-width: 900px) { .mission-vision-section { flex-direction: column !important; text-align: center; padding: 50px 30px; gap: 30px; } .mv-content { flex-direction: column; order: 2; min-width: unset; gap: 15px; } .mv-image-wrapper { order: 1; min-width: unset; width: 100%; max-width: 400px; } .mv-text h2 { font-size: 2.2em; } .mv-icon { font-size: 3em; margin-bottom: 0; } }
 .about-gallery-section { padding: 80px; text-align: center; background-color: var(--color-bg-primary); }
 .about-gallery-section h3 { font-family: 'Playfair Display', serif; font-size: 2.5em; color: var(--color-text-header); margin-bottom: 40px; }
@@ -122,10 +117,17 @@ main {
 .section-title { font-family: 'Playfair Display', serif; font-size: 2.8em; color: var(--color-text-header); margin-top: 0; margin-bottom: 50px; position: relative; text-align: center; }
 .section-title::after { content: ''; display: block; width: 80px; height: 3px; background-color: var(--color-text-primary); margin: 10px auto 0; }
 .alumni-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto; }
-.alumni-card { background-color: var(--color-bg-primary); padding: 25px 20px; border-radius: 10px; box-shadow: 0 5px 15px var(--color-shadow-light); transition: transform 0.3s ease, box-shadow 0.3s ease; /* opacity ve transform kaldırıldı */ }
+.alumni-card { background-color: var(--color-bg-primary); padding: 25px 20px; border-radius: 10px; box-shadow: 0 5px 15px var(--color-shadow-light); transition: transform 0.3s ease, box-shadow 0.3s ease; opacity: 0; transform: translateY(20px); }
+body .alumni-card { opacity: 1; transform: translateY(0); transition-delay: calc(0.1s * var(--card-index, 0)); }
 .alumni-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px var(--color-shadow-dark); }
 .alumni-card h4 { font-family: 'Cabin', sans-serif; font-size: 1.4em; font-weight: bold; color: var(--color-text-header); margin: 0 0 8px 0; }
 .alumni-card p { font-family: 'Cabin', sans-serif; font-size: 0.95em; color: var(--color-text-secondary); margin: 0; line-height: 1.5; }
+.alumni-card:nth-child(1) { --card-index: 1; }
+.alumni-card:nth-child(2) { --card-index: 2; }
+.alumni-card:nth-child(3) { --card-index: 3; }
+.alumni-card:nth-child(4) { --card-index: 4; }
+.alumni-card:nth-child(5) { --card-index: 5; }
+.alumni-card:nth-child(6) { --card-index: 6; }
 .achievements-section { padding: 80px; background-color: var(--color-bg-primary); overflow: hidden; }
 .achievement-item { display: flex; align-items: center; gap: 60px; background-color: var(--color-bg-secondary); padding: 40px; border-radius: 15px; margin-bottom: 40px; box-shadow: 0 8px 25px var(--color-shadow-light); }
 .achievement-item.reverse { flex-direction: row-reverse; }
@@ -214,7 +216,7 @@ main {
 /* --------------------------------- */
 /* NEWS Sayfası Stilleri             */
 /* --------------------------------- */
-.content-news { padding: 30px 50px 80px 50px; background-color: var(--color-bg-primary); }
+.content-news { padding: 30px 50px 80px 50px; animation: fadeInPage 0.7s ease-in-out forwards; background-color: var(--color-bg-primary); }
 .news-header { text-align: center; padding-bottom: 30px; padding-top: 20px; }
 .news-header h2 { font-family: 'Playfair Display', serif; font-size: 3em; color: var(--color-text-header); margin: 0; }
 .news-header h2::after { content: ''; display: block; width: 120px; height: 4px; background-color: var(--color-text-primary); margin: 15px auto 0; border-radius: 2px; }
@@ -289,6 +291,117 @@ main {
 [data-theme="dark"] .social-icon-footer { color: var(--color-footer-text) !important; }
 .social-link-wrapper-footer:hover .social-icon-footer { color: var(--color-white); } 
 
+@keyframes fadeInPage { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+
+/* --- AÇILIR MENÜ (DROPDOWN) STİLLERİ (DAHA KÜÇÜK VE MODERN VERSİYON) --- */
+/* (Tüm açılma/tıklama sorunları çözüldü) */
+
+/* 1. ADIM: Ana linke "görünmez köprü" (Açılma sorununu çözer) */
+nav li.dropdown {
+    position: relative; 
+    padding-bottom: 5px; /* 5px'lik görünmez hover alanı */
+}
+
+/* 2. ADIM: Açılır menünün ana yapısı (DAHA KÜÇÜK) */
+nav .dropdown-menu {
+    display: none; 
+    position: absolute; 
+    top: 100%; 
+    left: 0;
+    margin-top: 0; 
+    
+    box-shadow: 0 10px 30px var(--color-shadow-dark); 
+    border-radius: 8px; /* Daha keskin, modern köşe */
+    
+    /* KÜÇÜLTME */
+    min-width: 190px; /* Genişliği azalttık (220px -> 190px) */
+    padding: 6px 0; /* İç boşluğu azalttık (10px -> 6px) */
+    
+    z-index: 1001; 
+    list-style: none; 
+    margin-left: 0;
+    
+    /* Daha kibar animasyon */
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity 0.2s ease, transform 0.2s ease; 
+    
+    visibility: hidden;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* 3. ADIM: AYDINLIK MOD (Kenarlık) */
+:root nav .dropdown-menu {
+    background-color: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-header);
+}
+
+/* 4. ADIM: KARANLIK MOD (Kenarlık) */
+[data-theme="dark"] nav .dropdown-menu {
+    background-color: var(--color-bg-primary); 
+    border: 1px solid var(--color-text-secondary); 
+}
+
+/* 5. ADIM: Menü içindeki linklerin stili (DAHA KÜÇÜK) */
+nav .dropdown-menu li a {
+    /* KÜÇÜLTME */
+    padding: 10px 18px; /* İç boşluğu azalttık (12px 20px -> 10px 18px) */
+    font-size: 0.85em; /* Yazı tipini küçülttük (0.9em -> 0.85em) */
+    
+    font-family: 'Playfair Display', serif; 
+    font-weight: bold;
+    color: var(--color-text-header);
+    border-bottom: none; 
+    display: block; 
+    white-space: nowrap;
+    
+    /* MODERN HOVER EFEKTİ İÇİN GEÇİŞ */
+    transition: padding-left 0.2s ease;
+}
+
+/* Linklerin ::after çizgisini sıfırla */
+nav .dropdown-menu li a::after {
+    display: none;
+}
+
+/* 6. ADIM: Linklerin üzerine gelme efekti (Aydınlık Mod + MODERN EFEKT) */
+:root nav .dropdown-menu li a:hover {
+    background-color: var(--color-bg-primary); 
+    transform: none;
+    padding-left: 22px; /* MODERN: Üzerine gelince hafifçe sağa ittir */
+}
+
+/* 7. ADIM: Linklerin üzerine gelme efekti (Karanlık Mod + MODERN EFEKT) */
+[data-theme="dark"] nav .dropdown-menu li a:hover {
+    background-color: var(--color-bg-secondary); 
+    transform: none;
+    padding-left: 22px; /* MODERN: Üzerine gelince hafifçe sağa ittir */
+}
+
+/* 8. ADIM: Menüyü açan :hover kuralı */
+nav li.dropdown:hover .dropdown-menu {
+    display: block; 
+    opacity: 1;
+    transform: translateY(0); 
+    visibility: visible;
+    transition-delay: 0s; 
+    pointer-events: auto;
+}
+
+/* 9. ADIM: Ok ikonu */
+nav .dropdown > a .dropdown-caret {
+    font-size: 0.7em;
+    margin-left: 6px;
+    transition: transform 0.3s ease;
+}
+
+/* Ok ikonunu döndür */
+nav li.dropdown:hover > a .dropdown-caret {
+    transform: rotate(180deg);
+}
+
 /* --- DİL DEĞİŞTİRME BUTONU (TR/EN) --- */
 .language-switcher {
     /* Tema butonunun soluna yerleştirir */
@@ -297,6 +410,7 @@ main {
     border-right: 2px solid var(--color-text-header);
     opacity: 0.7;
 }
+
 .language-switcher a {
     font-family: 'Cabin', sans-serif;
     font-weight: bold;
@@ -307,101 +421,18 @@ main {
     border-radius: 5px;
     transition: background-color 0.2s ease;
 }
+
 .language-switcher a:hover {
     background-color: var(--color-bg-primary);
 }
+
 .language-switcher a.lang-active {
     /* Aktif dili (mesela TR) daha belirgin yapar */
     opacity: 0.5;
     pointer-events: none; /* Aktif dile tıklamayı engelle */
 }
+
 /* Koyu temada buton hover rengi */
 [data-theme="dark"] .language-switcher a:hover {
     background-color: var(--color-bg-primary);
-}
-
-/* --- AÇILIR MENÜ (DROPDOWN) STİLLERİ (DAHA KÜÇÜK VE MODERN VERSİYON) --- */
-/* (Tüm açılma/tıklama sorunları çözüldü) */
-nav li.dropdown {
-    position: relative; 
-    padding-bottom: 5px; /* 5px'lik görünmez hover alanı */
-}
-nav .dropdown-menu {
-    display: none; 
-    position: absolute; 
-    top: 100%; 
-    left: 0;
-    margin-top: 0; 
-    box-shadow: 0 10px 30px var(--color-shadow-dark); 
-    border-radius: 8px; /* Daha keskin, modern köşe */
-    min-width: 190px; /* Genişliği azalttık (220px -> 190px) */
-    padding: 6px 0; /* İç boşluğu azalttık (10px -> 6px) */
-    z-index: 1001; 
-    list-style: none; 
-    margin-left: 0;
-    opacity: 0;
-    transform: translateY(2px);
-    transition: opacity 0.2s ease, transform 0.2s ease; 
-    visibility: hidden;
-    overflow: hidden;
-    pointer-events: none;
-}
-:root nav .dropdown-menu {
-    background-color: var(--color-bg-secondary);
-    border: 1px solid var(--color-bg-header);
-}
-[data-theme="dark"] nav .dropdown-menu {
-    background-color: var(--color-bg-primary); 
-    border: 1px solid var(--color-text-secondary); 
-}
-nav .dropdown-menu li a {
-    padding: 10px 18px; /* İç boşluğu azalttık (12px 20px -> 10px 18px) */
-    font-size: 0.85em; /* Yazı tipini küçülttük (0.9em -> 0.85em) */
-    font-family: 'Playfair Display', serif; 
-    font-weight: bold;
-    color: var(--color-text-header);
-    border-bottom: none; 
-    display: block; 
-    white-space: nowrap;
-    transition: padding-left 0.2s ease;
-}
-nav .dropdown-menu li a::after {
-    display: none;
-}
-:root nav .dropdown-menu li a:hover {
-    background-color: var(--color-bg-primary); 
-    transform: none;
-    padding-left: 22px; /* MODERN: Üzerine gelince hafifçe sağa ittir */
-}
-[data-theme="dark"] nav .dropdown-menu li a:hover {
-    background-color: var(--color-bg-secondary); 
-    transform: none;
-    padding-left: 22px; /* MODERN: Üzerine gelince hafifçe sağa ittir */
-}
-nav li.dropdown:hover .dropdown-menu {
-    display: block; 
-    opacity: 1;
-    transform: translateY(0); 
-    visibility: visible;
-    transition-delay: 0s; 
-    pointer-events: auto;
-}
-nav .dropdown > a .dropdown-caret {
-    font-size: 0.7em;
-    margin-left: 6px;
-    transition: transform 0.3s ease;
-}
-nav li.dropdown:hover > a .dropdown-caret {
-    transform: rotate(180deg);
-}
-
-
-/* --- YUMUŞAK SAYFA GEÇİŞİ (SWUP) ANİMASYONLARI (HIZLANDIRILMIŞ) --- */
-.swup-transition-container {
-    /* Geçiş hızı 0.2 saniye (Hızlı ve tepkisel) */
-    transition: opacity 0.2s ease-in-out;
-}
-/* Sayfa ayrılırken (fade out) */
-html.is-animating .swup-transition-container {
-    opacity: 0;
 }

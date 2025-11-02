@@ -1,0 +1,20 @@
+{
+  "name": "yal-thunders-eleventy-site",
+  "version": "1.0.0",
+  "description": "",
+  "main": "eleventy.config.js",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "contentful": "^10.12.10",
+    "dotenv": "^16.4.5",
+    "luxon": "^3.7.2",
+    "markdown-it": "^14.1.0"
+  }
+}
