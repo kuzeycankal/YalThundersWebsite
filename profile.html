@@ -201,13 +201,13 @@ permalink: profile.html
             }
 
             // Populate profile information
-            const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            const initials = currentUser.name.split(' ').filter(n => n).map(n => n[0]).join('').toUpperCase().slice(0, 2);
             document.getElementById('profileAvatar').textContent = initials;
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileEmail').textContent = currentUser.email;
             
             // Format join date
-            const joinDate = new Date(currentUser.createdAt);
+            const joinDate = currentUser.createdAt ? new Date(currentUser.createdAt) : new Date();
             const formattedDate = joinDate.toLocaleDateString('en-US', { 
                 year: 'numeric', 
                 month: 'long', 

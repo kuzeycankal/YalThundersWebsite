@@ -157,11 +157,12 @@ function handleLogin(e) {
         return;
     }
     
-    // Kullanıcı bilgilerini sakla (şifre hariç)
+    // Store user information (excluding password)
     const currentUser = {
         id: user.id,
         name: user.name,
         email: user.email,
+        createdAt: user.createdAt,
         loginTime: new Date().toISOString()
     };
     
@@ -240,10 +241,11 @@ function updateAuthButtons() {
             </div>
         `;
         
-        // Setup dropdown click outside handler
-        setTimeout(() => {
+        // Setup dropdown click outside handler (only once)
+        if (!document._userMenuClickHandlerAdded) {
             document.addEventListener('click', closeUserMenuOnClickOutside);
-        }, 100);
+            document._userMenuClickHandlerAdded = true;
+        }
     } else {
         // If user is not logged in
         authButtonsContainer.innerHTML = `
@@ -324,7 +326,7 @@ function closeUserMenuOnClickOutside(event) {
     const dropdown = document.getElementById('userDropdown');
     const userBtn = document.querySelector('.user-profile-btn');
     
-    if (dropdown && !dropdown.contains(event.target) && !userBtn.contains(event.target)) {
+    if (dropdown && userBtn && !dropdown.contains(event.target) && !userBtn.contains(event.target)) {
         dropdown.classList.remove('show');
     }
 }
