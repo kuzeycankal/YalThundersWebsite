@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPyIrZZ5QeM/vnRWw==">
 </head>
 <body>
 
@@ -52,21 +52,29 @@
                 <li><a href="/contact.html" >CONTACT</a></li>
             </ul>
         </nav>
-        <div class="language-switcher">
+        
+        <div class="header-right">
+            <div class="auth-buttons" id="authButtons">
+                <!-- Auth buttons will be dynamically loaded by auth.js -->
+            </div>
             
+            <div class="language-switcher">
+                
+                
+                
+                    <a href="/" class="lang-en lang-active">EN</a>
+                    <a href="/tr/" class="lang-tr">TR</a>
+                
+            </div>
             
-            
-                <a href="/" class="lang-en lang-active">EN</a>
-                <a href="/tr/" class="lang-tr">TR</a>
-            
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-            <i class="fa-solid fa-moon"></i>
-        </button>
     </header>
 
     <main id="swup" class="content-home swup-transition-container">
-        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact bölümleri çalışmaktadır. Tasarımlar ve Fotoğraflar geçicidir. HTML ve CSS ile yazılmıştır. Github sayfasında kaynak kodları bulunmaktadır.</h1>
+        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact sayfaları yapılmıştır. About US, News , Events sayfaları ilerde güncellenecektir. Umarım beğenmişsinizdir.</h1>
     </main>
 
 
@@ -88,6 +96,7 @@
     </footer>
     
     <script src="https://unpkg.com/swup@4"></script>
+    <script src="/auth.js"></script>
     
     <script>
         /**
@@ -213,6 +222,11 @@
                     prevButton.setAttribute('data-listener-added', 'true');
                 }
                 if(slides.length > 0) showSlide(0);
+            }
+            
+            // 4. AUTH BUTONLARINI GÜNCELLE
+            if (typeof updateAuthButtons === 'function') {
+                updateAuthButtons();
             }
         }
         
