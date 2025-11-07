@@ -208,15 +208,42 @@ function updateAuthButtons() {
         // Kullanıcı giriş yapmışsa
         const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         authButtonsContainer.innerHTML = `
-            <a href="#" class="user-profile-btn">
-                <span class="user-avatar">${initials}</span>
-                <span>${currentUser.name.split(' ')[0]}</span>
-            </a>
-            <button onclick="logout()" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </button>
+            <div class="user-menu-container">
+                <button class="user-profile-btn" onclick="toggleUserMenu(event)">
+                    <span class="user-avatar">${initials}</span>
+                    <span>${currentUser.name.split(' ')[0]}</span>
+                    <i class="fa-solid fa-caret-down"></i>
+                </button>
+                <div class="user-dropdown-menu" id="userDropdown">
+                    <a href="/profile.html" class="dropdown-item">
+                        <i class="fa-solid fa-user"></i>
+                        <span>My Profile</span>
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="changePassword(event)">
+                        <i class="fa-solid fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="changeEmail(event)">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Change Email</span>
+                    </a>
+                    <a href="#" class="dropdown-item" onclick="deleteAccount(event)">
+                        <i class="fa-solid fa-trash"></i>
+                        <span>Delete Account</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" onclick="logout()">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </div>
+            </div>
         `;
+        
+        // Setup dropdown click outside handler
+        setTimeout(() => {
+            document.addEventListener('click', closeUserMenuOnClickOutside);
+        }, 100);
     } else {
         // Kullanıcı giriş yapmamışsa
         authButtonsContainer.innerHTML = `
@@ -283,8 +310,133 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Toggle user dropdown menu
+function toggleUserMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('userDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('show');
+    }
+}
+
+// Close dropdown when clicking outside
+function closeUserMenuOnClickOutside(event) {
+    const dropdown = document.getElementById('userDropdown');
+    const userBtn = document.querySelector('.user-profile-btn');
+    
+    if (dropdown && !dropdown.contains(event.target) && !userBtn.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+}
+
+// Change Password
+function changePassword(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const oldPassword = prompt('Enter your current password:');
+    if (!oldPassword) return;
+    
+    const users = getUsers();
+    const user = users.find(u => u.email === currentUser.email && u.password === hashPassword(oldPassword));
+    
+    if (!user) {
+        alert('Current password is incorrect');
+        return;
+    }
+    
+    const newPassword = prompt('Enter your new password (minimum 6 characters):');
+    if (!newPassword || newPassword.length < 6) {
+        alert('New password must be at least 6 characters long');
+        return;
+    }
+    
+    const confirmPassword = prompt('Confirm your new password:');
+    if (newPassword !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+    }
+    
+    user.password = hashPassword(newPassword);
+    saveUsers(users);
+    alert('Password changed successfully!');
+}
+
+// Change Email
+function changeEmail(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const newEmail = prompt('Enter your new email address:');
+    if (!newEmail) return;
+    
+    if (!isValidEmail(newEmail)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    
+    const users = getUsers();
+    if (users.find(u => u.email === newEmail.toLowerCase() && u.id !== currentUser.id)) {
+        alert('This email is already registered');
+        return;
+    }
+    
+    const user = users.find(u => u.id === currentUser.id);
+    if (user) {
+        user.email = newEmail.toLowerCase();
+        saveUsers(users);
+        
+        // Update current user
+        currentUser.email = newEmail.toLowerCase();
+        if (localStorage.getItem(CURRENT_USER_KEY)) {
+            localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+        } else {
+            sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+        }
+        
+        alert('Email changed successfully!');
+        updateAuthButtons();
+    }
+}
+
+// Delete Account
+function deleteAccount(event) {
+    event.preventDefault();
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const confirmation = confirm('Are you sure you want to delete your account? This action cannot be undone.');
+    if (!confirmation) return;
+    
+    const password = prompt('Enter your password to confirm account deletion:');
+    if (!password) return;
+    
+    const users = getUsers();
+    const user = users.find(u => u.email === currentUser.email && u.password === hashPassword(password));
+    
+    if (!user) {
+        alert('Password is incorrect');
+        return;
+    }
+    
+    const updatedUsers = users.filter(u => u.id !== currentUser.id);
+    saveUsers(updatedUsers);
+    
+    localStorage.removeItem(CURRENT_USER_KEY);
+    sessionStorage.removeItem(CURRENT_USER_KEY);
+    
+    alert('Account deleted successfully');
+    window.location.href = '/index.html';
+}
+
 // Global olarak kullanılabilir fonksiyonlar
 window.logout = logout;
 window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;
 window.updateAuthButtons = updateAuthButtons;
+window.toggleUserMenu = toggleUserMenu;
+window.changePassword = changePassword;
+window.changeEmail = changeEmail;
+window.deleteAccount = deleteAccount;
