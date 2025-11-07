@@ -1,97 +1,438 @@
-// Complete Authentication System
+/**
+ * YAL Thunders Authentication System
+ * localStorage tabanlı güvenli kullanıcı yönetimi
+ */
 
+// Kullanıcı verilerini localStorage'da sakla
+const USERS_KEY = 'yal_users';
+const CURRENT_USER_KEY = 'yal_current_user';
+
+// Basit şifreleme fonksiyonu (production'da bcrypt kullanılmalı)
 function hashPassword(password) {
-    // Implementation here...
+    let hash = 0;
+    for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+    }
+    return hash.toString(36);
 }
 
+// Kullanıcıları al
 function getUsers() {
-    // Implementation here...
+    const users = localStorage.getItem(USERS_KEY);
+    return users ? JSON.parse(users) : [];
 }
 
-function saveUsers(user) {
-    // Implementation here...
+// Kullanıcıları kaydet
+function saveUsers(users) {
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
 }
 
+// Email validasyonu
 function isValidEmail(email) {
-    // Implementation here...
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
 }
 
+// Şifre gücü kontrolü
 function checkPasswordStrength(password) {
-    // Implementation here...
+    let strength = 0;
+    if (password.length >= 6) strength++;
+    if (password.length >= 10) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z\d]/.test(password)) strength++;
+    return strength;
 }
 
+// Şifre görünürlüğünü değiştir
 function initPasswordToggle() {
-    // Implementation here...
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
 }
 
-function showMessage(message) {
-    // Implementation here...
+// Mesaj göster
+function showMessage(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    element.textContent = message;
+    element.className = `auth-message ${type}`;
+    element.style.display = 'block';
+    
+    setTimeout(() => {
+        element.style.display = 'none';
+    }, 5000);
 }
 
-function handleRegister() {
-    // Implementation here...
+// Register fonksiyonu
+function handleRegister(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+    const password = document.getElementById('registerPassword').value;
+    const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+    
+    // Validasyon
+    if (name.length < 3) {
+        showMessage('registerMessage', 'Name must be at least 3 characters long', 'error');
+        return;
+    }
+    
+    if (!isValidEmail(email)) {
+        showMessage('registerMessage', 'Please enter a valid email address', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showMessage('registerMessage', 'Password must be at least 6 characters long', 'error');
+        return;
+    }
+    
+    if (password !== passwordConfirm) {
+        showMessage('registerMessage', 'Passwords do not match', 'error');
+        return;
+    }
+    
+    // Kullanıcı zaten var mı kontrol et
+    const users = getUsers();
+    if (users.find(u => u.email === email)) {
+        showMessage('registerMessage', 'This email is already registered', 'error');
+        return;
+    }
+    
+    // Yeni kullanıcı oluştur
+    const newUser = {
+        id: Date.now().toString(),
+        name: name,
+        email: email,
+        password: hashPassword(password),
+        createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    saveUsers(users);
+    
+    showMessage('registerMessage', 'Account created successfully! Redirecting...', 'success');
+    
+    setTimeout(() => {
+        window.location.href = '/login.html';
+    }, 1500);
 }
 
-function handleLogin() {
-    // Implementation here...
+// Login fonksiyonu
+function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const password = document.getElementById('loginPassword').value;
+    const rememberMe = document.getElementById('rememberMe').checked;
+    
+    if (!isValidEmail(email)) {
+        showMessage('loginMessage', 'Please enter a valid email address', 'error');
+        return;
+    }
+    
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === hashPassword(password));
+    
+    if (!user) {
+        showMessage('loginMessage', 'Invalid email or password', 'error');
+        return;
+    }
+    
+    // Kullanıcı bilgilerini sakla (şifre hariç)
+    const currentUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        loginTime: new Date().toISOString()
+    };
+    
+    if (rememberMe) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+    } else {
+        sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+    }
+    
+    showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+    
+    setTimeout(() => {
+        window.location.href = '/index.html';
+    }, 1500);
 }
 
+// Logout fonksiyonu
 function logout() {
-    // Function removed, access through dropdown menu instead
+    localStorage.removeItem(CURRENT_USER_KEY);
+    sessionStorage.removeItem(CURRENT_USER_KEY);
+    window.location.href = '/login.html';
 }
 
+// Mevcut kullanıcıyı al
 function getCurrentUser() {
-    // Implementation here...
+    const localUser = localStorage.getItem(CURRENT_USER_KEY);
+    const sessionUser = sessionStorage.getItem(CURRENT_USER_KEY);
+    return localUser ? JSON.parse(localUser) : (sessionUser ? JSON.parse(sessionUser) : null);
 }
 
+// Kullanıcı giriş yapmış mı kontrol et
 function isLoggedIn() {
-    // Implementation here...
+    return getCurrentUser() !== null;
 }
 
+// Şifre değiştirme fonksiyonu
 function changePassword() {
-    showMessage('Password changed successfully');
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const oldPassword = prompt('Enter your current password:');
+    if (!oldPassword) return;
+    
+    const newPassword = prompt('Enter your new password (minimum 6 characters):');
+    if (!newPassword || newPassword.length < 6) {
+        alert('New password must be at least 6 characters long!');
+        return;
+    }
+    
+    const confirmPassword = prompt('Confirm your new password:');
+    if (newPassword !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+    }
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === currentUser.email);
+    
+    if (userIndex === -1 || users[userIndex].password !== hashPassword(oldPassword)) {
+        alert('Current password is incorrect!');
+        return;
+    }
+    
+    users[userIndex].password = hashPassword(newPassword);
+    saveUsers(users);
+    alert('Password changed successfully!');
 }
 
+// E-posta değiştirme fonksiyonu
 function changeEmail() {
-    showMessage('Email changed successfully');
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const newEmail = prompt('Enter your new email address:');
+    if (!newEmail || !isValidEmail(newEmail)) {
+        alert('Please enter a valid email address!');
+        return;
+    }
+    
+    const password = prompt('Enter your password for security:');
+    if (!password) return;
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === currentUser.email);
+    
+    if (userIndex === -1 || users[userIndex].password !== hashPassword(password)) {
+        alert('Password is incorrect!');
+        return;
+    }
+    
+    if (users.find(u => u.email === newEmail.toLowerCase())) {
+        alert('This email address is already in use!');
+        return;
+    }
+    
+    users[userIndex].email = newEmail.toLowerCase();
+    saveUsers(users);
+    
+    // Oturum bilgilerini güncelle
+    currentUser.email = newEmail.toLowerCase();
+    if (localStorage.getItem(CURRENT_USER_KEY)) {
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+    } else {
+        sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+    }
+    
+    alert('Email address changed successfully!');
+    updateAuthButtons();
 }
 
+// Hesap silme fonksiyonu
 function deleteAccount() {
-    showMessage('Account deleted successfully');
+    const currentUser = getCurrentUser();
+    if (!currentUser) return;
+    
+    const confirmation = confirm('Are you sure you want to delete your account? This action cannot be undone!');
+    if (!confirmation) return;
+    
+    const password = prompt('Enter your password for security:');
+    if (!password) return;
+    
+    const users = getUsers();
+    const userIndex = users.findIndex(u => u.email === currentUser.email);
+    
+    if (userIndex === -1 || users[userIndex].password !== hashPassword(password)) {
+        alert('Password is incorrect!');
+        return;
+    }
+    
+    const finalConfirm = confirm('FINAL WARNING: Your account will be permanently deleted. Do you want to continue?');
+    if (!finalConfirm) return;
+    
+    users.splice(userIndex, 1);
+    saveUsers(users);
+    
+    localStorage.removeItem(CURRENT_USER_KEY);
+    sessionStorage.removeItem(CURRENT_USER_KEY);
+    
+    alert('Your account has been successfully deleted.');
+    window.location.href = '/index.html';
 }
 
+// Header'daki auth butonlarını güncelle
 function updateAuthButtons() {
-    const dropdown = document.createElement('div');
-    dropdown.className = 'dropdown-menu';
-    dropdown.innerHTML = `
-        <div class='profile-container'>
-            <img src='avatar.png' alt='User Avatar'>
-            <span>User Name</span>
-            <span>User Email</span>
-        </div>
-        <a href='#'>My Profile</a>
-        <a href='#' onclick='changePassword()'>Change Password</a>
-        <a href='#' onclick='changeEmail()'>Change Email</a>
-        <a href='#' onclick='deleteAccount()'>Delete Account</a>
-        <a href='#' onclick='logout()'>Sign Out</a>
-    `;
-    document.body.appendChild(dropdown);
+    const authButtonsContainer = document.getElementById('authButtons');
+    if (!authButtonsContainer) return;
+    
+    const currentUser = getCurrentUser();
+    
+    if (currentUser) {
+        // Kullanıcı giriş yapmışsa - Sadece dropdown menu
+        const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        const firstName = currentUser.name.split(' ')[0];
+        
+        authButtonsContainer.innerHTML = `
+            <div class="user-profile-container">
+                <button class="user-profile-btn">
+                    <span class="user-avatar">${initials}</span>
+                    <span>${firstName}</span>
+                    <i class="fa-solid fa-caret-down dropdown-arrow"></i>
+                </button>
+                
+                <div class="user-dropdown-menu">
+                    <div class="user-dropdown-header">
+                        <div class="user-avatar-large">${initials}</div>
+                        <div class="user-name">${currentUser.name}</div>
+                        <div class="user-email">${currentUser.email}</div>
+                    </div>
+                    
+                    <div class="user-dropdown-items">
+                        <a href="/profile.html" class="user-dropdown-item">
+                            <i class="fa-solid fa-user"></i>
+                            <span>My Profile</span>
+                        </a>
+                        
+                        <a href="#" class="user-dropdown-item" onclick="event.preventDefault(); changePassword()">
+                            <i class="fa-solid fa-key"></i>
+                            <span>Change Password</span>
+                        </a>
+                        
+                        <a href="#" class="user-dropdown-item" onclick="event.preventDefault(); changeEmail()">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Change Email</span>
+                        </a>
+                        
+                        <a href="#" class="user-dropdown-item" onclick="event.preventDefault(); deleteAccount()">
+                            <i class="fa-solid fa-trash"></i>
+                            <span>Delete Account</span>
+                        </a>
+                        
+                        <div class="user-dropdown-divider"></div>
+                        
+                        <button class="user-dropdown-item logout-item" onclick="logout()">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span>Sign Out</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // Kullanıcı giriş yapmamışsa
+        authButtonsContainer.innerHTML = `
+            <a href="/login.html" class="auth-btn login-btn">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span>Login</span>
+            </a>
+            <a href="/register.html" class="auth-btn register-btn">
+                <i class="fa-solid fa-user-plus"></i>
+                <span>Register</span>
+            </a>
+        `;
+    }
 }
 
-// Exporting functions to window object
-window.hashPassword = hashPassword;
-window.getUsers = getUsers;
-window.saveUsers = saveUsers;
-window.isValidEmail = isValidEmail;
-window.checkPasswordStrength = checkPasswordStrength;
-window.initPasswordToggle = initPasswordToggle;
-window.showMessage = showMessage;
-window.handleRegister = handleRegister;
-window.handleLogin = handleLogin;
+// Sayfa yüklendiğinde
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle başlat
+    initPasswordToggle();
+    
+    // Auth butonlarını güncelle
+    updateAuthButtons();
+    
+    // Register form
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+        
+        // Şifre gücü göstergesi
+        const passwordInput = document.getElementById('registerPassword');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+        
+        if (passwordInput && strengthFill && strengthText) {
+            passwordInput.addEventListener('input', function() {
+                const strength = checkPasswordStrength(this.value);
+                const percentage = (strength / 5) * 100;
+                
+                strengthFill.style.width = percentage + '%';
+                
+                if (strength <= 1) {
+                    strengthFill.style.backgroundColor = '#e74c3c';
+                    strengthText.textContent = 'Weak password';
+                } else if (strength <= 3) {
+                    strengthFill.style.backgroundColor = '#f39c12';
+                    strengthText.textContent = 'Medium password';
+                } else {
+                    strengthFill.style.backgroundColor = '#27ae60';
+                    strengthText.textContent = 'Strong password';
+                }
+            });
+        }
+    }
+    
+    // Login form
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+    
+    // Eğer zaten giriş yapılmışsa ve login/register sayfasındaysa, ana sayfaya yönlendir
+    if (isLoggedIn() && (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html'))) {
+        window.location.href = '/index.html';
+    }
+});
+
+// Global olarak kullanılabilir fonksiyonlar
 window.logout = logout;
 window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;
+window.updateAuthButtons = updateAuthButtons;
 window.changePassword = changePassword;
 window.changeEmail = changeEmail;
 window.deleteAccount = deleteAccount;
-window.updateAuthButtons = updateAuthButtons;
