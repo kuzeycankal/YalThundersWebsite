@@ -271,5 +271,18 @@ permalink: events.html
         swup.hooks.on('page:view', initPage);
         
     </script>
+    
+    <script>
+        // Dil değiştiriciye otomatik yenileme ekle / Add auto-reload to language switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.language-switcher a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.href;
+                    window.location.replace(targetUrl);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
