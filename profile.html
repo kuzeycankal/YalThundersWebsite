@@ -218,7 +218,7 @@ permalink: profile.html
                 <span>Member since: ${formattedDate}</span>
             `;
 
-            // TEMA DEĞİŞTİRME
+            // THEME SWITCHING
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             
@@ -254,7 +254,7 @@ permalink: profile.html
             }
             updateIcon(getTheme());
 
-            // AUTH BUTONLARI
+            // AUTH BUTTONS
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
             }

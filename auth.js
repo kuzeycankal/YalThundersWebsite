@@ -205,7 +205,7 @@ function updateAuthButtons() {
     const currentUser = getCurrentUser();
     
     if (currentUser) {
-        // Kullanıcı giriş yapmışsa
+        // If user is logged in
         const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         authButtonsContainer.innerHTML = `
             <div class="user-menu-container">
@@ -245,7 +245,7 @@ function updateAuthButtons() {
             document.addEventListener('click', closeUserMenuOnClickOutside);
         }, 100);
     } else {
-        // Kullanıcı giriş yapmamışsa
+        // If user is not logged in
         authButtonsContainer.innerHTML = `
             <a href="/login.html" class="auth-btn login-btn">
                 <i class="fa-solid fa-right-to-bracket"></i>
@@ -431,7 +431,7 @@ function deleteAccount(event) {
     window.location.href = '/index.html';
 }
 
-// Global olarak kullanılabilir fonksiyonlar
+// Globally available functions
 window.logout = logout;
 window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;

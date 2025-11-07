@@ -468,7 +468,7 @@ html.is-animating .swup-transition-container {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* User Profile Button (giriş yapılmışsa gösterilecek) */
+/* User Profile Button (shown when logged in) */
 .user-menu-container {
     position: relative;
     display: inline-block;
