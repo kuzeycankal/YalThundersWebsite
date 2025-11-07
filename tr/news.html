@@ -120,6 +120,19 @@
         if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
         document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
     </script>
+    
+    <script>
+        // Dil değiştiriciye otomatik yenileme ekle / Add auto-reload to language switcher
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.language-switcher a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.href;
+                    window.location.replace(targetUrl);
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
