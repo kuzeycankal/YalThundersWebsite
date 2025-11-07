@@ -11,6 +11,8 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addPassthroughCopy("*.jpg");
     eleventyConfig.addPassthroughCopy("*.jpeg");
     eleventyConfig.addPassthroughCopy("news"); // <-- MANUEL HABER KLASÖRÜNÜ KOPYALAR
+    eleventyConfig.addPassthroughCopy("auth.js");
+    eleventyConfig.addPassthroughCopy("*.js");
 
     // Liquid Filtreleri
     eleventyConfig.addLiquidFilter("postDate", (dateObj) => {

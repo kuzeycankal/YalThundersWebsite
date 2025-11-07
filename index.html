@@ -20,7 +20,7 @@ permalink: index.html
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPyIrZZ5QeM/vnRWw==">
 </head>
 <body>
 
@@ -55,24 +55,32 @@ permalink: index.html
                 <li><a href="/contact.html" {% if page.permalink == 'contact.html' %}class="active"{% endif %}>CONTACT</a></li>
             </ul>
         </nav>
-        <div class="language-switcher">
-            {% assign current_path = page.url | remove_first: '/tr' %}
+        
+        <div class="header-right">
+            <div class="auth-buttons" id="authButtons">
+                <!-- Auth buttons will be dynamically loaded by auth.js -->
+            </div>
             
-            {% if page.url contains '/tr/' %}
-                <a href="{{ current_path }}" class="lang-en">EN</a>
-                <a href="{{ page.url }}" class="lang-tr lang-active">TR</a>
-            {% else %}
-                <a href="{{ page.url }}" class="lang-en lang-active">EN</a>
-                <a href="/tr{{ current_path }}" class="lang-tr">TR</a>
-            {% endif %}
+            <div class="language-switcher">
+                {% assign current_path = page.url | remove_first: '/tr' %}
+                
+                {% if page.url contains '/tr/' %}
+                    <a href="{{ current_path }}" class="lang-en">EN</a>
+                    <a href="{{ page.url }}" class="lang-tr lang-active">TR</a>
+                {% else %}
+                    <a href="{{ page.url }}" class="lang-en lang-active">EN</a>
+                    <a href="/tr{{ current_path }}" class="lang-tr">TR</a>
+                {% endif %}
+            </div>
+            
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
-        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-            <i class="fa-solid fa-moon"></i>
-        </button>
     </header>
 
     <main id="swup" class="content-home swup-transition-container">
-        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact bölümleri çalışmaktadır. Tasarımlar ve Fotoğraflar geçicidir. HTML ve CSS ile yazılmıştır. Github sayfasında kaynak kodları bulunmaktadır.</h1>
+        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact sayfaları yapılmıştır. About US, News , Events sayfaları ilerde güncellenecektir. Umarım beğenmişsinizdir.</h1>
     </main>
 
 
@@ -94,6 +102,7 @@ permalink: index.html
     </footer>
     
     <script src="https://unpkg.com/swup@4"></script>
+    <script src="/auth.js"></script>
     
     <script>
         /**
@@ -219,6 +228,11 @@ permalink: index.html
                     prevButton.setAttribute('data-listener-added', 'true');
                 }
                 if(slides.length > 0) showSlide(0);
+            }
+            
+            // 4. AUTH BUTONLARINI GÜNCELLE
+            if (typeof updateAuthButtons === 'function') {
+                updateAuthButtons();
             }
         }
         
