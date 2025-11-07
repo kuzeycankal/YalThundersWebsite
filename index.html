@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPyIrZZ5QeM/vnRWw==">
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
@@ -29,12 +29,12 @@
         
         <nav>
             <ul>
-                <li><a href="/news.html" >NEWS</a></li>
+                <li><a href="/news.html">NEWS</a></li>
                 <li><a href="/index.html" class="active">HOME</a></li>
-                <li><a href="/frc.html" >WHAT IS FRC</a></li> 
+                <li><a href="/frc.html">WHAT IS FRC</a></li> 
                 
                 <li class="dropdown">
-                    <a href="/about.html" >
+                    <a href="/about.html">
                         ABOUT US 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
@@ -48,8 +48,8 @@
                 </li>
                 
                 <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html" >EVENTS</a></li> 
-                <li><a href="/contact.html" >CONTACT</a></li>
+                <li><a href="/events.html">EVENTS</a></li> 
+                <li><a href="/contact.html">CONTACT</a></li>
             </ul>
         </nav>
         
@@ -59,12 +59,8 @@
             </div>
             
             <div class="language-switcher">
-                
-                
-                
-                    <a href="/" class="lang-en lang-active">EN</a>
-                    <a href="/tr/" class="lang-tr">TR</a>
-                
+                <a href="/index.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/index.html" class="lang-tr">TR</a>
             </div>
             
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
@@ -74,9 +70,182 @@
     </header>
 
     <main id="swup" class="content-home swup-transition-container">
-        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact sayfaları yapılmıştır. About US, News , Events sayfaları ilerde güncellenecektir. Umarım beğenmişsinizdir.</h1>
-    </main>
+        
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>FRC Team 9160</span>
+                </div>
+                <h1 class="hero-title">
+                    Welcome to <br>
+                    <span class="highlight">YAL Thunders</span>
+                </h1>
+                <p class="hero-description">
+                    We are a passionate robotics team competing in FIRST Robotics Competition, 
+                    building the future through innovation, teamwork, and engineering excellence.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/about.html" class="btn-primary">
+                        <span>Learn More About Us</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="/contact.html" class="btn-secondary">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>Get In Touch</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fa-solid fa-trophy"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">15+</span>
+                            <span class="stat-label">Awards</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-users"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">40+</span>
+                            <span class="stat-label">Team Members</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">2019</span>
+                            <span class="stat-label">Founded</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-container">
+                    <img src="/takimfoto.jpg" alt="YAL Thunders Team" class="hero-image hero-team-photo">
+                    <div class="hero-decoration decoration-1"></div>
+                    <div class="hero-decoration decoration-2"></div>
+                    <div class="hero-decoration decoration-3"></div>
+                </div>
+            </div>
+        </section>
 
+        <!-- UPCOMING EVENTS SECTION -->
+        
+        <!-- LATEST NEWS SECTION -->
+        
+        <section class="section-latest-news">
+            <div class="section-header">
+                <div class="section-label">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Stay Updated</span>
+                </div>
+                <h2 class="section-title">Latest News</h2>
+                <p class="section-subtitle">Catch up with our recent achievements and updates</p>
+            </div>
+            <div class="news-grid">
+                
+            </div>
+            <div class="section-cta">
+                <a href="/news.html" class="btn-outline">
+                    <span>View All News</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- MEMBERSHIP CTA SECTION -->
+        <section class="section-membership-cta">
+            <div class="membership-background">
+                <div class="membership-decoration dec-1"></div>
+                <div class="membership-decoration dec-2"></div>
+                <div class="membership-decoration dec-3"></div>
+            </div>
+            <div class="membership-content">
+                <div class="membership-icon">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="membership-title">Team Member Portal</h2>
+                <p class="membership-description">
+                    Create your account to access pit awards, participate in our team forum, 
+                    and stay connected with exclusive team content and updates.
+                </p>
+                <div class="membership-features">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Access Pit Awards & Recognition</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Participate in Team Forum</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Exclusive Team Updates</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Event Information & Resources</span>
+                    </div>
+                </div>
+                <div class="membership-buttons">
+                    <a href="/register.html" class="btn-primary-large">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Create Account</span>
+                    </a>
+                    <a href="/login.html" class="btn-secondary-large">
+                        <span>Already Have Account?</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPONSORS & PARTNERS SECTION -->
+        <section class="section-sponsors">
+            <div class="section-header">
+                <div class="section-label">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Our Supporters</span>
+                </div>
+                <h2 class="section-title">Sponsors & Partners</h2>
+                <p class="section-subtitle">Thanks to our amazing sponsors who make this possible</p>
+            </div>
+            <div class="sponsors-grid">
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logo</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logo</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logo</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logo</span>
+                    </div>
+                </div>
+            </div>
+            <div class="section-cta">
+                <a href="/contact.html" class="btn-outline">
+                    <span>Become a Sponsor</span>
+                    <i class="fa-solid fa-handshake"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
 
     <footer class="site-footer-new">
         <div class="footer-content">
@@ -99,13 +268,8 @@
     <script src="/auth.js"></script>
     
     <script>
-        /**
-         * Bu ana fonksiyon, bir sayfadaki tüm dinamik 
-         * script'leri (Tema, Galeri, Geri Sayım) başlatır.
-         */
         function initPage() {
-            
-            // 1. TEMA DEĞİŞTİRME KODU
+            // TEMA DEĞİŞTİRME
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             
@@ -131,7 +295,6 @@
                 }
             }
             
-            // Swup geçişlerinde çift listener eklemeyi engelle
             if (toggle && !toggle.hasAttribute('data-listener-added')) { 
                 toggle.addEventListener('click', () => {
                     const currentTheme = getTheme();
@@ -140,108 +303,54 @@
                 });
                 toggle.setAttribute('data-listener-added', 'true');
             }
-            updateIcon(getTheme()); // Her sayfa yüklemesinde ikonu güncelle
+            updateIcon(getTheme());
 
-            
-            // 2. COUNTDOWN KODU (events.html için)
-            function initializeCountdown(elementId, targetDateString, lang) {
+            // COUNTDOWN
+            function initializeCountdown(elementId, targetDateString) {
                 const countdownElement = document.getElementById(elementId);
-                if (!countdownElement) return; // Element yoksa çık
+                if (!countdownElement) return;
                 
-                // Sayfa geçişlerinde eski sayacı temizle
                 if (countdownElement.intervalId) {
                     clearInterval(countdownElement.intervalId);
                 }
 
                 const targetDate = new Date(targetDateString).getTime();
-                const labels = (lang === 'tr') 
-                    ? { day: "gün", hour: "saat", min: "dak", sec: "san", started: "Etkinlik başladı!" }
-                    : { day: "days", hour: "hours", min: "min", sec: "sec", started: "Event has started!" };
 
                 function updateCountdown() {
                     const now = new Date().getTime();
                     const distance = targetDate - now;
                     if (distance < 0) {
-                        countdownElement.innerHTML = labels.started;
-                        clearInterval(countdownElement.intervalId); return;
+                        countdownElement.innerHTML = 'Event has started!';
+                        clearInterval(countdownElement.intervalId);
+                        return;
                     }
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                     countdownElement.innerHTML = `
-                        <span class="countdown-value">${days}</span><span class="countdown-label">${labels.day}</span>
-                        <span class="countdown-value">${hours}</span><span class="countdown-label">${labels.hour}</span>
-                        <span class="countdown-value">${minutes}</span><span class="countdown-label">${labels.min}</span>
-                        <span class="countdown-value">${seconds}</span><span class="countdown-label">${labels.sec}</span>
+                        <span class="countdown-value">${days}</span><span class="countdown-label">days</span>
+                        <span class="countdown-value">${hours}</span><span class="countdown-label">hours</span>
+                        <span class="countdown-value">${minutes}</span><span class="countdown-label">min</span>
+                        <span class="countdown-value">${seconds}</span><span class="countdown-label">sec</span>
                     `;
                 }
                 countdownElement.intervalId = setInterval(updateCountdown, 1000);
                 updateCountdown();
             }
             
-            // Hangi dilde olduğumuzu kontrol et
-            const pageLang = document.documentElement.lang || 'en';
-            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
-            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
+            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
+            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
 
-
-            // 3. GALERİ KODU (itu-hosted.html için)
-            const gallery = document.querySelector('.post-gallery');
-            if (gallery) {
-                const slides = gallery.querySelectorAll('.gallery-slide');
-                const prevButton = gallery.querySelector('.gallery-nav.prev');
-                const nextButton = gallery.querySelector('.gallery-nav.next');
-                let currentSlideIndex = 0;
-                const totalSlides = slides.length;
-
-                function showSlide(index) {
-                    if (slides.length === 0) return;
-                    slides.forEach((slide) => {
-                        slide.classList.remove('active');
-                        slide.style.opacity = '0'; 
-                    });
-                    slides[index].classList.add('active');
-                    slides[index].style.opacity = '1';
-                    currentSlideIndex = index;
-                    if (prevButton) prevButton.disabled = index === 0;
-                    if (nextButton) nextButton.disabled = index === totalSlides - 1;
-                }
-                
-                // Çift listener eklemeyi engelle
-                if (nextButton && !nextButton.hasAttribute('data-listener-added')) {
-                    nextButton.addEventListener('click', () => {
-                        if (currentSlideIndex < totalSlides - 1) showSlide(currentSlideIndex + 1);
-                    });
-                    nextButton.setAttribute('data-listener-added', 'true');
-                }
-                if (prevButton && !prevButton.hasAttribute('data-listener-added')) {
-                    prevButton.addEventListener('click', () => {
-                        if (currentSlideIndex > 0) showSlide(currentSlideIndex - 1);
-                    });
-                    prevButton.setAttribute('data-listener-added', 'true');
-                }
-                if(slides.length > 0) showSlide(0);
-            }
-            
-            // 4. AUTH BUTONLARINI GÜNCELLE
+            // AUTH BUTONLARI
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
             }
         }
         
-        // --- SWUP BAŞLATMA ---
-
-        // 1. Swup'ı başlat
         const swup = new Swup();
-        
-        // 2. Sayfa ilk yüklendiğinde script'leri çalıştır
         document.addEventListener('DOMContentLoaded', initPage);
-        
-        // 3. Swup her yeni sayfayı yüklediğinde script'leri TEKRAR çalıştır
-        // "F5 atınca çalışma" sorununu bu çözer.
         swup.hooks.on('page:view', initPage);
-        
     </script>
 </body>
 </html>
