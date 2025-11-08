@@ -25,6 +25,11 @@ permalink: /tr/index.html
 <body>
 
     <header class="site-header">
+        <!-- Hamburger Menü Butonu (Sadece Mobilde Görünür) -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menü">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
         <a href="/tr/index.html" class="logo-container site-brand-link">
             <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
@@ -34,7 +39,7 @@ permalink: /tr/index.html
             <ul>
                 <li><a href="/tr/news.html">HABERLER</a></li>
                 <li><a href="/tr/index.html" class="active">ANA SAYFA</a></li>
-                <li><a href="/tr/frc.html">FRC NEDİR</a></li> 
+                <li><a href="/tr/frc.html">FRC NEDİR?</a></li>
                 
                 <li class="dropdown">
                     <a href="/tr/about.html">
@@ -50,14 +55,14 @@ permalink: /tr/index.html
                     </ul>
                 </li>
                 
-                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/media.html">MEDYA</a></li>
                 <li><a href="/tr/events.html">ETKİNLİKLER</a></li> 
                 <li><a href="/tr/contact.html">İLETİŞİM</a></li>
             </ul>
         </nav>
         
         <div class="header-right">
-             <div class="auth-buttons" id="authButtons">
+            <div class="auth-buttons" id="authButtons">
                 <!-- Auth buttons will be dynamically loaded by auth.js -->
             </div>
             
@@ -74,7 +79,7 @@ permalink: /tr/index.html
 
     <main id="swup" class="content-home swup-transition-container">
         
-        <!-- HERO BÖLÜMÜ -->
+        <!-- HERO SECTION -->
         <section class="hero-section">
             <div class="hero-content">
                 <div class="hero-badge">
@@ -86,11 +91,11 @@ permalink: /tr/index.html
                     <span class="highlight">YAL Thunders</span>
                 </h1>
                 <p class="hero-description">
-                    FIRST Robotics Competition'da yarışan, inovasyon, takım çalışması ve mühendislik mükemmelliği ile geleceği inşa eden tutkulu bir robotik takımıyız.
+                    FIRST Robotics Competition'da yarışan, yenilikçilik, takım çalışması ve mühendislik mükemmelliği ile geleceği inşa eden tutkulu bir robotik takımıyız.
                 </p>
                 <div class="hero-buttons">
                     <a href="/tr/about.html" class="btn-primary">
-                        <span>Hakkımızda Daha Fazla Bilgi</span>
+                        <span>Hakkımızda Daha Fazla</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <a href="/tr/contact.html" class="btn-secondary">
@@ -132,8 +137,8 @@ permalink: /tr/index.html
             </div>
         </section>
 
-        <!-- SON HABERLER BÖLÜMÜ -->
-        {% assign news_posts = collections.news | reverse %}
+        <!-- LATEST NEWS SECTION -->
+        {% assign news_posts = collections.newsTR | reverse %}
         <section class="section-latest-news">
             <div class="section-header">
                 <div class="section-label">
@@ -141,7 +146,7 @@ permalink: /tr/index.html
                     <span>Güncel Kalın</span>
                 </div>
                 <h2 class="section-title">Son Haberler</h2>
-                <p class="section-subtitle">Son başarılarımız ve güncellemelerle haberdar olun</p>
+                <p class="section-subtitle">Son başarılarımız ve güncellemelerimizi takip edin</p>
             </div>
             <div class="news-grid">
                 {% for post in news_posts limit:3 %}
@@ -152,7 +157,7 @@ permalink: /tr/index.html
                         {% else %}
                             <img src="/yal_thunders_logo.png" alt="{{ post.data.title }}">
                         {% endif %}
-                        <div class="news-category">{{ post.data.category | default: "Haber" }}</div>
+                        <div class="news-category">{{ post.data.category | default: "Haberler" }}</div>
                     </div>
                     <div class="news-content">
                         <div class="news-meta">
@@ -172,7 +177,7 @@ permalink: /tr/index.html
                             {{ post.data.excerpt | default: post.data.description }}
                         </p>
                         <a href="{{ post.url }}" class="news-link">
-                            <span>{% if forloop.first %}Tüm Hikayeyi Okuyun{% else %}Devamını Oku{% endif %}</span>
+                            <span>{% if forloop.first %}Tüm Hikayeyi Oku{% else %}Devamını Oku{% endif %}</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
                     </div>
@@ -187,7 +192,7 @@ permalink: /tr/index.html
             </div>
         </section>
 
-        <!-- ÜYELİK CTA BÖLÜMÜ -->
+        <!-- MEMBERSHIP CTA SECTION -->
         <section class="section-membership-cta">
             <div class="membership-background">
                 <div class="membership-decoration dec-1"></div>
@@ -200,12 +205,12 @@ permalink: /tr/index.html
                 </div>
                 <h2 class="membership-title">Takım Üyesi Portalı</h2>
                 <p class="membership-description">
-                    Pit ödüllerine erişmek, takım forumumuza katılmak ve özel takım içerikleri ve güncellemelerle bağlantıda kalmak için hesabınızı oluşturun.
+                    Pit ödüllerine erişmek, takım forumumuza katılmak ve özel takım içeriği ve güncellemelerle bağlantıda kalmak için hesap oluşturun.
                 </p>
                 <div class="membership-features">
                     <div class="feature-item">
                         <i class="fa-solid fa-check-circle"></i>
-                        <span>Pit Ödülleri ve Tanınmaya Erişim</span>
+                        <span>Pit Ödüllerine & Takdirlere Erişim</span>
                     </div>
                     <div class="feature-item">
                         <i class="fa-solid fa-check-circle"></i>
@@ -217,15 +222,15 @@ permalink: /tr/index.html
                     </div>
                     <div class="feature-item">
                         <i class="fa-solid fa-check-circle"></i>
-                        <span>Etkinlik Bilgileri ve Kaynaklar</span>
+                        <span>Etkinlik Bilgileri & Kaynaklar</span>
                     </div>
                 </div>
                 <div class="membership-buttons">
-                    <a href="/tr/register.html" class="btn-primary-large">
+                    <a href="/register.html" class="btn-primary-large">
                         <i class="fa-solid fa-user-plus"></i>
                         <span>Hesap Oluştur</span>
                     </a>
-                    <a href="/tr/login.html" class="btn-secondary-large">
+                    <a href="/login.html" class="btn-secondary-large">
                         <span>Zaten Hesabınız Var mı?</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
@@ -233,7 +238,7 @@ permalink: /tr/index.html
             </div>
         </section>
 
-        <!-- SPONSOR VE ORTAKLAR BÖLÜMÜ -->
+        <!-- SPONSORS & PARTNERS SECTION -->
         <section class="section-sponsors">
             <div class="section-header">
                 <div class="section-label">
@@ -337,52 +342,90 @@ permalink: /tr/index.html
             }
             updateIcon(getTheme());
 
-            // COUNTDOWN
-            function initializeCountdown(elementId, targetDateString) {
-                const countdownElement = document.getElementById(elementId);
-                if (!countdownElement) return;
-                
-                if (countdownElement.intervalId) {
-                    clearInterval(countdownElement.intervalId);
-                }
-
-                const targetDate = new Date(targetDateString).getTime();
-
-                function updateCountdown() {
-                    const now = new Date().getTime();
-                    const distance = targetDate - now;
-                    if (distance < 0) {
-                        countdownElement.innerHTML = 'Etkinlik başladı!';
-                        clearInterval(countdownElement.intervalId);
-                        return;
-                    }
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    countdownElement.innerHTML = `
-                        <span class="countdown-value">${days}</span><span class="countdown-label">gün</span>
-                        <span class="countdown-value">${hours}</span><span class="countdown-label">saat</span>
-                        <span class="countdown-value">${minutes}</span><span class="countdown-label">dak</span>
-                        <span class="countdown-value">${seconds}</span><span class="countdown-label">san</span>
-                    `;
-                }
-                countdownElement.intervalId = setInterval(updateCountdown, 1000);
-                updateCountdown();
-            }
+            // AKTİF MENÜ ÇİZGİSİNİ GÜNCELLE
+            const currentPath = window.location.pathname;
+            const menuLinks = document.querySelectorAll('nav a');
             
-            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
-            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
+            menuLinks.forEach(link => {
+                link.classList.remove('active');
+                const linkPath = new URL(link.href).pathname;
+                
+                if (linkPath === currentPath || 
+                    (currentPath === '/' && linkPath === '/index.html') ||
+                    (currentPath === '/index.html' && linkPath === '/')) {
+                    link.classList.add('active');
+                }
+            });
 
-            // AUTH BUTONLARI
+            // AUTH BUTONLARI - HER SAYFA GEÇİŞİNDE GÜNCELLE
             if (typeof updateAuthButtons === 'function') {
-                updateAuthButtons();
+                setTimeout(updateAuthButtons, 100);
             }
         }
         
         const swup = new Swup();
         document.addEventListener('DOMContentLoaded', initPage);
         swup.hooks.on('page:view', initPage);
+    </script>
+    
+    <script>
+        // Dil değiştiriciye otomatik yenileme ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.language-switcher a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.href;
+                    window.location.replace(targetUrl);
+                });
+            });
+        });
+    </script>
+    
+    <!-- Mobil Menü JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobileMenuToggle');
+            const nav = document.querySelector('nav');
+            const dropdowns = document.querySelectorAll('nav li.dropdown > a');
+            
+            // Hamburger menü açma/kapama
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (nav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // Dropdown mobil için
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 1024) {
+                        e.preventDefault();
+                        const parent = this.parentElement;
+                        parent.classList.toggle('active');
+                    }
+                });
+            });
+            
+            // Menü dışına tıklayınca kapat
+            document.addEventListener('click', function(e) {
+                if (nav && menuToggle && 
+                    !nav.contains(e.target) && 
+                    !menuToggle.contains(e.target) && 
+                    nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.remove('fa-times');
+                    menuToggle.querySelector('i').classList.add('fa-bars');
+                }
+            });
+        });
     </script>
 </body>
 </html>
