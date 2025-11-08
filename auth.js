@@ -211,10 +211,6 @@ function updateAuthButtons() {
         // If user is logged in
         const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         authButtonsContainer.innerHTML = `
-            <button onclick="logout()" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </button>
             <div class="user-menu-container">
                 <button class="user-profile-btn" onclick="toggleUserMenu(event)">
                     <span class="user-avatar">${initials}</span>
@@ -269,7 +265,7 @@ function updateAuthButtons() {
 }
 
 // Sayfa yüklendiğinde
-document.addEventListener('DOMContentLoaded', function() {
+function initAuthPage() {
     // Password toggle başlat
     initPasswordToggle();
 
@@ -317,7 +313,27 @@ document.addEventListener('DOMContentLoaded', function() {
     if (isLoggedIn() && (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html'))) {
         window.location.href = '/index.html';
     }
-});
+}
+
+// DOMContentLoaded dinleyicisi
+document.addEventListener('DOMContentLoaded', initAuthPage);
+
+// SWUP DESTEĞI - Sayfa geçişlerinde de çalışsın
+if (typeof window !== 'undefined') {
+    // Swup yüklendiğinde hook ekle
+    const checkSwup = setInterval(() => {
+        if (window.swup) {
+            window.swup.hooks.on('page:view', function() {
+                // Auth butonlarını her sayfa değişiminde güncelle
+                setTimeout(updateAuthButtons, 100);
+            });
+            clearInterval(checkSwup);
+        }
+    }, 100);
+    
+    // 5 saniye sonra denemeyi bırak
+    setTimeout(() => clearInterval(checkSwup), 5000);
+}
 
 // Global olarak kullanılabilir fonksiyonlar
 // Toggle user dropdown menu
@@ -445,7 +461,6 @@ function deleteAccount(event) {
 window.logout = logout;
 window.getCurrentUser = getCurrentUser;
 window.isLoggedIn = isLoggedIn;
-window.updateAuthButtons = updateAuthButtons;
 window.updateAuthButtons = updateAuthButtons;
 window.toggleUserMenu = toggleUserMenu;
 window.changePassword = changePassword;

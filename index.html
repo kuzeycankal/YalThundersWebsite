@@ -25,6 +25,11 @@ permalink: index.html
 <body>
 
     <header class="site-header">
+        <!-- Hamburger Menü Butonu (Sadece Mobilde Görünür) -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
         <a href="/index.html" class="logo-container site-brand-link">
             <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
@@ -34,7 +39,7 @@ permalink: index.html
             <ul>
                 <li><a href="/news.html">NEWS</a></li>
                 <li><a href="/index.html" class="active">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
+                <li><a href="/frc.html">WHAT IS FRC</a></li>
                 
                 <li class="dropdown">
                     <a href="/about.html">
@@ -50,7 +55,7 @@ permalink: index.html
                     </ul>
                 </li>
                 
-                <li><a href="#">MEDIA</a></li>
+                <li><a href="/media.html">MEDIA</a></li>
                 <li><a href="/events.html">EVENTS</a></li> 
                 <li><a href="/contact.html">CONTACT</a></li>
             </ul>
@@ -60,8 +65,6 @@ permalink: index.html
              <div class="auth-buttons" id="authButtons">
                 <!-- Auth buttons will be dynamically loaded by auth.js -->
             </div>
-                <!-- Auth buttons will be dynamically loaded by auth.js -->
-            </div> 
             
             <div class="language-switcher">
                 <a href="/index.html" class="lang-en lang-active">EN</a>
@@ -135,8 +138,6 @@ permalink: index.html
             </div>
         </section>
 
-        <!-- UPCOMING EVENTS SECTION -->
-        
         <!-- LATEST NEWS SECTION -->
         {% assign news_posts = collections.news | reverse %}
         <section class="section-latest-news">
@@ -343,52 +344,90 @@ permalink: index.html
             }
             updateIcon(getTheme());
 
-            // COUNTDOWN
-            function initializeCountdown(elementId, targetDateString) {
-                const countdownElement = document.getElementById(elementId);
-                if (!countdownElement) return;
-                
-                if (countdownElement.intervalId) {
-                    clearInterval(countdownElement.intervalId);
-                }
-
-                const targetDate = new Date(targetDateString).getTime();
-
-                function updateCountdown() {
-                    const now = new Date().getTime();
-                    const distance = targetDate - now;
-                    if (distance < 0) {
-                        countdownElement.innerHTML = 'Event has started!';
-                        clearInterval(countdownElement.intervalId);
-                        return;
-                    }
-                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    countdownElement.innerHTML = `
-                        <span class="countdown-value">${days}</span><span class="countdown-label">days</span>
-                        <span class="countdown-value">${hours}</span><span class="countdown-label">hours</span>
-                        <span class="countdown-value">${minutes}</span><span class="countdown-label">min</span>
-                        <span class="countdown-value">${seconds}</span><span class="countdown-label">sec</span>
-                    `;
-                }
-                countdownElement.intervalId = setInterval(updateCountdown, 1000);
-                updateCountdown();
-            }
+            // AKTİF MENÜ ÇİZGİSİNİ GÜNCELLE
+            const currentPath = window.location.pathname;
+            const menuLinks = document.querySelectorAll('nav a');
             
-            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
-            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
+            menuLinks.forEach(link => {
+                link.classList.remove('active');
+                const linkPath = new URL(link.href).pathname;
+                
+                if (linkPath === currentPath || 
+                    (currentPath === '/' && linkPath === '/index.html') ||
+                    (currentPath === '/index.html' && linkPath === '/')) {
+                    link.classList.add('active');
+                }
+            });
 
-            // AUTH BUTONLARI
+            // AUTH BUTONLARI - HER SAYFA GEÇİŞİNDE GÜNCELLE
             if (typeof updateAuthButtons === 'function') {
-                updateAuthButtons();
+                setTimeout(updateAuthButtons, 100);
             }
         }
         
         const swup = new Swup();
         document.addEventListener('DOMContentLoaded', initPage);
         swup.hooks.on('page:view', initPage);
+    </script>
+    
+    <script>
+        // Dil değiştiriciye otomatik yenileme ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.language-switcher a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetUrl = this.href;
+                    window.location.replace(targetUrl);
+                });
+            });
+        });
+    </script>
+    
+    <!-- Mobil Menü JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('mobileMenuToggle');
+            const nav = document.querySelector('nav');
+            const dropdowns = document.querySelectorAll('nav li.dropdown > a');
+            
+            // Hamburger menü açma/kapama
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (nav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+            
+            // Dropdown mobil için
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 1024) {
+                        e.preventDefault();
+                        const parent = this.parentElement;
+                        parent.classList.toggle('active');
+                    }
+                });
+            });
+            
+            // Menü dışına tıklayınca kapat
+            document.addEventListener('click', function(e) {
+                if (nav && menuToggle && 
+                    !nav.contains(e.target) && 
+                    !menuToggle.contains(e.target) && 
+                    nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.remove('fa-times');
+                    menuToggle.querySelector('i').classList.add('fa-bars');
+                }
+            });
+        });
     </script>
 </body>
 </html>
