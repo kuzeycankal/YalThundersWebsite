@@ -2767,3 +2767,307 @@ html.is-animating .swup-transition-container {
     transform: translateY(0) !important;
     visibility: visible !important;
 }
+
+/* ========================================= */
+/* AUTH BUTTONS SPACING FIX                 */
+/* ========================================= */
+
+/* Header sağ taraf - boşlukları azalt */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Daha az boşluk */
+}
+
+/* Auth buttons container - sıkıştır */
+.auth-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-right: 0; /* Sağ boşluğu kaldır */
+}
+
+/* User menu container - boşluğu azalt */
+.user-menu-container {
+    position: relative;
+    display: inline-block;
+    margin-right: 0; /* Ekstra margin'i kaldır */
+}
+
+/* Language switcher - sol boşluğu azalt */
+.language-switcher {
+    margin-left: 8px; /* Minimal boşluk */
+    padding-right: 12px;
+    border-right: 2px solid var(--color-text-header);
+    opacity: 0.7;
+}
+
+/* Theme toggle - sol boşluğu azalt */
+.theme-toggle {
+    margin-left: 8px; /* Minimal boşluk */
+}
+
+
+/* ========================================= */
+/* MOBİL DÜZELTMELER - Desktop Değişmez!   */
+/* ========================================= */
+
+/* Hamburger Menü Butonu (Sadece Mobilde Görünür) */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--color-text-header);
+    font-size: 1.8em;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1003;
+}
+
+/* Tablet ve Mobil - 1024px altı */
+@media (max-width: 1024px) {
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .site-header {
+        padding: 15px 20px;
+    }
+    
+    nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background-color: var(--color-bg-header);
+        box-shadow: -5px 0 15px var(--color-shadow-dark);
+        transition: right 0.3s ease;
+        z-index: 1002;
+        overflow-y: auto;
+        padding-top: 80px;
+    }
+    
+    nav.active {
+        right: 0;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+    }
+    
+    nav li {
+        margin: 0;
+        border-bottom: 1px solid var(--color-bg-primary);
+    }
+    
+    nav a {
+        padding: 18px 25px;
+        display: block;
+        width: 100%;
+    }
+    
+    /* Dropdown mobilde */
+    nav li.dropdown {
+        padding-bottom: 0;
+    }
+    
+    nav .dropdown-menu {
+        position: static;
+        display: none;
+        box-shadow: none;
+        border-radius: 0;
+        background-color: var(--color-bg-primary);
+        border: none;
+        padding: 0;
+        margin: 0;
+        opacity: 1;
+        transform: none;
+        visibility: visible;
+    }
+    
+    nav li.dropdown.active .dropdown-menu {
+        display: block;
+    }
+    
+    nav .dropdown-menu li a {
+        padding: 15px 40px;
+        font-size: 0.9em;
+    }
+    
+    .dropdown-caret {
+        float: right;
+    }
+    
+    /* Header sağ taraf düzenleme */
+    .header-right {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .language-switcher {
+        border-right: none;
+        padding-right: 0;
+        margin-left: 10px;
+    }
+}
+
+/* Mobil - 768px altı */
+@media (max-width: 768px) {
+    /* Hero Section Mobil */
+    .hero-section {
+        grid-template-columns: 1fr !important;
+        padding: 60px 20px !important;
+        gap: 40px !important;
+        min-height: auto !important;
+    }
+    
+    .hero-content {
+        text-align: center;
+        max-width: 100%;
+    }
+    
+    .hero-badge {
+        font-size: 0.85em;
+        padding: 10px 20px;
+    }
+    
+    .hero-title {
+        font-size: 2.5em !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .hero-description {
+        font-size: 1.05em !important;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 15px !important;
+    }
+    
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 20px !important;
+    }
+    
+    .hero-visual {
+        order: -1;
+    }
+    
+    /* Section başlıkları mobil */
+    .section-title {
+        font-size: 2em !important;
+    }
+    
+    .section-subtitle {
+        font-size: 1em !important;
+    }
+    
+    /* News Grid Mobil */
+    .news-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+    }
+    
+    /* Sponsors Grid Mobil */
+    .sponsors-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    /* Membership Section Mobil */
+    .section-membership-cta {
+        padding: 40px 20px !important;
+    }
+    
+    .membership-title {
+        font-size: 2em !important;
+    }
+    
+    .membership-features {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .membership-buttons {
+        flex-direction: column;
+        gap: 15px !important;
+    }
+    
+    .btn-primary-large, .btn-secondary-large {
+        width: 100%;
+    }
+    
+    /* About Page Mobil */
+    .about-content-section,
+    .about-content-section-alt {
+        padding: 40px 20px !important;
+        gap: 30px !important;
+    }
+    
+    .text-block {
+        font-size: 1em !important;
+    }
+    
+    .text-block h3 {
+        font-size: 1.8em !important;
+    }
+    
+    /* Contact Page Mobil */
+    .contact-info-section {
+        padding: 40px 20px !important;
+    }
+    
+    .contact-header h2 {
+        font-size: 2.5em !important;
+    }
+    
+    /* Events & News Pages Mobil */
+    .content-events,
+    .content-news {
+        padding: 20px !important;
+    }
+    
+    .events-header h2,
+    .news-header h2 {
+        font-size: 2.2em !important;
+    }
+    
+    /* Footer Mobil */
+    .footer-content {
+        flex-direction: column;
+        gap: 25px;
+        text-align: center;
+    }
+    
+    /* Auth buttons mobilde gizle */
+    .auth-buttons {
+        display: none;
+    }
+}
+
+/* Çok küçük ekranlar - 480px altı */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2em !important;
+    }
+    
+    .section-title {
+        font-size: 1.6em !important;
+    }
+    
+    .sponsors-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .stat-number {
+        font-size: 1.8em !important;
+    }
+}

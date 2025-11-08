@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
@@ -29,12 +29,12 @@
         
         <nav>
             <ul>
-                <li><a href="/tr/news.html" >HABERLER</a></li>
+                <li><a href="/tr/news.html">HABERLER</a></li>
                 <li><a href="/tr/index.html" class="active">ANA SAYFA</a></li>
-                <li><a href="/tr/frc.html" >FRC NEDİR?</a></li> 
+                <li><a href="/tr/frc.html">FRC NEDİR</a></li> 
                 
                 <li class="dropdown">
-                    <a href="/tr/about.html" >
+                    <a href="/tr/about.html">
                         HAKKIMIZDA 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
@@ -42,34 +42,206 @@
                         <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
                         <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
                         <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
-                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
                         <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
                     </ul>
                 </li>
                 
                 <li><a href="#">MEDYA</a></li>
-                <li><a href="/tr/events.html" >ETKİNLİKLER</a></li> 
-                <li><a href="/tr/contact.html" >İLETİŞİM</a></li>
+                <li><a href="/tr/events.html">ETKİNLİKLER</a></li> 
+                <li><a href="/tr/contact.html">İLETİŞİM</a></li>
             </ul>
         </nav>
-        <div class="language-switcher">
+        
+        <div class="header-right">
+             <div class="auth-buttons" id="authButtons">
+                <!-- Auth buttons will be dynamically loaded by auth.js -->
+            </div>
             
+            <div class="language-switcher">
+                <a href="/index.html" class="lang-en">EN</a>
+                <a href="/tr/index.html" class="lang-tr lang-active">TR</a>
+            </div>
             
-            
-                <a href="/" class="lang-en">EN</a>
-                <a href="/tr/" class="lang-tr lang-active">TR</a>
-            
+            <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
+                <i class="fa-solid fa-moon"></i>
+            </button>
         </div>
-
-        <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
-            <i class="fa-solid fa-moon"></i>
-        </button>
     </header>
 
-    <main class="content-home">
-        <h1>Yal Thunders Websitesi Prototip Sürümüdür. Türkçe dil seçeneği eklenecektir. Geliştirmeye yardımcı olduğunuz için teşekkür ederim. Şuanlık What is FRC , About Us ve Contact bölümleri çalışmaktadır. Tasarımlar ve Fotoğraflar geçicidir. HTML ve CSS ile yazılmıştır. Github sayfasında kaynak kodları bulunmaktadır.</h1>
-    </main>
+    <main id="swup" class="content-home swup-transition-container">
+        
+        <!-- HERO BÖLÜMÜ -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>FRC Takım 9160</span>
+                </div>
+                <h1 class="hero-title">
+                    Hoş Geldiniz <br>
+                    <span class="highlight">YAL Thunders</span>
+                </h1>
+                <p class="hero-description">
+                    FIRST Robotics Competition'da yarışan, inovasyon, takım çalışması ve mühendislik mükemmelliği ile geleceği inşa eden tutkulu bir robotik takımıyız.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/tr/about.html" class="btn-primary">
+                        <span>Hakkımızda Daha Fazla Bilgi</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="/tr/contact.html" class="btn-secondary">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>İletişime Geçin</span>
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fa-solid fa-trophy"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">15+</span>
+                            <span class="stat-label">Ödül</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-users"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">40+</span>
+                            <span class="stat-label">Takım Üyesi</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="stat-info">
+                            <span class="stat-number">2019</span>
+                            <span class="stat-label">Kuruluş</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-container">
+                    <img src="/takimfoto.jpg" alt="YAL Thunders Takımı" class="hero-image hero-team-photo">
+                    <div class="hero-decoration decoration-1"></div>
+                    <div class="hero-decoration decoration-2"></div>
+                    <div class="hero-decoration decoration-3"></div>
+                </div>
+            </div>
+        </section>
 
+        <!-- SON HABERLER BÖLÜMÜ -->
+        
+        <section class="section-latest-news">
+            <div class="section-header">
+                <div class="section-label">
+                    <i class="fa-solid fa-newspaper"></i>
+                    <span>Güncel Kalın</span>
+                </div>
+                <h2 class="section-title">Son Haberler</h2>
+                <p class="section-subtitle">Son başarılarımız ve güncellemelerle haberdar olun</p>
+            </div>
+            <div class="news-grid">
+                
+            </div>
+            <div class="section-cta">
+                <a href="/tr/news.html" class="btn-outline">
+                    <span>Tüm Haberleri Görüntüle</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- ÜYELİK CTA BÖLÜMÜ -->
+        <section class="section-membership-cta">
+            <div class="membership-background">
+                <div class="membership-decoration dec-1"></div>
+                <div class="membership-decoration dec-2"></div>
+                <div class="membership-decoration dec-3"></div>
+            </div>
+            <div class="membership-content">
+                <div class="membership-icon">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <h2 class="membership-title">Takım Üyesi Portalı</h2>
+                <p class="membership-description">
+                    Pit ödüllerine erişmek, takım forumumuza katılmak ve özel takım içerikleri ve güncellemelerle bağlantıda kalmak için hesabınızı oluşturun.
+                </p>
+                <div class="membership-features">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Pit Ödülleri ve Tanınmaya Erişim</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Takım Forumuna Katılım</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Özel Takım Güncellemeleri</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Etkinlik Bilgileri ve Kaynaklar</span>
+                    </div>
+                </div>
+                <div class="membership-buttons">
+                    <a href="/tr/register.html" class="btn-primary-large">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Hesap Oluştur</span>
+                    </a>
+                    <a href="/tr/login.html" class="btn-secondary-large">
+                        <span>Zaten Hesabınız Var mı?</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPONSOR VE ORTAKLAR BÖLÜMÜ -->
+        <section class="section-sponsors">
+            <div class="section-header">
+                <div class="section-label">
+                    <i class="fa-solid fa-handshake"></i>
+                    <span>Destekçilerimiz</span>
+                </div>
+                <h2 class="section-title">Sponsorlar & Ortaklar</h2>
+                <p class="section-subtitle">Bunu mümkün kılan harika sponsorlarımıza teşekkürler</p>
+            </div>
+            <div class="sponsors-grid">
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logosu</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logosu</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logosu</span>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo-placeholder">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Sponsor Logosu</span>
+                    </div>
+                </div>
+            </div>
+            <div class="section-cta">
+                <a href="/tr/contact.html" class="btn-outline">
+                    <span>Sponsor Olun</span>
+                    <i class="fa-solid fa-handshake"></i>
+                </a>
+            </div>
+        </section>
+
+    </main>
 
     <footer class="site-footer-new">
         <div class="footer-content">
@@ -88,29 +260,93 @@
         </div>
     </footer>
     
-    <script>
-        const storageKey = 'theme-preference';
-        const toggle = document.getElementById('theme-toggle');
-
-        const getTheme = () => { return document.documentElement.getAttribute('data-theme'); }
-        const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
-        const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } };
-        if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
-        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
-    </script>
+    <script src="https://unpkg.com/swup@4"></script>
+    <script src="/auth.js"></script>
     
     <script>
-        // Dil değiştiriciye otomatik yenileme ekle / Add auto-reload to language switcher
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.language-switcher a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetUrl = this.href;
-                    window.location.replace(targetUrl);
+        function initPage() {
+            // TEMA DEĞİŞTİRME
+            const storageKey = 'theme-preference';
+            const toggle = document.getElementById('theme-toggle');
+            
+            const getTheme = () => { 
+                return document.documentElement.getAttribute('data-theme') || 
+                       localStorage.getItem(storageKey) || 
+                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            }
+            
+            const setTheme = (theme) => {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem(storageKey, theme);
+                updateIcon(theme);
+            }
+            
+            const updateIcon = (theme) => {
+                if (toggle) { 
+                    if (theme === 'dark') {
+                        toggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+                    } else {
+                        toggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+                    }
+                }
+            }
+            
+            if (toggle && !toggle.hasAttribute('data-listener-added')) { 
+                toggle.addEventListener('click', () => {
+                    const currentTheme = getTheme();
+                    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                    setTheme(newTheme);
                 });
-            });
-        });
-    </script>
+                toggle.setAttribute('data-listener-added', 'true');
+            }
+            updateIcon(getTheme());
 
+            // COUNTDOWN
+            function initializeCountdown(elementId, targetDateString) {
+                const countdownElement = document.getElementById(elementId);
+                if (!countdownElement) return;
+                
+                if (countdownElement.intervalId) {
+                    clearInterval(countdownElement.intervalId);
+                }
+
+                const targetDate = new Date(targetDateString).getTime();
+
+                function updateCountdown() {
+                    const now = new Date().getTime();
+                    const distance = targetDate - now;
+                    if (distance < 0) {
+                        countdownElement.innerHTML = 'Etkinlik başladı!';
+                        clearInterval(countdownElement.intervalId);
+                        return;
+                    }
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    countdownElement.innerHTML = `
+                        <span class="countdown-value">${days}</span><span class="countdown-label">gün</span>
+                        <span class="countdown-value">${hours}</span><span class="countdown-label">saat</span>
+                        <span class="countdown-value">${minutes}</span><span class="countdown-label">dak</span>
+                        <span class="countdown-value">${seconds}</span><span class="countdown-label">san</span>
+                    `;
+                }
+                countdownElement.intervalId = setInterval(updateCountdown, 1000);
+                updateCountdown();
+            }
+            
+            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
+            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
+
+            // AUTH BUTONLARI
+            if (typeof updateAuthButtons === 'function') {
+                updateAuthButtons();
+            }
+        }
+        
+        const swup = new Swup();
+        document.addEventListener('DOMContentLoaded', initPage);
+        swup.hooks.on('page:view', initPage);
+    </script>
 </body>
 </html>

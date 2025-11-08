@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - YAL Thunders 9160</title>
+    <title>Giriş Yap - YAL Thunders 9160</title>
     
     <script>
         (function() {
@@ -22,45 +22,46 @@
 <body>
 
     <header class="site-header">
-        <a href="/index.html" class="logo-container site-brand-link">
-            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/tr/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
         
         <nav>
             <ul>
-                <li><a href="/news.html">NEWS</a></li>
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li>
+                <li><a href="/tr/news.html">HABERLER</a></li>
+                <li><a href="/tr/index.html">ANA SAYFA</a></li>
+                <li><a href="/tr/frc.html">FRC NEDİR</a></li>
                 <li class="dropdown">
-                    <a href="/about.html">
-                        ABOUT US 
+                    <a href="/tr/about.html">
+                        HAKKIMIZDA 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
-                        <li><a href="/about.html#our-story">Our Story</a></li>
-                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
-                        <li><a href="/about.html#achievements">Achievements</a></li>
-                        <li><a href="/about.html#alumni">Alumni</a></li>
+                        <li><a href="/tr/about.html#who-we-are">Biz Kimiz?</a></li>
+                        <li><a href="/tr/about.html#our-story">Hikayemiz</a></li>
+                        <li><a href="/tr/about.html#mission-vision">Misyon & Vizyon</a></li>
+                        <li><a href="/tr/about.html#achievements">Başarılarımız</a></li>
+                        <li><a href="/tr/about.html#alumni">Alumniler</a></li>
                     </ul>
                 </li>
-                <li><a href="#">MEDIA</a></li>
-                <li><a href="/events.html">EVENTS</a></li>
-                <li><a href="/contact.html">CONTACT</a></li>
+                <li><a href="#">MEDYA</a></li>
+                <li><a href="/tr/events.html">ETKİNLİKLER</a></li>
+                <li><a href="/tr/contact.html">İLETİŞİM</a></li>
             </ul>
         </nav>
         
         <div class="header-right">
-            
+            <div class="auth-buttons" id="authButtons">
+                <!-- Auth buttons will be dynamically loaded by auth.js -->
             </div>
             
             <div class="language-switcher">
-                <a href="/login.html" class="lang-en lang-active">EN</a>
-                <a href="/tr/login.html" class="lang-tr">TR</a>
+                <a href="/login.html" class="lang-en">EN</a>
+                <a href="/tr/login.html" class="lang-tr lang-active">TR</a>
             </div>
             
-            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
                 <i class="fa-solid fa-moon"></i>
             </button>
         </div>
@@ -70,21 +71,21 @@
         <div class="auth-card">
             <div class="auth-header">
                 <i class="fa-solid fa-user-shield auth-icon"></i>
-                <h2>Welcome Back</h2>
-                <p>Login to your account</p>
+                <h2>Tekrar Hoş Geldiniz</h2>
+                <p>Hesabınıza giriş yapın</p>
             </div>
             
             <form id="loginForm" class="auth-form">
                 <div class="form-group">
                     <label for="loginEmail">
-                        <i class="fa-solid fa-envelope"></i> Email
+                        <i class="fa-solid fa-envelope"></i> E-posta
                     </label>
-                    <input type="email" id="loginEmail" required placeholder="your@email.com">
+                    <input type="email" id="loginEmail" required placeholder="sizin@eposta.com">
                 </div>
                 
                 <div class="form-group">
                     <label for="loginPassword">
-                        <i class="fa-solid fa-lock"></i> Password
+                        <i class="fa-solid fa-lock"></i> Şifre
                     </label>
                     <div class="password-input-wrapper">
                         <input type="password" id="loginPassword" required placeholder="••••••••">
@@ -97,27 +98,27 @@
                 <div class="form-options">
                     <label class="checkbox-label">
                         <input type="checkbox" id="rememberMe">
-                        <span>Remember me</span>
+                        <span>Beni hatırla</span>
                     </label>
                 </div>
                 
                 <div id="loginMessage" class="auth-message"></div>
                 
                 <button type="submit" class="auth-button">
-                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                    <i class="fa-solid fa-right-to-bracket"></i> Giriş Yap
                 </button>
             </form>
             
             <div class="auth-footer">
-                <p>Don't have an account? <a href="/register.html" class="auth-link">Register here</a></p>
+                <p>Hesabınız yok mu? <a href="/tr/register.html" class="auth-link">Buradan kayıt olun</a></p>
             </div>
         </div>
     </main>
 
     <footer class="site-footer-new">
         <div class="footer-content">
-            <a href="/index.html" class="footer-brand">
-                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small">
+            <a href="/tr/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logosu" class="footer-logo-small">
                 <span class="footer-brand-text">
                     YAL THUNDERS<br>#9160
                 </span>
@@ -139,7 +140,7 @@
         const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
         const updateIcon = (theme) => { if (toggle) { if (theme === 'dark') { toggle.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggle.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } }
         if (toggle) { toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); }); }
-        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); });
+        document.addEventListener('DOMContentLoaded', () => { updateIcon(getTheme()); if (typeof updateAuthButtons === 'function') { updateAuthButtons(); } });
     </script>
 </body>
 </html>
