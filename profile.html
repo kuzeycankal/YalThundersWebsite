@@ -97,7 +97,7 @@ permalink: profile.html
                         <i class="fa-solid fa-trophy"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">0</h3>
+                        <h3 class="stat-number" id="badgesCount">0</h3>
                         <p class="stat-label">Badges</p>
                     </div>
                 </div>
@@ -106,7 +106,7 @@ permalink: profile.html
                         <i class="fa-solid fa-calendar-check"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">0</h3>
+                        <h3 class="stat-number" id="eventsCount">0</h3>
                         <p class="stat-label">Events Attended</p>
                     </div>
                 </div>
@@ -115,7 +115,7 @@ permalink: profile.html
                         <i class="fa-solid fa-star"></i>
                     </div>
                     <div class="stat-content">
-                        <h3 class="stat-number">0</h3>
+                        <h3 class="stat-number" id="contributionsCount">0</h3>
                         <p class="stat-label">Contributions</p>
                     </div>
                 </div>
@@ -210,6 +210,9 @@ permalink: profile.html
             document.getElementById('profileAvatar').textContent = initials;
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            // Update event count
+            document.getElementById('eventsCount').textContent = currentUser.attendedEvents || 0;
             
             // Format join date
             const joinDate = currentUser.createdAt ? new Date(currentUser.createdAt) : new Date();

@@ -88,6 +88,8 @@ function handleRegister(e) {
     const email = document.getElementById('registerEmail').value.trim().toLowerCase();
     const password = document.getElementById('registerPassword').value;
     const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+    const adminCodeInput = document.getElementById('adminCode');
+    const adminCode = adminCodeInput ? adminCodeInput.value.trim() : '';
 
     // Validasyon
     if (name.length < 3) {
@@ -110,6 +112,17 @@ function handleRegister(e) {
         return;
     }
 
+    // Admin code validation (if provided)
+    let isAdmin = false;
+    if (adminCode) {
+        if (adminCode === 'YALTHUNDERS2026') {
+            isAdmin = true;
+        } else {
+            showMessage('registerMessage', 'Invalid admin code', 'error');
+            return;
+        }
+    }
+
     // Kullanıcı zaten var mı kontrol et
     const users = getUsers();
     if (users.find(u => u.email === email)) {
@@ -123,13 +136,16 @@ function handleRegister(e) {
         name: name,
         email: email,
         password: hashPassword(password),
+        isAdmin: isAdmin,
+        attendedEvents: 0,
+        registeredEvents: 0,
         createdAt: new Date().toISOString()
     };
 
     users.push(newUser);
     saveUsers(users);
 
-    showMessage('registerMessage', 'Account created successfully! Redirecting...', 'success');
+    showMessage('registerMessage', isAdmin ? 'Admin account created successfully! Redirecting...' : 'Account created successfully! Redirecting...', 'success');
 
     setTimeout(() => {
         window.location.href = '/login.html';
@@ -163,6 +179,9 @@ function handleLogin(e) {
         id: user.id,
         name: user.name,
         email: user.email,
+        isAdmin: user.isAdmin || false,
+        attendedEvents: user.attendedEvents || 0,
+        registeredEvents: user.registeredEvents || 0,
         createdAt: user.createdAt,
         loginTime: new Date().toISOString()
     };
