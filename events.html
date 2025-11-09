@@ -23,9 +23,9 @@ permalink: events.html
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <!-- QR Code Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8CdnJNXC" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <!-- HTML5 QR Code Scanner -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" integrity="sha384-9fv6Z12V2Vnm+5n0dB2e4S/j+8TqaX0hpWjDN0bIE1H3bF8frDGS1z6KLr6vZ/Dv" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
 
@@ -395,16 +395,30 @@ permalink: events.html
                 registrationId: registration.registrationId
             });
             
-            currentQRCode = new QRCode(container, {
-                text: qrData,
-                width: 300,
-                height: 300,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
+            // Check if QRCode library is loaded
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not loaded');
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #e74c3c;"><p style="margin-bottom: 15px;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 3em;"></i></p><p><strong>QR Code library could not be loaded.</strong></p><p style="margin-top: 10px; font-size: 0.9em;">Please refresh the page or check your internet connection.</p></div>';
+                modal.style.display = 'flex';
+                return;
+            }
             
-            modal.style.display = 'flex';
+            try {
+                currentQRCode = new QRCode(container, {
+                    text: qrData,
+                    width: 300,
+                    height: 300,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                modal.style.display = 'flex';
+            } catch (error) {
+                console.error('Error generating QR code:', error);
+                container.innerHTML = '<div style="padding: 20px; text-align: center; color: #e74c3c;"><p style="margin-bottom: 15px;"><i class="fa-solid fa-exclamation-triangle" style="font-size: 3em;"></i></p><p><strong>Error generating QR code.</strong></p><p style="margin-top: 10px; font-size: 0.9em;">Please try again or contact support.</p></div>';
+                modal.style.display = 'flex';
+            }
         }
         
         // Close QR Modal
