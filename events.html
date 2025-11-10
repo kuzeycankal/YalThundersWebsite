@@ -216,6 +216,7 @@ permalink: events.html
          * Initialize the events page
          */
         function initPage() {
+            console.log('initPage() called'); // Debug log
             
             // 1. TEMA DEĞİŞTİRME KODU
             const storageKey = 'theme-preference';
@@ -292,17 +293,22 @@ permalink: events.html
             }
             
             const pageLang = document.documentElement.lang || 'en';
+            console.log('Initializing countdowns, pageLang:', pageLang); // Debug log
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
 
             // 3. EVENT MANAGEMENT INITIALIZATION
+            console.log('Initializing event management'); // Debug log
             initEventManagement();
             
             // 4. UPDATE AUTH BUTTONS - call directly and ensure mobile sync
+            console.log('Updating auth buttons'); // Debug log
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
                 // Also update mobile immediately
                 setTimeout(updateMobileAuthButtons, 50);
+            } else {
+                console.log('updateAuthButtons not available yet');
             }
         }
         
@@ -711,27 +717,34 @@ permalink: events.html
             }
         }
         
-        // Override updateAuthButtons to also update mobile - do this immediately
-        (function() {
-            // Wait for auth.js to load
+        // Setup auth button override when auth.js is ready
+        function setupAuthButtonOverride() {
+            if (typeof window.updateAuthButtons === 'function') {
+                const originalUpdateAuthButtons = window.updateAuthButtons;
+                window.updateAuthButtons = function() {
+                    originalUpdateAuthButtons();
+                    setTimeout(updateMobileAuthButtons, 50);
+                };
+                return true;
+            }
+            return false;
+        }
+        
+        // Try to setup immediately, then poll if needed
+        if (!setupAuthButtonOverride()) {
             const checkAuthLoaded = setInterval(() => {
-                if (typeof window.updateAuthButtons === 'function') {
+                if (setupAuthButtonOverride()) {
                     clearInterval(checkAuthLoaded);
-                    
-                    const originalUpdateAuthButtons = window.updateAuthButtons;
-                    window.updateAuthButtons = function() {
-                        originalUpdateAuthButtons();
-                        setTimeout(updateMobileAuthButtons, 50);
-                    };
-                    
-                    // Call it immediately to initialize
-                    window.updateAuthButtons();
+                    // Call updateAuthButtons after override is set
+                    if (typeof window.updateAuthButtons === 'function') {
+                        window.updateAuthButtons();
+                    }
                 }
             }, 50);
             
             // Timeout after 5 seconds
             setTimeout(() => clearInterval(checkAuthLoaded), 5000);
-        })();
+        }
         
         // Close modal on outside click
         window.onclick = function(event) {
