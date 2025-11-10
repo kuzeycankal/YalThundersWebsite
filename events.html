@@ -34,8 +34,8 @@ permalink: events.html
         window.showQRCode = window.showQRCode || function() { console.log('showQRCode not yet loaded'); };
         window.closeQRModal = window.closeQRModal || function() { console.log('closeQRModal not yet loaded'); };
         window.loadAdminTab = window.loadAdminTab || function() { console.log('loadAdminTab not yet loaded'); };
-        // YENİ: İndirme fonksiyonu için ön tanımlama
         window.downloadBadge = window.downloadBadge || function() { console.log('downloadBadge not yet loaded'); };
+        window.getPerk = window.getPerk || function() { console.log('getPerk not yet loaded'); };
     </script>
 </head>
 <body>
@@ -88,6 +88,31 @@ permalink: events.html
     </header>
 
     <main class="content-events">
+
+        <div id="eventHub" class="event-hub" style="display: none;">
+            <div class="event-hub-header">
+                <h3><i class="fa-solid fa-bolt"></i> Kick-Off Event Hub</h3>
+                <p>Welcome! Access your event perks below.</p>
+            </div>
+            <div class="event-hub-actions">
+                <div class="hub-card" id="meal-perk-card">
+                    <i class="fa-solid fa-utensils hub-icon"></i>
+                    <h4>Meal Voucher</h4>
+                    <p id="meal-perk-status">Click to get your meal voucher.</p>
+                    <button class="btn-hub" id="btn-get-meal" onclick="getPerk('meal')">
+                        <i class="fa-solid fa-qrcode"></i> Generate Voucher
+                    </button>
+                </div>
+                
+                <div class="hub-card disabled">
+                    <i class="fa-solid fa-ticket-simple hub-icon"></i>
+                    <h4>Raffle</h4>
+                    <p>The raffle will begin soon.</p>
+                    <button class="btn-hub" disabled>Pending</button>
+                </div>
+            </div>
+        </div>
+
         <div id="adminPanel" class="admin-panel" style="display: none;">
             <div class="admin-header">
                 <h2><i class="fa-solid fa-shield-halved"></i> Admin Panel</h2>
@@ -97,8 +122,11 @@ permalink: events.html
             </div>
             <div class="admin-tabs">
                 <button class="admin-tab active" data-tab="attendees">Attendees</button>
-                <button class="admin-tab" data-tab="scanner">QR Scanner</button>
+                <button class="admin-tab" data-tab="scanner">Check-in Scanner</button>
                 <button class="admin-tab" data-tab="stats">Statistics</button>
+                <button class="admin-tab" data-tab="meal-scanner" style="background-color: #e67e22;">
+                    <i class="fa-solid fa-utensils"></i> Meal Scanner
+                </button>
             </div>
             <div id="adminTabContent" class="admin-tab-content"></div>
         </div>
@@ -148,13 +176,13 @@ permalink: events.html
         <div id="qrModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fa-solid fa-qrcode"></i> Your Event QR Code</h3>
+                    <h3 id="qrModalTitle"><i class="fa-solid fa-qrcode"></i> Your Event QR Code</h3>
                     <button onclick="closeQRModal()" class="btn-close-modal">
                         <i class="fa-solid fa-times"></i>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p class="modal-info">Show this QR code at the event entrance for check-in</p>
+                    <p id="qrModalInfo" class="modal-info">Show this QR code at the event entrance for check-in</p>
                     <div id="qrCodeContainer" class="qr-code-container"></div>
                     <div class="qr-actions">
                         <button onclick="downloadQR()" class="btn-download">
@@ -175,10 +203,10 @@ permalink: events.html
                 </span>
             </a>
             <div class="footer-social-links">
-                <a href="https://www.instagram.com/yalthunders/" target="_blank"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
-                <a href="https://www.tiktok.com/@yalthunders" target="_blank"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
-                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
-                <a href="mailto:yalthunders@gmail.com" target="_blank"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
+                <a href="https://www.instagram.com/yalthunders/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
+                <a href="https://www.tiktok.com/@yalthunders" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
+                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
+                <a href="mailto:yalthunders@gmail.com" target="_blank" class="social-link-wrapper-footer"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
             </div>
         </div>
     </footer>
@@ -191,10 +219,10 @@ permalink: events.html
         let html5QrcodeScanner = null;
         
         /**
-         * Sayfadaki tüm dinamik elementleri başlatan ana fonksiyon
+         * Main function to initialize all dynamic elements
          */
         function initPage() {
-            // 1. TEMA DEĞİŞTİRME KODU
+            // 1. THEME TOGGLE
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             
@@ -230,7 +258,7 @@ permalink: events.html
             }
             updateIcon(getTheme());
 
-            // 2. COUNTDOWN KODU (SAYAÇ)
+            // 2. COUNTDOWN TIMER
             function initializeCountdown(elementId, targetDateString, lang) {
                 const countdownElement = document.getElementById(elementId);
                 if (!countdownElement) return;
@@ -270,10 +298,10 @@ permalink: events.html
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
 
-            // 3. EVENT MANAGEMENT (ADMİN MENÜSÜ VE BUTON DURUMLARI)
+            // 3. EVENT MANAGEMENT (Admin Panel & Button Status)
             initEventManagement();
             
-            // 4. AUTH BUTONLARI (GİRİŞ/ÇIKIŞ)
+            // 4. AUTH BUTTONS (Login/Logout)
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
                 setTimeout(updateMobileAuthButtons, 50);
@@ -281,16 +309,17 @@ permalink: events.html
         }
         
         /**
-         * Admin menüsünü ve butonları kontrol eder
+         * Initializes Admin Panel and Event Hub
          */
         function initEventManagement() {
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
-                console.error("HATA: auth.js veya event-manager.js yüklenemedi. Yollar (path) doğru mu?");
+                console.error("ERROR: auth.js or event-manager.js failed to load. Check paths.");
                 return;
             }
             
             const currentUser = getCurrentUser();
             
+            // Show Admin Panel if admin
             if (currentUser && currentUser.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
@@ -302,18 +331,27 @@ permalink: events.html
                 }
             }
             
+            // If user is logged in
             if(currentUser) {
+                // Update "Register Now" / "Show QR" button
                 updateEventStatus('kickoff-2026');
+                
+                // NEW: Show Event Hub if user is checked-in
+                const reg = window.EventManager.getUserRegistration('kickoff-2026', currentUser.id);
+                if (reg && reg.checkedIn) {
+                    document.getElementById('eventHub').style.display = 'block';
+                    updatePerkStatus('meal'); // Update meal voucher status
+                }
             }
         }
         
         /**
-         * "Register Now" butonuna tıklandığında çalışır
+         * Handles click on "Register Now" button
          */
         function handleEventAction(eventId) {
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
-                console.error("HATA: auth.js veya event-manager.js yüklenemedi.");
-                alert("Sayfa hatası: Gerekli scriptler yüklenemedi.");
+                console.error("ERROR: auth.js or event-manager.js failed to load.");
+                alert("Page Error: Required scripts failed to load.");
                 return;
             }
             
@@ -321,22 +359,24 @@ permalink: events.html
             
             if (!currentUser) {
                 alert('Please login to register for events');
-                window.location.href = 'login.html'; // DÜZELTME: Göreceli yol
+                window.location.href = 'login.html'; // Relative path
                 return;
             }
             
             const isRegistered = window.EventManager.isUserRegistered(eventId, currentUser.id);
             
             if (isRegistered) {
+                // User is registered, show their check-in QR code
                 const registration = window.EventManager.getUserRegistration(eventId, currentUser.id);
                 showQRCode(registration);
             } else {
-                window.location.href = `event-register.html?event=${eventId}`; // DÜZELTME: Göreceli yol
+                // User is not registered, send to FRC form
+                window.location.href = `event-register.html?event=${eventId}`; // Relative path
             }
         }
         
         /**
-         * Kayıt butonunu "Register" veya "Show QR" olarak günceller
+         * Toggles button between "Register" and "Show QR"
          */
         function updateEventStatus(eventId) {
             const currentUser = getCurrentUser();
@@ -367,13 +407,17 @@ permalink: events.html
         }
         
         /**
-         * QR Kod modalını gösterir
+         * Shows the Check-in QR Code Modal
          */
         function showQRCode(registration) {
             if (!registration) { return; }
             const modal = document.getElementById('qrModal');
             const container = document.getElementById('qrCodeContainer');
             container.innerHTML = '';
+            
+            // Set modal title/text to CHECK-IN
+            document.getElementById('qrModalTitle').innerHTML = `<i class="fa-solid fa-qrcode"></i> Your Event QR Code`;
+            document.getElementById('qrModalInfo').textContent = 'Show this QR code at the event entrance for check-in';
             
             const qrData = JSON.stringify({
                 eventId: registration.eventId,
@@ -400,6 +444,65 @@ permalink: events.html
                 modal.style.display = 'flex';
             }
         }
+
+        /**
+         * NEW: Gets a perk (like meal) and shows the QR code
+         */
+        function getPerk(perkType) {
+            const currentUser = getCurrentUser();
+            if (!currentUser) return;
+            
+            const result = window.EventManager.generatePerkQRCode('kickoff-2026', currentUser, perkType);
+            
+            if (result.success) {
+                const modal = document.getElementById('qrModal');
+                const container = document.getElementById('qrCodeContainer');
+                container.innerHTML = '';
+                
+                // Set modal title/text to MEAL VOUCHER
+                document.getElementById('qrModalTitle').innerHTML = `<i class="fa-solid fa-utensils"></i> Meal Voucher QR Code`;
+                document.getElementById('qrModalInfo').textContent = 'Show this QR code to the vendor to redeem.';
+                
+                // Create the QR Code
+                new QRCode(container, {
+                    text: result.qrData, // This QR data is DIFFERENT from the check-in QR
+                    width: 300, height: 300,
+                    colorDark: "#000000", colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                modal.style.display = 'flex';
+                updatePerkStatus(perkType); // Update button state
+            } else {
+                alert('Could not generate voucher: ' + result.message);
+            }
+        }
+
+        /**
+         * NEW: Updates the status of the "Get Voucher" button
+         */
+        function updatePerkStatus(perkType) {
+            const currentUser = getCurrentUser();
+            if (!currentUser || !window.EventManager) return;
+            
+            const allPerks = JSON.parse(localStorage.getItem('yal_event_perks') || '{}');
+            const userEventPerks = allPerks[`kickoff-2026_${currentUser.id}`] || [];
+            const perk = userEventPerks.find(p => p.perkType === perkType);
+
+            if (perk) {
+                const statusText = document.getElementById('meal-perk-status');
+                const statusBtn = document.getElementById('btn-get-meal');
+                if (perk.used) {
+                    statusText.textContent = 'Your meal voucher has been used.';
+                    statusBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Used';
+                    statusBtn.disabled = true;
+                    statusBtn.style.backgroundColor = '#27ae60';
+                } else {
+                    statusText.textContent = 'Voucher ready. Click to show.';
+                    statusBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Show Voucher';
+                }
+            }
+        }
         
         function closeQRModal() {
             document.getElementById('qrModal').style.display = 'none';
@@ -416,7 +519,7 @@ permalink: events.html
         }
         
         /**
-         * Admin Panel fonksiyonları
+         * Admin Panel functions
          */
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
@@ -440,7 +543,8 @@ permalink: events.html
                 }
             });
             
-            if (tabName !== 'scanner' && html5QrcodeScanner) {
+            // Stop scanner if running and switching tabs
+            if (html5QrcodeScanner) {
                 try { html5QrcodeScanner.clear(); } catch(e) {}
                 html5QrcodeScanner = null;
             }
@@ -461,11 +565,14 @@ permalink: events.html
                 case 'stats':
                     loadStatsTab(content);
                     break;
+                case 'meal-scanner':
+                    loadMealScannerTab(content);
+                    break;
             }
         }
         
         /**
-         * YENİ: Katılımcı Tablosu (İndirme Butonu ile)
+         * NEW: Loads Attendee Tab (with Download Badge button)
          */
         function loadAttendeesTab(container) {
             const stats = window.EventManager.getEventStatistics('kickoff-2026');
@@ -477,7 +584,7 @@ permalink: events.html
             } else {
                 html += '<div style="overflow-x: auto;">';
                 html += '<table class="admin-table">';
-                html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th><th>Actions</th></tr></thead>'; // YENİ SÜTUN
+                html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th><th>Actions</th></tr></thead>';
                 html += '<tbody>';
                 
                 stats.registrations.forEach(reg => {
@@ -489,10 +596,9 @@ permalink: events.html
                     html += '<td>' + (reg.checkedIn ? '<span class="badge-checked-in">Checked In</span>' : '<span class="badge-pending">Pending</span>') + '</td>';
                     html += '<td>' + (reg.checkInTime ? new Date(reg.checkInTime).toLocaleString() : '-') + '</td>';
                     
-                    // YENİ EYLEM SÜTUNU
+                    // Download Badge Action
                     html += '<td>';
                     if (reg.checkedIn) {
-                        // JSON.stringify 'tek tırnak' içine alınmalı ki HTML bozulmasın
                         html += `<button class='btn-download-badge' onclick='downloadBadge(${JSON.stringify(reg)})'>
                                     <i class="fa-solid fa-download"></i> Badge
                                  </button>`;
@@ -510,31 +616,34 @@ permalink: events.html
             container.innerHTML = html;
         }
         
+        /**
+         * Loads the Check-in Scanner Tab
+         */
         function loadScannerTab(container) {
             container.innerHTML = `
                 <div class="scanner-container">
-                    <h3>QR Code Scanner</h3>
+                    <h3>Check-in QR Scanner</h3>
                     <p class="scanner-info">Scan attendee QR codes for check-in</p>
-                    <div id="qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                    <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
                     <div id="scan-result" class="scan-result"></div>
                 </div>
             `;
             
             setTimeout(() => {
-                if (html5QrcodeScanner && html5QrcodeScanner.isScanning) { return; }
-                html5QrcodeScanner = new Html5Qrcode("qr-reader");
+                html5QrcodeScanner = new Html5Qrcode("checkin-qr-reader"); 
                 html5QrcodeScanner.start(
                     { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                    onScanSuccess, onScanError
+                    onScanSuccess, // Check-in function
+                    onScanError
                 ).catch(err => {
                     document.getElementById('scan-result').innerHTML = 
-                        '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı. Lütfen site ayarlarından izin verin (HTTPS gereklidir).</div>';
+                        '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
                 });
             }, 100);
         }
         
         /**
-         * YAKA KARTI KODU - QR okununca çalışır
+         * BADGE CODE - Runs on successful Check-in scan
          */
         function onScanSuccess(decodedText, decodedResult) {
             const result = window.EventManager.checkInUser(decodedText);
@@ -596,7 +705,7 @@ permalink: events.html
         }
 
         /**
-         * YENİ: Yaka Kartı HTML'ini oluşturur
+         * NEW: Generates the HTML for the physical badge
          */
         function getBadgeHTML(reg) {
             return `
@@ -622,79 +731,136 @@ permalink: events.html
         }
 
         /**
-         * YENİ: Yaka Kartını (içinde QR kod üreterek) PNG olarak indirir
+         * NEW: Downloads the physical badge as a PNG
          */
         function downloadBadge(regObject) {
-            // Gerekli kütüphaneler yüklü mü?
             if (typeof html2canvas === 'undefined' || typeof QRCode === 'undefined') {
-                alert('Hata: Gerekli kütüphaneler (html2canvas, QRCode) yüklenemedi.');
+                alert('Error: Required libraries (html2canvas, QRCode) not loaded.');
                 return;
             }
 
-            // 1. Gizli bir div oluştur
+            // 1. Create a hidden div
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
-            tempDiv.style.left = '-9999px'; // Ekranın dışına at
+            tempDiv.style.left = '-9999px';
             tempDiv.style.fontFamily = "'Cabin', sans-serif"; 
             document.body.appendChild(tempDiv);
             
-            // 2. Yeni yaka kartı HTML'ini içine bas
+            // 2. Inject the badge HTML
             tempDiv.innerHTML = getBadgeHTML(regObject);
             const badgeElement = tempDiv.querySelector('.yal-badge-physical');
-            const qrElement = tempDiv.querySelector('#badge-qr-code'); // QR kodunun basılacağı yeri bul
+            const qrElement = tempDiv.querySelector('#badge-qr-code');
 
-            // 3. QR kodun verisini oluştur (kullanıcının kendi verisi)
+            // 3. Create the QR code data (the user's check-in data)
             const qrData = JSON.stringify({
                 eventId: regObject.eventId,
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
 
-            // 4. Gizli div'in içine QR kodu ÜRET
+            // 4. Generate the QR code *inside* the hidden div
             new QRCode(qrElement, {
                 text: qrData,
-                width: 180, // Yaka kartı için ideal boyut
+                width: 180, // Size for the badge
                 height: 180,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
 
-            // 5. QR kodun render olması için çok kısa bekle, SONRA resme çevir
+            // 5. Wait 100ms for QR to render, then screenshot the div
             setTimeout(() => {
                 html2canvas(badgeElement, { 
-                    useCORS: true, // Logoyu düzgün yüklemesi için
-                    backgroundColor: '#ffffff', // Arka planı beyaz yap
-                    logging: true // Hata ayıklama için
+                    useCORS: true, 
+                    backgroundColor: '#ffffff',
+                    logging: true 
                 }).then(canvas => {
-                    // 6. Resmi PNG linkine çevir ve indir
+                    // 6. Convert to PNG and trigger download
                     const link = document.createElement('a');
-                    link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`; // Dosya adı
+                    link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`;
                     link.href = canvas.toDataURL("image/png");
                     link.click();
                     
-                    // 7. Gizli div'i temizle
+                    // 7. Clean up the hidden div
                     document.body.removeChild(tempDiv);
                 }).catch(err => {
-                    console.error("Yaka kartı indirme hatası:", err);
-                    alert("Yaka kartı indirilirken bir hata oluştu.");
+                    console.error("Badge download error:", err);
+                    alert("An error occurred while downloading the badge.");
                     document.body.removeChild(tempDiv);
                 });
-            }, 100); // 100ms gecikme (QR kodun çizilmesi için)
+            }, 100); 
+        }
+
+        /**
+         * NEW: Loads the Meal Scanner Tab
+         */
+        function loadMealScannerTab(container) {
+            container.innerHTML = `
+                <div class="scanner-container">
+                    <h3>Meal Voucher Scanner</h3>
+                    <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
+                    <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                    <div id="meal-scan-result" class="scan-result"></div>
+                </div>
+            `;
+            
+            setTimeout(() => {
+                // Use a different ID
+                html5QrcodeScanner = new Html5Qrcode("meal-qr-reader"); 
+                html5QrcodeScanner.start(
+                    { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                    onMealScanSuccess, // NEW success function
+                    onScanError
+                ).catch(err => {
+                    document.getElementById('meal-scan-result').innerHTML = 
+                        '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
+                });
+            }, 100);
+        }
+
+        /**
+         * NEW: Runs when a Meal Voucher QR is scanned successfully
+         */
+        function onMealScanSuccess(decodedText, decodedResult) {
+            const result = window.EventManager.redeemPerk(decodedText);
+            const resultDiv = document.getElementById('meal-scan-result');
+            
+            if (result.success) {
+                resultDiv.innerHTML = `
+                    <div class="scan-success">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <h4>Voucher Approved!</h4>
+                        <p>User: ${result.perk.userName}</p>
+                        <p>Meal voucher redeemed successfully.</p>
+                    </div>
+                `;
+                setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="scan-error">
+                        <i class="fa-solid fa-times-circle"></i>
+                        <h4>Voucher Rejected!</h4>
+                        <p>${result.message}</p>
+                        ${result.perk ? `<p>User: ${result.perk.userName}</p>` : ''}
+                    </div>
+                `;
+                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
+            }
         }
         
         /**
-         * DÜZELTME: Sayfa yükleme yönetimi
+         * Page Load Management
          */
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Yüklendi. initPage() çağrılıyor.");
+            console.log("DOM Loaded. Calling initPage().");
             initPage();
             
+            // Admin tab listeners
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', () => { loadAdminTab(tab.dataset.tab); });
             });
             
-            // Mobil menü dinleyicileri
+            // Mobile menu listeners
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
@@ -732,16 +898,17 @@ permalink: events.html
             });
         });
         
-        // Global fonksiyonları ata
+        // Expose functions to global scope for 'onclick'
         window.handleEventAction = handleEventAction;
         window.toggleAdminPanel = toggleAdminPanel;
         window.showQRCode = showQRCode;
         window.closeQRModal = closeQRModal;
         window.loadAdminTab = loadAdminTab;
-        window.downloadBadge = downloadBadge; // YENİ
+        window.downloadBadge = downloadBadge; 
+        window.getPerk = getPerk;
         window.YALEventsInit = true;
         
-        // Mobil auth buton senkronizasyonu
+        // Mobile auth button sync
         function updateMobileAuthButtons() {
             const authButtons = document.getElementById('authButtons');
             const mobileAuthButtons = document.getElementById('mobileAuthButtons');
@@ -782,7 +949,7 @@ permalink: events.html
             setTimeout(() => clearInterval(checkAuthLoaded), 5000);
         }
         
-        // Modal dışına tıklamayı yönet
+        // Modal outside click
         window.onclick = function(event) {
             const modal = document.getElementById('qrModal');
             if (event.target === modal) {
