@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', initAuthPage);
 if (typeof window !== 'undefined') {
     // Swup yüklendiğinde hook ekle
     const checkSwup = setInterval(() => {
-        if (window.swup) {
+        if (window.swup && window.swup.hooks && typeof window.swup.hooks.on === 'function') {
             window.swup.hooks.on('page:view', function() {
                 // Auth butonlarını her sayfa değişiminde güncelle
                 setTimeout(updateAuthButtons, 100);
