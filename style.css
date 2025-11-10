@@ -3578,3 +3578,39 @@ html.is-animating .swup-transition-container {
         grid-template-columns: 1fr;
     }
 }
+/* --------------------------------- */
+/* MOBILE AUTH BUTTONS               */
+/* --------------------------------- */
+
+/* Hide mobile auth item on desktop */
+.mobile-auth-item {
+    display: none !important;
+}
+
+@media (max-width: 1024px) {
+    /* Show mobile auth item in mobile menu */
+    .mobile-auth-item {
+        display: block !important;
+        border-top: 1px solid var(--color-bg-primary);
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+    
+    /* Style mobile auth buttons */
+    .mobile-auth-item .auth-buttons {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+    
+    .mobile-auth-item .auth-button,
+    .mobile-auth-item .user-menu-container {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .mobile-auth-item .auth-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+}
