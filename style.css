@@ -3732,3 +3732,25 @@ html.is-animating .swup-transition-container {
     color: var(--color-text-secondary);
     margin-top: 5px;
 }
+
+/* ========================================= */
+/* ADMIN PANELİ - YAKA KARTI İNDİRME BUTONU  */
+/* ========================================= */
+
+.btn-download-badge {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-family: 'Cabin', sans-serif;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.btn-download-badge:hover {
+    background-color: #2980b9;
+}
+.btn-download-badge i {
+    margin-right: 5px;
+}
