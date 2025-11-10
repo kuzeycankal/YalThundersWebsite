@@ -691,6 +691,14 @@ permalink: events.html
             });
         });
         
+        // CRITICAL: Expose functions to global scope IMMEDIATELY for inline onclick handlers
+        // This must happen as soon as functions are defined, before any async operations
+        window.handleEventAction = handleEventAction;
+        window.toggleAdminPanel = toggleAdminPanel;
+        window.showQRCode = showQRCode;
+        window.closeQRModal = closeQRModal;
+        window.loadAdminTab = loadAdminTab;
+        
         // Update mobile auth buttons when regular auth buttons update
         function updateMobileAuthButtons() {
             const authButtons = document.getElementById('authButtons');
@@ -747,13 +755,6 @@ permalink: events.html
                 closeQRModal();
             }
         }
-        
-        // Expose functions to global scope for inline onclick handlers
-        window.handleEventAction = handleEventAction;
-        window.toggleAdminPanel = toggleAdminPanel;
-        window.showQRCode = showQRCode;
-        window.closeQRModal = closeQRModal;
-        window.loadAdminTab = loadAdminTab;
         
         // --- SWUP BAŞLATMA ---
         // Make Swup optional - if it fails to load, page still works
