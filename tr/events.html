@@ -2,12 +2,12 @@
 permalink: tr/events.html
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAL Thunders 9160 - Etkinlikler</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css">
     
     <script>
         (function() {
@@ -43,32 +43,32 @@ permalink: tr/events.html
             <i class="fa-solid fa-bars"></i>
         </button>
         
-        <a href="index.html" class="logo-container site-brand-link">
-            <img src="yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
         
         <nav>
             <ul>
-                <li><a href="news.html">NEWS</a></li>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="frc.html">WHAT IS FRC</a></li> 
+                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/frc.html">WHAT IS FRC</a></li> 
                 <li class="dropdown">
-                    <a href="about.html">
+                    <a href="/about.html">
                         ABOUT US 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="about.html#who-we-are">Who Are We?</a></li>
-                        <li><a href="about.html#our-story">Our Story</a></li>
-                        <li><a href="about.html#mission-vision">Mission & Vision</a></li>
-                        <li><a href="about.html#achievements">Achievements</a></li>
-                        <li><a href="about.html#alumni">Alumni</a></li>
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
                     </ul>
                 </li>
-                <li><a href="media.html">MEDIA</a></li>
-                <li><a href="events.html" class="active">EVENTS</a></li> 
-                <li><a href="contact.html">CONTACT</a></li>
+                <li><a href="/media.html">MEDIA</a></li>
+                <li><a href="/events.html" class="active">EVENTS</a></li> 
+                <li><a href="/contact.html">CONTACT</a></li>
                 <li class="mobile-auth-item" id="mobileAuthButtons"></li>
             </ul>
         </nav>
@@ -76,8 +76,8 @@ permalink: tr/events.html
         <div class="header-right">
             <div class="auth-buttons" id="authButtons"></div>
             <div class="language-switcher">
-                <a href="events.html" class="lang-en lang-active">EN</a>
-                <a href="tr/events.html" class="lang-tr">TR</a>
+                <a href="/events.html" class="lang-en">EN</a>
+                <a href="/tr/events.html" class="lang-tr lang-active">TR</a>
             </div>
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                 <i class="fa-solid fa-moon"></i>
@@ -114,13 +114,12 @@ permalink: tr/events.html
             
             <div class="event-card kickoff-card">
                 <div class="event-image-container">
-                    <img src="kickoff_event.jpg" alt="YAL Thunders Kick-Off Event" class="event-image">
+                    <img src="/kickoff_event.jpg" alt="YAL Thunders Kick-Off Event" class="event-image">
                 </div>
                 <div class="event-details">
                     <div class="event-date-highlight">10 Ocak 2026</div>
                     <h3 class="event-title">2026 FRC Kick-Off Etkinliği</h3>
-                    <div class="event-countdown" id="kickoff-countdown">
-                        </div>
+                    <div class="event-countdown" id="kickoff-countdown"></div>
                     <div class="event-actions">
                         <button id="registerBtn-kickoff-2026" class="btn-register" onclick="handleEventAction('kickoff-2026')">
                             <i class="fa-solid fa-ticket"></i> Şimdi Kaydol
@@ -132,13 +131,12 @@ permalink: tr/events.html
 
             <div class="event-card orlando-card">
                 <div class="event-image-container">
-                    <img src="orlando.jpg" alt="FRC Orlando Regional Logo" class="event-image">
+                    <img src="/orlando.jpg" alt="FRC Orlando Regional Logo" class="event-image">
                 </div>
                 <div class="event-details">
                     <div class="event-date-highlight">18-21 Mart 2026</div>
                     <h3 class="event-title">2026 FRC Orlando Bölgesel</h3>
-                    <div class="event-countdown" id="orlando-countdown">
-                        </div>
+                    <div class="event-countdown" id="orlando-countdown"></div>
                     <div class="event-info-note">
                         <i class="fa-solid fa-info-circle"></i> Yarışma etkinliği - Kayıtlar FIRST üzerinden yapılmaktadır.
                     </div>
@@ -171,17 +169,17 @@ permalink: tr/events.html
     <footer class="site-footer-new">
         </footer>
     
-    <script src="auth.js"></script>
-    <script src="event-manager.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/event-manager.js"></script>
     
     <script>
-        // TÜM JAVASCRIPT METİNLERİ TÜRKÇEYE ÇEVRİLDİ
+        // TÜM JS METİNLERİ TÜRKÇE VE YOLLAR DÜZELTİLDİ
         
         let currentQRCode = null;
         let html5QrcodeScanner = null;
         
         function initPage() {
-            // 1. TEMA DEĞİŞTİRME KODU
+            // 1. TEMA KODU (Değişmedi)
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             const getTheme = () => { return document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
@@ -193,16 +191,13 @@ permalink: tr/events.html
             }
             updateIcon(getTheme());
 
-            // 2. COUNTDOWN KODU (SAYAÇ)
+            // 2. SAYAÇ KODU (Türkçe)
             function initializeCountdown(elementId, targetDateString) {
                 const countdownElement = document.getElementById(elementId);
                 if (!countdownElement) return;
                 if (countdownElement.intervalId) { clearInterval(countdownElement.intervalId); }
-
                 const targetDate = new Date(targetDateString).getTime();
-                // ETİKETLER TÜRKÇE
                 const labels = { day: "gün", hour: "saat", min: "dk", sec: "sn", started: "Etkinlik başladı!" };
-
                 function updateCountdown() {
                     const now = new Date().getTime();
                     const distance = targetDate - now;
@@ -224,14 +219,13 @@ permalink: tr/events.html
                 countdownElement.intervalId = setInterval(updateCountdown, 1000);
                 updateCountdown();
             }
-            
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
 
-            // 3. EVENT MANAGEMENT (ADMİN MENÜSÜ VE BUTON DURUMLARI)
+            // 3. ETKİNLİK YÖNETİMİ
             initEventManagement();
             
-            // 4. AUTH BUTONLARI (GİRİŞ/ÇIKIŞ)
+            // 4. AUTH BUTONLARI
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
                 setTimeout(updateMobileAuthButtons, 50);
@@ -240,7 +234,7 @@ permalink: tr/events.html
         
         function initEventManagement() {
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
-                console.error("HATA: auth.js veya event-manager.js yüklenemedi.");
+                console.error("HATA: auth.js veya event-manager.js yüklenemedi. Yolların başında / olduğundan emin olun."); // DÜZELTME
                 return;
             }
             const currentUser = getCurrentUser();
@@ -266,7 +260,7 @@ permalink: tr/events.html
             
             if (!currentUser) {
                 alert('Etkinliklere kaydolmak için lütfen giriş yapın.');
-                window.location.href = 'login.html'; 
+                window.location.href = '/login.html'; // DÜZELTME: / eklendi
                 return;
             }
             
@@ -276,7 +270,7 @@ permalink: tr/events.html
                 const registration = window.EventManager.getUserRegistration(eventId, currentUser.id);
                 showQRCode(registration);
             } else {
-                window.location.href = `event-register.html?event=${eventId}`;
+                window.location.href = `/event-register.html?event=${eventId}`; // DÜZELTME: / eklendi
             }
         }
         
@@ -297,7 +291,8 @@ permalink: tr/events.html
                 
                 if (registration && registration.checkedIn) {
                     statusElement.innerHTML = `<div class="status-checked-in"><i class="fa-solid fa-check-circle"></i> Giriş Yapıldı</div>`;
-                    statusElement.innerHTML += `<a href="event-hub.html?event=${eventId}" class="btn-event-hub"><i class="fa-solid fa-bolt"></i> Etkinlik Menüsü</a>`;
+                    // DÜZELTME: /tr/ eklendi
+                    statusElement.innerHTML += `<a href="/tr/event-hub.html?event=${eventId}" class="btn-event-hub"><i class="fa-solid fa-bolt"></i> Etkinlik Menüsü</a>`;
                 } else {
                     statusElement.innerHTML = `<div class="status-registered"><i class="fa-solid fa-ticket"></i> Kayıt Olundu</div>`;
                 }
@@ -475,7 +470,7 @@ permalink: tr/events.html
                 const reg = result.registration;
                 resultDiv.innerHTML = `
                     <div class="yal-badge">
-                        <div class="badge-header"><img src="yal_thunders_logo.png" alt="Logo"><span>YAL THUNDERS KICK-OFF</span></div>
+                        <div class="badge-header"><img src="/yal_thunders_logo.png" alt="Logo"><span>YAL THUNDERS KICK-OFF</span></div>
                         <div class="badge-body">
                             <div class="badge-name">${reg.userName}</div>
                             <div class="badge-role">${reg.role || 'Katılımcı'}</div>
@@ -485,7 +480,7 @@ permalink: tr/events.html
                     </div>`;
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             
-            } else if (!result.success && result.message === 'Already checked in' && result.registration) {
+            } else if (!result.success && result.message === 'Zaten giriş yapılmış' && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
                     <div class="yal-badge-error">
@@ -530,7 +525,7 @@ permalink: tr/events.html
             return `
                 <div class="yal-badge-physical">
                     <div class="badge-phys-header">
-                        <img src="yal_thunders_logo.png" class="badge-phys-logo">
+                        <img src="/yal_thunders_logo.png" class="badge-phys-logo">
                         <div class="badge-phys-event">
                             <span>FRC 2026</span>
                             <strong>KICK-OFF EVENT</strong>
@@ -554,30 +549,25 @@ permalink: tr/events.html
                 alert('Hata: Gerekli kütüphaneler (html2canvas, QRCode) yüklenemedi.');
                 return;
             }
-
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
             tempDiv.style.left = '-9999px';
             tempDiv.style.fontFamily = "'Cabin', sans-serif"; 
             document.body.appendChild(tempDiv);
-            
             tempDiv.innerHTML = getBadgeHTML(regObject);
             const badgeElement = tempDiv.querySelector('.yal-badge-physical');
             const qrElement = tempDiv.querySelector('#badge-qr-code');
-
             const qrData = JSON.stringify({
                 eventId: regObject.eventId,
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
-
             new QRCode(qrElement, {
                 text: qrData,
                 width: 180, height: 180,
                 colorDark: "#000000", colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
-
             setTimeout(() => {
                 html2canvas(badgeElement, { 
                     useCORS: true, 
@@ -606,7 +596,6 @@ permalink: tr/events.html
                     <div id="meal-scan-result" class="scan-result"></div>
                 </div>
             `;
-            
             setTimeout(() => {
                 html5QrcodeScanner = new Html5Qrcode("meal-qr-reader"); 
                 html5QrcodeScanner.start(
@@ -647,9 +636,6 @@ permalink: tr/events.html
             }
         }
         
-        /**
-         * Sayfa Yükleme Yönetimi
-         */
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Yüklendi. initPage() çağrılıyor.");
             initPage();
@@ -658,7 +644,6 @@ permalink: tr/events.html
                 tab.addEventListener('click', () => { loadAdminTab(tab.dataset.tab); });
             });
             
-            // Mobil menü dinleyicileri
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
@@ -696,7 +681,6 @@ permalink: tr/events.html
             });
         });
         
-        // Global fonksiyonları ata (onclick'ler için)
         window.handleEventAction = handleEventAction;
         window.toggleAdminPanel = toggleAdminPanel;
         window.showQRCode = showQRCode;
@@ -705,11 +689,9 @@ permalink: tr/events.html
         window.downloadBadge = downloadBadge; 
         window.YALEventsInit = true;
         
-        // Mobil auth buton senkronizasyonu
         function updateMobileAuthButtons() {
             const authButtons = document.getElementById('authButtons');
             const mobileAuthButtons = document.getElementById('mobileAuthButtons');
-            
             if (authButtons && mobileAuthButtons) {
                 const clonedHTML = authButtons.innerHTML;
                 if (clonedHTML) {
@@ -746,7 +728,6 @@ permalink: tr/events.html
             setTimeout(() => clearInterval(checkAuthLoaded), 5000);
         }
         
-        // Modal dışına tıklamayı yönet
         window.onclick = function(event) {
             const modal = document.getElementById('qrModal');
             if (event.target === modal) {
