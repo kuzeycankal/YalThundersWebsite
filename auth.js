@@ -328,8 +328,8 @@ function initAuthPage() {
         loginForm.addEventListener('submit', handleLogin);
     }
 
-    // Eğer zaten giriş yapılmışsa ve login/register sayfasındaysa, ana sayfaya yönlendir
-    if (isLoggedIn() && (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html'))) {
+// Eğer zaten giriş yapılmışsa ve login/register sayfasındaysa, ana sayfaya yönlendir
+    if (isLoggedIn() && (window.location.pathname === '/login.html' || window.location.pathname === '/register.html')) {
         window.location.href = '/index.html';
     }
 }

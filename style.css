@@ -3627,3 +3627,108 @@ html.is-animating .swup-transition-container {
         display: inline !important;
     }
 }
+
+/* ========================================= */
+/* ADMIN SCANNER - YAKA KARTI STYLES         */
+/* ========================================= */
+
+.scan-result {
+    min-height: 350px; /* Yaka kartı için yer aç */
+    padding: 10px 0;
+}
+
+.yal-badge, .yal-badge-error {
+    width: 320px;
+    margin: 10px auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    font-family: 'Cabin', sans-serif;
+    border: 2px solid var(--color-text-header);
+    background-color: var(--color-bg-secondary);
+}
+
+[data-theme="dark"] .yal-badge {
+    border-color: var(--yal-green-accent);
+}
+
+.yal-badge-error {
+    border-color: #e74c3c;
+}
+
+/* YAKA KARTI - BAŞARILI */
+.badge-header {
+    background-color: var(--color-text-header);
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.badge-header img {
+    width: 30px;
+    height: 30px;
+}
+.badge-header span {
+    color: var(--color-white);
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.badge-body {
+    padding: 25px;
+    text-align: center;
+}
+
+.badge-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--color-text-header);
+    margin-bottom: 8px;
+    word-wrap: break-word;
+}
+
+.badge-role {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--color-text-primary);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-team {
+    font-size: 1em;
+    color: var(--color-text-secondary);
+}
+
+.badge-footer {
+    background-color: #2ecc71;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.badge-footer i {
+    margin-right: 8px;
+}
+
+/* YAKA KARTI - HATA (ZATEN GİRİŞ YAPMIŞ) */
+.badge-header-error {
+    background-color: #e74c3c;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.badge-checkin-time {
+    font-size: 0.9em;
+    color: var(--color-text-secondary);
+    margin-top: 5px;
+}

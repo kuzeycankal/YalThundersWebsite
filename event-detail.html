@@ -1,0 +1,580 @@
+---
+permalink: event-detail.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRC 2026 Kick-Off Event - YAL Thunders 9160</title>
+    
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <header class="site-header">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+            <span class="team-name">YAL THUNDERS 9160</span>
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/frc.html">WHAT IS FRC</a></li>
+                <li class="dropdown">
+                    <a href="/about.html">
+                        ABOUT US 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
+                <li><a href="/media.html">MEDIA</a></li>
+                <li><a href="/events.html" class="active">EVENTS</a></li>
+                <li><a href="/contact.html">CONTACT</a></li>
+            </ul>
+        </nav>
+        
+        <div class="header-right">
+            <div class="auth-buttons" id="authButtons">
+                <!-- Auth buttons will be dynamically loaded -->
+            </div>
+            
+            <!-- Admin Panel Button (Only for Admins) -->
+            <div id="adminPanelBtn" style="display: none;">
+                <a href="/admin-panel.html" class="admin-btn">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>ADMIN</span>
+                </a>
+            </div>
+            
+            <div class="language-switcher">
+                <a href="/event-detail.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/event-detail.html" class="lang-tr">TR</a>
+            </div>
+            
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="event-detail-container">
+        <!-- Event Hero Section -->
+        <div class="event-hero">
+            <div class="event-hero-overlay"></div>
+            <img src="/kickoff_event.jpg" alt="FRC 2026 Kick-Off Event" class="event-hero-image">
+            <div class="event-hero-content">
+                <div class="event-badge">
+                    <i class="fa-solid fa-calendar"></i>
+                    <span>January 10, 2026</span>
+                </div>
+                <h1 class="event-hero-title">FRC 2026 Kick-Off Event</h1>
+                <p class="event-hero-subtitle">Join us for the official start of the 2026 FRC season!</p>
+            </div>
+        </div>
+
+        <div class="event-content">
+            <!-- Event Info Section -->
+            <div class="event-info-section">
+                <div class="event-info-card">
+                    <div class="event-info-header">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <h2>Event Details</h2>
+                    </div>
+                    
+                    <div class="event-info-grid">
+                        <div class="info-item">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <div>
+                                <h4>Date</h4>
+                                <p>January 10, 2026</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fa-solid fa-clock"></i>
+                            <div>
+                                <h4>Time</h4>
+                                <p>10:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <p>YAL Thunders Workshop</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <i class="fa-solid fa-users"></i>
+                            <div>
+                                <h4>Capacity</h4>
+                                <p id="eventCapacity">0 / 100 registered</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-description">
+                        <h3>About This Event</h3>
+                        <p>Join us for the official FRC 2026 season kick-off! This is an exciting opportunity to:</p>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Watch the live game reveal</li>
+                            <li><i class="fa-solid fa-check"></i> Meet the YAL Thunders team</li>
+                            <li><i class="fa-solid fa-check"></i> Participate in interactive workshops</li>
+                            <li><i class="fa-solid fa-check"></i> Enjoy food and refreshments</li>
+                            <li><i class="fa-solid fa-check"></i> Enter exciting raffles and win prizes!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Section -->
+            <div class="event-registration-section">
+                <!-- Not Logged In State -->
+                <div id="notLoggedInState" class="registration-card" style="display: none;">
+                    <div class="registration-icon">
+                        <i class="fa-solid fa-user-lock"></i>
+                    </div>
+                    <h3>Login Required</h3>
+                    <p>You need a YAL Thunders account to register for this event.</p>
+                    <div class="registration-actions">
+                        <a href="/login.html" class="btn btn-primary">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            Login
+                        </a>
+                        <a href="/register.html" class="btn btn-secondary">
+                            <i class="fa-solid fa-user-plus"></i>
+                            Create Account
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Not Registered State -->
+                <div id="notRegisteredState" class="registration-card" style="display: none;">
+                    <div class="registration-icon">
+                        <i class="fa-solid fa-ticket"></i>
+                    </div>
+                    <h3>Register for Event</h3>
+                    <p>Secure your spot for the FRC 2026 Kick-Off event!</p>
+                    <div class="registration-countdown" id="registrationCountdown"></div>
+                    <button id="registerBtn" class="btn btn-primary btn-large">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Register Now
+                    </button>
+                    <p class="registration-note">
+                        <i class="fa-solid fa-info-circle"></i>
+                        You'll receive a QR code after registration for event check-in
+                    </p>
+                </div>
+
+                <!-- Registered State -->
+                <div id="registeredState" class="registration-card success-card" style="display: none;">
+                    <div class="registration-icon success">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3>You're Registered!</h3>
+                    <p>Your spot is confirmed. Show this QR code at the event entrance.</p>
+                    
+                    <!-- QR Code Display -->
+                    <div class="qr-code-container">
+                        <div id="qrcode" class="qr-code"></div>
+                        <p class="qr-instruction">
+                            <i class="fa-solid fa-qrcode"></i>
+                            Save or screenshot this QR code
+                        </p>
+                    </div>
+                    
+                    <!-- Registration Info -->
+                    <div class="registration-info">
+                        <div class="info-row">
+                            <span class="label">Registration ID:</span>
+                            <span class="value" id="registrationId">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Registered:</span>
+                            <span class="value" id="registrationDate">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status:</span>
+                            <span class="value status-badge" id="checkInStatus">
+                                <i class="fa-solid fa-clock"></i> Awaiting Check-in
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <button id="downloadQR" class="btn btn-secondary">
+                        <i class="fa-solid fa-download"></i>
+                        Download QR Code
+                    </button>
+                </div>
+
+                <!-- Checked In State -->
+                <div id="checkedInState" class="registration-card success-card" style="display: none;">
+                    <div class="registration-icon checked-in">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <h3>Checked In!</h3>
+                    <p>Welcome to the event! Enjoy your time with us.</p>
+                    
+                    <div class="registration-info">
+                        <div class="info-row">
+                            <span class="label">Check-in Time:</span>
+                            <span class="value" id="checkInTime">-</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status:</span>
+                            <span class="value status-badge checked-in">
+                                <i class="fa-solid fa-circle-check"></i> Checked In
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Full State -->
+                <div id="eventFullState" class="registration-card error-card" style="display: none;">
+                    <div class="registration-icon error">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+                    <h3>Event is Full</h3>
+                    <p>Unfortunately, this event has reached maximum capacity.</p>
+                    <a href="/events.html" class="btn btn-secondary">
+                        <i class="fa-solid fa-calendar"></i>
+                        View Other Events
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub-Events Section (Future Enhancement) -->
+        <div class="sub-events-section">
+            <h2>Event Schedule</h2>
+            <div class="sub-events-grid">
+                <div class="sub-event-card">
+                    <div class="sub-event-time">10:00 AM</div>
+                    <div class="sub-event-content">
+                        <h4>Opening Ceremony</h4>
+                        <p>Welcome and introduction</p>
+                    </div>
+                </div>
+                <div class="sub-event-card">
+                    <div class="sub-event-time">11:00 AM</div>
+                    <div class="sub-event-content">
+                        <h4>Game Reveal</h4>
+                        <p>Watch the FRC 2026 game announcement</p>
+                    </div>
+                </div>
+                <div class="sub-event-card">
+                    <div class="sub-event-time">12:00 PM</div>
+                    <div class="sub-event-content">
+                        <h4>Lunch Break</h4>
+                        <p>Food and networking</p>
+                    </div>
+                </div>
+                <div class="sub-event-card">
+                    <div class="sub-event-time">1:00 PM</div>
+                    <div class="sub-event-content">
+                        <h4>Interactive Workshops</h4>
+                        <p>Hands-on activities and demonstrations</p>
+                    </div>
+                </div>
+                <div class="sub-event-card">
+                    <div class="sub-event-time">3:00 PM</div>
+                    <div class="sub-event-content">
+                        <h4>Raffle & Closing</h4>
+                        <p>Win prizes and closing remarks</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer-new">
+        <div class="footer-content">
+            <a href="/index.html" class="footer-brand">
+                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small">
+                <span class="footer-brand-text">
+                    YAL THUNDERS<br>#9160
+                </span>
+            </a>
+            <div class="footer-social-links">
+                <a href="https://www.instagram.com/yalthunders/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
+                <a href="https://www.tiktok.com/@yalthunders" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
+                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
+                <a href="mailto:yalthunders@gmail.com" target="_blank" class="social-link-wrapper-footer"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="/auth.js"></script>
+    <script src="/event-manager.js"></script>
+    
+    <script>
+        const EVENT_ID = 'kickoff-2026';
+        
+        function initEventDetailPage() {
+            // Theme Toggle
+            const storageKey = 'theme-preference';
+            const toggle = document.getElementById('theme-toggle');
+            
+            const getTheme = () => document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || 'light';
+            const setTheme = (theme) => {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem(storageKey, theme);
+                updateIcon(theme);
+            };
+            const updateIcon = (theme) => {
+                if (toggle) toggle.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+            };
+            
+            if (toggle && !toggle.hasAttribute('data-listener-added')) {
+                toggle.addEventListener('click', () => setTheme(getTheme() === 'light' ? 'dark' : 'light'));
+                toggle.setAttribute('data-listener-added', 'true');
+            }
+            updateIcon(getTheme());
+            
+            // Update Auth Buttons
+            if (typeof updateAuthButtons === 'function') updateAuthButtons();
+            
+            // Check if user is admin and show admin button
+            const currentUser = getCurrentUser();
+            if (currentUser && currentUser.isAdmin) {
+                document.getElementById('adminPanelBtn').style.display = 'block';
+            }
+            
+            // Update Registration State
+            updateRegistrationState();
+            
+            // Register Button Click
+            const registerBtn = document.getElementById('registerBtn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', handleRegistration);
+            }
+            
+            // Download QR Button
+            const downloadQRBtn = document.getElementById('downloadQR');
+            if (downloadQRBtn) {
+                downloadQRBtn.addEventListener('click', downloadQRCode);
+            }
+            
+            // Update Event Capacity
+            updateEventCapacity();
+            
+            // Mobile Menu
+            initMobileMenu();
+        }
+        
+        function updateRegistrationState() {
+            const currentUser = getCurrentUser();
+            const notLoggedIn = document.getElementById('notLoggedInState');
+            const notRegistered = document.getElementById('notRegisteredState');
+            const registered = document.getElementById('registeredState');
+            const checkedIn = document.getElementById('checkedInState');
+            const eventFull = document.getElementById('eventFullState');
+            
+            // Hide all states
+            [notLoggedIn, notRegistered, registered, checkedIn, eventFull].forEach(el => {
+                if (el) el.style.display = 'none';
+            });
+            
+            if (!currentUser) {
+                // Not logged in
+                notLoggedIn.style.display = 'block';
+                return;
+            }
+            
+            // Check registration status
+            const isRegistered = EventManager.isUserRegistered(EVENT_ID, currentUser.id);
+            
+            if (!isRegistered) {
+                // Check if event is full
+                const event = EventManager.getEventById(EVENT_ID);
+                const registrations = EventManager.getEventRegistrations(EVENT_ID);
+                
+                if (registrations.length >= event.maxCapacity) {
+                    eventFull.style.display = 'block';
+                } else {
+                    notRegistered.style.display = 'block';
+                    initCountdown();
+                }
+            } else {
+                // User is registered, get registration details
+                const registration = EventManager.getUserRegistration(EVENT_ID, currentUser.id);
+                
+                if (registration.checkedIn) {
+                    // Checked in
+                    checkedIn.style.display = 'block';
+                    document.getElementById('checkInTime').textContent = new Date(registration.checkInTime).toLocaleString();
+                } else {
+                    // Registered but not checked in
+                    registered.style.display = 'block';
+                    displayQRCode(registration);
+                    displayRegistrationInfo(registration);
+                }
+            }
+        }
+        
+        function displayQRCode(registration) {
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = ''; // Clear previous QR code
+            
+            const qrData = JSON.stringify({
+                eventId: registration.eventId,
+                userId: registration.userId,
+                registrationId: registration.registrationId,
+                userName: registration.userName,
+                userEmail: registration.userEmail
+            });
+            
+            new QRCode(qrcodeDiv, {
+                text: qrData,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+        
+        function displayRegistrationInfo(registration) {
+            document.getElementById('registrationId').textContent = registration.registrationId.split('-')[2];
+            document.getElementById('registrationDate').textContent = new Date(registration.registeredAt).toLocaleDateString();
+        }
+        
+        function handleRegistration() {
+            const currentUser = getCurrentUser();
+            if (!currentUser) {
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            const result = EventManager.registerForEvent(EVENT_ID, currentUser);
+            
+            if (result.success) {
+                // Show success message
+                showNotification('Registration successful!', 'success');
+                // Refresh the page to show new state
+                setTimeout(() => {
+                    updateRegistrationState();
+                    updateEventCapacity();
+                }, 500);
+            } else {
+                showNotification(result.message, 'error');
+            }
+        }
+        
+        function downloadQRCode() {
+            const qrcodeCanvas = document.querySelector('#qrcode canvas');
+            if (qrcodeCanvas) {
+                const url = qrcodeCanvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'kickoff-2026-qrcode.png';
+                link.href = url;
+                link.click();
+                showNotification('QR Code downloaded!', 'success');
+            }
+        }
+        
+        function updateEventCapacity() {
+            const registrations = EventManager.getEventRegistrations(EVENT_ID);
+            const event = EventManager.getEventById(EVENT_ID);
+            document.getElementById('eventCapacity').textContent = `${registrations.length} / ${event.maxCapacity} registered`;
+        }
+        
+        function initCountdown() {
+            const countdownElement = document.getElementById('registrationCountdown');
+            if (!countdownElement) return;
+            
+            const eventDate = new Date('2026-01-10T10:00:00+03:00').getTime();
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = eventDate - now;
+                
+                if (distance < 0) {
+                    countdownElement.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Event is today!';
+                    return;
+                }
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                
+                countdownElement.innerHTML = `
+                    <i class="fa-solid fa-clock"></i>
+                    Event starts in: <strong>${days}d ${hours}h ${minutes}m</strong>
+                `;
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        function initMobileMenu() {
+            const menuToggle = document.getElementById('mobileMenuToggle');
+            const nav = document.querySelector('nav');
+            
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    nav.classList.toggle('active');
+                    const icon = this.querySelector('i');
+                    if (nav.classList.contains('active')) {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-times');
+                    } else {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', initEventDetailPage);
+    </script>
+</body>
+</html>

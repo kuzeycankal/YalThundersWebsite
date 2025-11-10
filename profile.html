@@ -16,8 +16,7 @@ permalink: profile.html
         })();
     </script>
     
-    <link rel="stylesheet" href="/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="style.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -25,51 +24,32 @@ permalink: profile.html
 <body>
 
     <header class="site-header">
-        <!-- Hamburger Menü Butonu (Sadece Mobilde Görünür) -->
         <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
             <i class="fa-solid fa-bars"></i>
         </button>
         
-        <a href="/index.html" class="logo-container site-brand-link">
-            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
-            <span class="team-name">YAL THUNDERS 9160</span>
+        <a href="index.html" class="logo-container site-brand-link"> <img src="yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo"> <span class="team-name">YAL THUNDERS 9160</span>
         </a>
         
         <nav>
             <ul>
-                <li><a href="/news.html">NEWS</a></li>
-                <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li>
-                
-                <li class="dropdown">
-                    <a href="/about.html">
-                        ABOUT US 
+                <li><a href="news.html">NEWS</a></li> <li><a href="index.html">HOME</a></li> <li><a href="frc.html">WHAT IS FRC</a></li> <li class="dropdown">
+                    <a href="about.html"> ABOUT US 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
-                        <li><a href="/about.html#our-story">Our Story</a></li>
-                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
-                        <li><a href="/about.html#achievements">Achievements</a></li>
-                        <li><a href="/about.html#alumni">Alumni</a></li>
-                    </ul>
+                        <li><a href="about.html#who-we-are">Who Are We?</a></li> <li><a href="about.html#our-story">Our Story</a></li> <li><a href="about.html#mission-vision">Mission & Vision</a></li> <li><a href="about.html#achievements">Achievements</a></li> <li><a href="about.html#alumni">Alumni</a></li> </ul>
                 </li>
                 
-                <li><a href="/media.html">MEDIA</a></li>
-                <li><a href="/events.html">EVENTS</a></li> 
-                <li><a href="/contact.html">CONTACT</a></li>
-            </ul>
+                <li><a href="media.html">MEDIA</a></li> <li><a href="events.html">EVENTS</a></li> <li><a href="contact.html">CONTACT</a></li> </ul>
         </nav>
         
         <div class="header-right">
             <div class="auth-buttons" id="authButtons">
-                <!-- Auth buttons will be dynamically loaded by auth.js -->
-            </div>
+                </div>
             
             <div class="language-switcher">
-                <a href="/profile.html" class="lang-en lang-active">EN</a>
-                <a href="/tr/profile.html" class="lang-tr">TR</a>
-            </div>
+                <a href="profile.html" class="lang-en lang-active">EN</a> <a href="tr/profile.html" class="lang-tr">TR</a> </div>
             
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                 <i class="fa-solid fa-moon"></i>
@@ -81,8 +61,7 @@ permalink: profile.html
         <div class="profile-container">
             <div class="profile-header">
                 <div class="profile-avatar-large" id="profileAvatar">
-                    <!-- Initials will be inserted here -->
-                </div>
+                    </div>
                 <h1 class="profile-name" id="profileName">Loading...</h1>
                 <p class="profile-email" id="profileEmail"></p>
                 <p class="profile-member-since" id="profileMemberSince">
@@ -178,9 +157,7 @@ permalink: profile.html
 
     <footer class="site-footer-new">
         <div class="footer-content">
-            <a href="/index.html" class="footer-brand">
-                <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small">
-                <span class="footer-brand-text">
+            <a href="index.html" class="footer-brand"> <img src="yal_thunders_logo.png" alt="YAL Thunders Logo" class="footer-logo-small"> <span class="footer-brand-text">
                     YAL THUNDERS<br>#9160
                 </span>
             </a>
@@ -193,15 +170,19 @@ permalink: profile.html
         </div>
     </footer>
     
-    <!-- Swup Kaldırıldı - Profile sayfası normal yüklenir -->
-    <script src="/auth.js"></script>
-    
-    <script>
+    <script src="auth.js"></script> <script>
         function initPage() {
+            // Kontrol: Gerekli fonksiyonlar yüklendi mi?
+            if (typeof getCurrentUser !== 'function') {
+                console.error("Auth script yüklenemedi!");
+                document.getElementById('profileName').textContent = 'Error loading user.';
+                return;
+            }
+            
             // Check if user is logged in
             const currentUser = getCurrentUser();
             if (!currentUser) {
-                window.location.href = '/login.html';
+                window.location.href = 'login.html'; // YOL DÜZELTİLDİ
                 return;
             }
 
@@ -268,12 +249,12 @@ permalink: profile.html
             }
         }
         
-        // Sadece normal sayfa yüklemesi - Swup yok
+        // Sayfa yüklemesi DOMContentLoaded ile
         document.addEventListener('DOMContentLoaded', initPage);
     </script>
     
     <script>
-        // Dil değiştiriciye otomatik yenileme ekle / Add auto-reload to language switcher
+        // Dil değiştirici
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.language-switcher a').forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -285,14 +266,12 @@ permalink: profile.html
         });
     </script>
     
-    <!-- Mobil Menü JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
             
-            // Hamburger menü açma/kapama
             if (menuToggle) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('active');
@@ -307,7 +286,6 @@ permalink: profile.html
                 });
             }
             
-            // Dropdown mobil için
             dropdowns.forEach(dropdown => {
                 dropdown.addEventListener('click', function(e) {
                     if (window.innerWidth <= 1024) {
@@ -318,7 +296,6 @@ permalink: profile.html
                 });
             });
             
-            // Menü dışına tıklayınca kapat
             document.addEventListener('click', function(e) {
                 if (nav && menuToggle && 
                     !nav.contains(e.target) && 

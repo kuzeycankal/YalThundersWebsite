@@ -65,7 +65,8 @@ function isUserRegistered(eventId, userId) {
 }
 
 // Register user for event
-function registerForEvent(eventId, user) {
+// GÜNCELLENDİ: 'extraData' parametresi eklendi
+function registerForEvent(eventId, user, extraData) {
     const event = getEventById(eventId);
     if (!event) {
         return { success: false, message: 'Event not found' };
@@ -95,10 +96,12 @@ function registerForEvent(eventId, user) {
         registeredAt: new Date().toISOString()
     };
 
+    // GÜNCELLENDİ: '...extraData' (rol, takım no vb.) eklendi
     const registration = {
         ...qrData,
         checkedIn: false,
-        checkInTime: null
+        checkInTime: null,
+        ...extraData // Formdan gelen ekstra veriler (rol, takım no)
     };
 
     // Save registration
@@ -127,6 +130,7 @@ function getUserRegistration(eventId, userId) {
 }
 
 // Check-in user
+// GÜNCELLENDİ: Yaka kartı için tüm kayıt bilgisini döndürür
 function checkInUser(registrationData) {
     try {
         console.log('checkInUser called with:', registrationData);
@@ -160,11 +164,13 @@ function checkInUser(registrationData) {
             return { success: false, message: 'Registration not found' };
         }
 
+        // GÜNCELLENDİ: Zaten giriş yapmışsa bile yaka kartı için bilgiyi döndür
         if (eventRegistrations[regIndex].checkedIn) {
             return { 
                 success: false, 
                 message: 'Already checked in',
-                checkInTime: eventRegistrations[regIndex].checkInTime
+                checkInTime: eventRegistrations[regIndex].checkInTime,
+                registration: eventRegistrations[regIndex] // Yaka kartı için eklendi
             };
         }
 
@@ -177,14 +183,11 @@ function checkInUser(registrationData) {
         // Update user's attended events count
         updateUserEventCount(userId, 'checkin');
 
+        // GÜNCELLENDİ: Yaka kartı için tüm kayıt objesini döndür
         return {
             success: true,
             message: 'Check-in successful!',
-            user: {
-                name: eventRegistrations[regIndex].userName,
-                email: eventRegistrations[regIndex].userEmail
-            },
-            checkInTime: eventRegistrations[regIndex].checkInTime
+            registration: eventRegistrations[regIndex] // 'user:' ve 'checkInTime:' yerine bu
         };
     } catch (error) {
         console.error('Error in checkInUser:', error);
@@ -250,7 +253,7 @@ function getEventStatistics(eventId) {
         totalRegistrations: registrations.length,
         checkedIn: checkedInCount,
         notCheckedIn: registrations.length - checkedInCount,
-        registrations: registrations
+        registrations: registrations // Admin panel tablosu için tüm veriyi yolla
     };
 }
 
@@ -308,9 +311,9 @@ window.EventManager = {
     getAllEvents,
     getEventById,
     isUserRegistered,
-    registerForEvent,
+    registerForEvent, // Güncellendi
     getUserRegistration,
-    checkInUser,
+    checkInUser, // Güncellendi
     getEventStatistics,
     getAllEventsStatistics,
     isAdmin,
