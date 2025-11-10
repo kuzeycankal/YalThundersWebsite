@@ -26,6 +26,20 @@ permalink: events.html
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <!-- HTML5 QR Code Scanner -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <!-- CRITICAL: Initialize event functions namespace immediately in head -->
+    <!-- This ensures onclick handlers can always find the functions -->
+    <script>
+        // Create global namespace for event functions
+        window.YALEventsInit = window.YALEventsInit || false;
+        
+        // Placeholder functions that will be replaced by actual implementations
+        window.handleEventAction = window.handleEventAction || function() { console.log('handleEventAction not yet loaded'); };
+        window.toggleAdminPanel = window.toggleAdminPanel || function() { console.log('toggleAdminPanel not yet loaded'); };
+        window.showQRCode = window.showQRCode || function() { console.log('showQRCode not yet loaded'); };
+        window.closeQRModal = window.closeQRModal || function() { console.log('closeQRModal not yet loaded'); };
+        window.loadAdminTab = window.loadAdminTab || function() { console.log('loadAdminTab not yet loaded'); };
+    </script>
 </head>
 <body>
 
@@ -691,13 +705,17 @@ permalink: events.html
             });
         });
         
-        // CRITICAL: Expose functions to global scope IMMEDIATELY for inline onclick handlers
-        // This must happen as soon as functions are defined, before any async operations
+        // CRITICAL: Replace placeholder functions with actual implementations
+        // These were pre-defined in <head> to ensure onclick handlers never get ReferenceError
+        // Now we replace them with the real implementations
+        console.log('[Events] Exposing event functions to global scope');
         window.handleEventAction = handleEventAction;
         window.toggleAdminPanel = toggleAdminPanel;
         window.showQRCode = showQRCode;
         window.closeQRModal = closeQRModal;
         window.loadAdminTab = loadAdminTab;
+        window.YALEventsInit = true;  // Mark as initialized
+        console.log('[Events] Event functions exposed successfully');
         
         // Update mobile auth buttons when regular auth buttons update
         function updateMobileAuthButtons() {
@@ -759,15 +777,23 @@ permalink: events.html
         // --- SWUP BAŞLATMA ---
         // Make Swup optional - if it fails to load, page still works
         if (typeof Swup !== 'undefined') {
+            console.log('[Events] Swup detected, setting up hooks');
             const swup = new Swup();
-            swup.hooks.on('page:view', initPage);
+            swup.hooks.on('page:view', function() {
+                console.log('[Events] Swup page:view event - reinitializing');
+                initPage();
+            });
+        } else {
+            console.log('[Events] Swup not detected, using direct initialization');
         }
         
         // Force immediate execution - run initPage as soon as this script executes
         // This ensures everything works even without DOMContentLoaded
+        console.log('[Events] Scheduling immediate initialization');
         (function() {
             // Small delay to ensure DOM is ready
             setTimeout(function() {
+                console.log('[Events] Running initPage()');
                 initPage();
             }, 10);
         })();
