@@ -22,6 +22,8 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <script>
         window.YALEventsInit = window.YALEventsInit || false;
         window.handleEventAction = window.handleEventAction || function() { console.log('handleEventAction not yet loaded'); };
@@ -29,6 +31,8 @@
         window.showQRCode = window.showQRCode || function() { console.log('showQRCode not yet loaded'); };
         window.closeQRModal = window.closeQRModal || function() { console.log('closeQRModal not yet loaded'); };
         window.loadAdminTab = window.loadAdminTab || function() { console.log('loadAdminTab not yet loaded'); };
+        // YENİ: İndirme fonksiyonu için ön tanımlama
+        window.downloadBadge = window.downloadBadge || function() { console.log('downloadBadge not yet loaded'); };
     </script>
 </head>
 <body>
@@ -48,7 +52,6 @@
                 <li><a href="news.html">NEWS</a></li>
                 <li><a href="index.html">HOME</a></li>
                 <li><a href="frc.html">WHAT IS FRC</a></li> 
-                
                 <li class="dropdown">
                     <a href="about.html">
                         ABOUT US 
@@ -62,25 +65,19 @@
                         <li><a href="about.html#alumni">Alumni</a></li>
                     </ul>
                 </li>
-                
                 <li><a href="media.html">MEDIA</a></li>
                 <li><a href="events.html" class="active">EVENTS</a></li> 
                 <li><a href="contact.html">CONTACT</a></li>
-                
-                <li class="mobile-auth-item" id="mobileAuthButtons">
-                    </li>
+                <li class="mobile-auth-item" id="mobileAuthButtons"></li>
             </ul>
         </nav>
         
         <div class="header-right">
-            <div class="auth-buttons" id="authButtons">
-                </div>
-            
+            <div class="auth-buttons" id="authButtons"></div>
             <div class="language-switcher">
                 <a href="events.html" class="lang-en lang-active">EN</a>
                 <a href="tr/events.html" class="lang-tr">TR</a>
             </div>
-            
             <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                 <i class="fa-solid fa-moon"></i>
             </button>
@@ -175,10 +172,10 @@
                 </span>
             </a>
             <div class="footer-social-links">
-                <a href="https://www.instagram.com/yalthunders/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
-                <a href="https://www.tiktok.com/@yalthunders" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
-                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank" class="social-link-wrapper-footer"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
-                <a href="mailto:yalthunders@gmail.com" target="_blank" class="social-link-wrapper-footer"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
+                <a href="https://www.instagram.com/yalthunders/" target="_blank"><i class="fa-brands fa-instagram social-icon-footer"></i></a>
+                <a href="https://www.tiktok.com/@yalthunders" target="_blank"><i class="fa-brands fa-tiktok social-icon-footer"></i></a>
+                <a href="https://www.linkedin.com/in/yal-thunders-11722a249/" target="_blank"><i class="fa-brands fa-linkedin-in social-icon-footer"></i></a>
+                <a href="mailto:yalthunders@gmail.com" target="_blank"><i class="fa-solid fa-envelope social-icon-footer"></i></a>
             </div>
         </div>
     </footer>
@@ -284,7 +281,6 @@
          * Admin menüsünü ve butonları kontrol eder
          */
         function initEventManagement() {
-            // Kontrol: Gerekli JS dosyaları yüklenmiş mi?
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
                 console.error("HATA: auth.js veya event-manager.js yüklenemedi. Yollar (path) doğru mu?");
                 return;
@@ -292,7 +288,6 @@
             
             const currentUser = getCurrentUser();
             
-            // Admin menüsünü göster (eğer adminse)
             if (currentUser && currentUser.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
@@ -304,7 +299,6 @@
                 }
             }
             
-            // Kayıt butonunun durumunu güncelle (giriş yapmışsa)
             if(currentUser) {
                 updateEventStatus('kickoff-2026');
             }
@@ -314,7 +308,6 @@
          * "Register Now" butonuna tıklandığında çalışır
          */
         function handleEventAction(eventId) {
-            // Kontrol: Gerekli JS dosyaları yüklenmiş mi?
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
                 console.error("HATA: auth.js veya event-manager.js yüklenemedi.");
                 alert("Sayfa hatası: Gerekli scriptler yüklenemedi.");
@@ -468,6 +461,9 @@
             }
         }
         
+        /**
+         * YENİ: Katılımcı Tablosu (İndirme Butonu ile)
+         */
         function loadAttendeesTab(container) {
             const stats = window.EventManager.getEventStatistics('kickoff-2026');
             let html = '<div class="attendees-list">';
@@ -476,9 +472,9 @@
             if (stats.registrations.length === 0) {
                 html += '<p class="no-data">No registrations yet</p>';
             } else {
-                html += '<div style="overflow-x: auto;">'; // Mobil için kaydırma
+                html += '<div style="overflow-x: auto;">';
                 html += '<table class="admin-table">';
-                html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th></tr></thead>';
+                html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th><th>Actions</th></tr></thead>'; // YENİ SÜTUN
                 html += '<tbody>';
                 
                 stats.registrations.forEach(reg => {
@@ -489,6 +485,19 @@
                     html += '<td>' + (reg.teamNumber || 'N/A') + '</td>';
                     html += '<td>' + (reg.checkedIn ? '<span class="badge-checked-in">Checked In</span>' : '<span class="badge-pending">Pending</span>') + '</td>';
                     html += '<td>' + (reg.checkInTime ? new Date(reg.checkInTime).toLocaleString() : '-') + '</td>';
+                    
+                    // YENİ EYLEM SÜTUNU
+                    html += '<td>';
+                    if (reg.checkedIn) {
+                        // JSON.stringify 'tek tırnak' içine alınmalı ki HTML bozulmasın
+                        html += `<button class='btn-download-badge' onclick='downloadBadge(${JSON.stringify(reg)})'>
+                                    <i class="fa-solid fa-download"></i> Badge
+                                 </button>`;
+                    } else {
+                        html += 'N/A';
+                    }
+                    html += '</td>';
+
                     html += '</tr>';
                 });
                 
@@ -528,7 +537,6 @@
             const result = window.EventManager.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
             
-            // Başarılı ve ilk kez giriş
             if (result.success && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
@@ -541,9 +549,8 @@
                         </div>
                         <div class="badge-footer"><i class="fa-solid fa-check-circle"></i> CHECK-IN SUCCESSFUL</div>
                     </div>`;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000); // 5 saniye göster
+                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             
-            // Başarısız (zaten giriş yapmış)
             } else if (!result.success && result.message === 'Already checked in' && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
@@ -557,7 +564,6 @@
                     </div>`;
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             
-            // Diğer tüm hatalar
             } else {
                 resultDiv.innerHTML = `
                     <div class="scan-error">
@@ -568,7 +574,7 @@
             }
         }
         
-        function onScanError(errorMessage) { /* (Hata loglarını görmezden gel) */ }
+        function onScanError(errorMessage) { /* (Ignore errors) */ }
         
         function loadStatsTab(container) {
             const stats = window.EventManager.getEventStatistics('kickoff-2026');
@@ -585,16 +591,80 @@
             `;
             container.innerHTML = html;
         }
+
+        /**
+         * YENİ: Yaka Kartı HTML'ini oluşturur
+         */
+        function getBadgeHTML(reg) {
+            // Not: Logoyu indirebilmek için 'src' yolunun göreceli değil, tam (absolute) olması gerekebilir.
+            // Şimdilik göreceli bırakıyoruz.
+            return `
+                <div class="yal-badge" style="width: 320px; margin: 0;">
+                    <div class="badge-header">
+                        <img src="yal_thunders_logo.png" alt="Logo" style="width: 30px; height: 30px;">
+                        <span>YAL THUNDERS KICK-OFF</span>
+                    </div>
+                    <div class="badge-body">
+                        <div class="badge-name">${reg.userName}</div>
+                        <div class="badge-role">${reg.role || 'Participant'}</div>
+                        <div class="badge-team">Team: ${reg.teamNumber || 'N/A'}</div>
+                    </div>
+                    <div class="badge-footer">
+                        <i class="fa-solid fa-check-circle"></i> CHECKED-IN
+                    </div>
+                </div>`;
+        }
+
+        /**
+         * YENİ: Yaka Kartını PNG olarak indirir
+         */
+        function downloadBadge(regObject) {
+            if (typeof html2canvas === 'undefined') {
+                alert('Hata: İndirme kütüphanesi (html2canvas) yüklenemedi.');
+                return;
+            }
+
+            // 1. Gizli bir div oluştur
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '-9999px'; // Ekranın dışına at
+            tempDiv.style.fontFamily = "'Cabin', sans-serif"; // Fontu zorla
+            document.body.appendChild(tempDiv);
+            
+            // Yaka kartı HTML'ini bas ve stilleri uygula
+            tempDiv.innerHTML = getBadgeHTML(regObject);
+            const badgeElement = tempDiv.querySelector('.yal-badge');
+            
+            // 2. html2canvas ile bu gizli div'in "fotoğrafını" çek
+            html2canvas(badgeElement, { 
+                useCORS: true, // Logoyu yüklemesi için
+                backgroundColor: null, // Arka planı transparan yap
+                logging: true // Hata ayıklama için
+            }).then(canvas => {
+                // 3. Fotoğrafı PNG linkine çevir
+                const link = document.createElement('a');
+                link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`; // Dosya adı
+                link.href = canvas.toDataURL("image/png");
+                
+                // 4. İndirmeyi başlat
+                link.click();
+                
+                // 5. Gizli div'i temizle
+                document.body.removeChild(tempDiv);
+            }).catch(err => {
+                console.error("Yaka kartı indirme hatası:", err);
+                alert("Yaka kartı indirilirken bir hata oluştu.");
+                document.body.removeChild(tempDiv);
+            });
+        }
         
         /**
          * DÜZELTME: Sayfa yükleme yönetimi
-         * Tüm script'ler yüklendikten ve DOM hazır olduktan sonra initPage() çağrılır.
          */
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Yüklendi. initPage() çağrılıyor.");
             initPage();
             
-            // Admin sekme dinleyicileri
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', () => { loadAdminTab(tab.dataset.tab); });
             });
@@ -643,6 +713,7 @@
         window.showQRCode = showQRCode;
         window.closeQRModal = closeQRModal;
         window.loadAdminTab = loadAdminTab;
+        window.downloadBadge = downloadBadge; // YENİ
         window.YALEventsInit = true;
         
         // Mobil auth buton senkronizasyonu
