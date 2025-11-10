@@ -754,6 +754,13 @@ permalink: events.html
             }
         }
         
+        // Expose functions to global scope for inline onclick handlers
+        window.handleEventAction = handleEventAction;
+        window.toggleAdminPanel = toggleAdminPanel;
+        window.showQRCode = showQRCode;
+        window.closeQRModal = closeQRModal;
+        window.loadAdminTab = loadAdminTab;
+        
         // --- SWUP BAŞLATMA ---
         // Make Swup optional - if it fails to load, page still works
         if (typeof Swup !== 'undefined') {
