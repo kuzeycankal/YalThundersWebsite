@@ -298,9 +298,11 @@ permalink: events.html
             // 3. EVENT MANAGEMENT INITIALIZATION
             initEventManagement();
             
-            // 4. UPDATE AUTH BUTTONS
+            // 4. UPDATE AUTH BUTTONS - call directly and ensure mobile sync
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
+                // Also update mobile immediately
+                setTimeout(updateMobileAuthButtons, 50);
             }
         }
         
@@ -696,18 +698,40 @@ permalink: events.html
             
             if (authButtons && mobileAuthButtons) {
                 // Clone auth buttons content for mobile
-                mobileAuthButtons.innerHTML = authButtons.innerHTML;
+                const clonedHTML = authButtons.innerHTML;
+                if (clonedHTML) {
+                    mobileAuthButtons.innerHTML = clonedHTML;
+                    
+                    // Re-attach event handlers for cloned buttons
+                    const clonedUserBtn = mobileAuthButtons.querySelector('.user-profile-btn');
+                    if (clonedUserBtn) {
+                        clonedUserBtn.onclick = toggleUserMenu;
+                    }
+                }
             }
         }
         
-        // Override updateAuthButtons to also update mobile
-        const originalUpdateAuthButtons = window.updateAuthButtons;
-        if (typeof originalUpdateAuthButtons === 'function') {
-            window.updateAuthButtons = function() {
-                originalUpdateAuthButtons();
-                setTimeout(updateMobileAuthButtons, 100);
-            };
-        }
+        // Override updateAuthButtons to also update mobile - do this immediately
+        (function() {
+            // Wait for auth.js to load
+            const checkAuthLoaded = setInterval(() => {
+                if (typeof window.updateAuthButtons === 'function') {
+                    clearInterval(checkAuthLoaded);
+                    
+                    const originalUpdateAuthButtons = window.updateAuthButtons;
+                    window.updateAuthButtons = function() {
+                        originalUpdateAuthButtons();
+                        setTimeout(updateMobileAuthButtons, 50);
+                    };
+                    
+                    // Call it immediately to initialize
+                    window.updateAuthButtons();
+                }
+            }, 50);
+            
+            // Timeout after 5 seconds
+            setTimeout(() => clearInterval(checkAuthLoaded), 5000);
+        })();
         
         // Close modal on outside click
         window.onclick = function(event) {
