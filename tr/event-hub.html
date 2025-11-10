@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="tr"> <head>
+<html lang="tr">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etkinlik Merkezi - YAL Thunders 9160</title> <link rel="stylesheet" href="style.css">
+    <title>Etkinlik Merkezi - YAL Thunders 9160</title>
+    <link rel="stylesheet" href="/style.css">
     
     <script>
         (function() {
@@ -28,35 +30,35 @@
 
     <header class="site-header">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu"><i class="fa-solid fa-bars"></i></button>
-        <a href="index.html" class="logo-container site-brand-link">
-            <img src="yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
         <nav>
             <ul>
-                <li><a href="news.html">NEWS</a></li>
-                <li><a href="index.html">HOME</a></li>
-                <li><a href="frc.html">WHAT IS FRC</a></li> 
-                <li class="dropdown"><a href="about.html">ABOUT US <i class="fa-solid fa-caret-down dropdown-caret"></i></a>
+                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/frc.html">WHAT IS FRC</a></li> 
+                <li class="dropdown"><a href="/about.html">ABOUT US <i class="fa-solid fa-caret-down dropdown-caret"></i></a>
                     <ul class="dropdown-menu">
-                        <li><a href="about.html#who-we-are">Who Are We?</a></li>
-                        <li><a href="about.html#our-story">Our Story</a></li>
-                        <li><a href="about.html#mission-vision">Mission & Vision</a></li>
-                        <li><a href="about.html#achievements">Achievements</a></li>
-                        <li><a href="about.html#alumni">Alumni</a></li>
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
                     </ul>
                 </li>
-                <li><a href="media.html">MEDIA</a></li>
-                <li><a href="events.html" class="active">EVENTS</a></li> 
-                <li><a href="contact.html">CONTACT</a></li>
+                <li><a href="/media.html">MEDIA</a></li>
+                <li><a href="/events.html" class="active">EVENTS</a></li> 
+                <li><a href="/contact.html">CONTACT</a></li>
                 <li class="mobile-auth-item" id="mobileAuthButtons"></li>
             </ul>
         </nav>
         <div class="header-right">
             <div class="auth-buttons" id="authButtons"></div>
             <div class="language-switcher">
-                <a href="events.html" class="lang-en lang-active">EN</a>
-                <a href="tr/events.html" class="lang-tr">TR</a>
+                <a href="/events.html" class="lang-en">EN</a>
+                <a href="/tr/events.html" class="lang-tr lang-active">TR</a>
             </div>
             <button id="theme-toggle" class="theme-toggle" aria-label="Temayı değiştir"><i class="fa-solid fa-moon"></i></button>
         </div>
@@ -106,11 +108,11 @@
     <footer class="site-footer-new">
         </footer>
     
-    <script src="auth.js"></script>
-    <script src="event-manager.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/event-manager.js"></script>
     
     <script>
-        // JAVASCRIPT METİNLERİ DE TÜRKÇEYE ÇEVRİLDİ
+        // TÜM JS METİNLERİ TÜRKÇE VE YOLLAR DÜZELTİLDİ
          
         function closeQRModal() {
             document.getElementById('qrModal').style.display = 'none';
@@ -120,7 +122,7 @@
             const canvas = document.querySelector('#qrCodeContainer canvas');
             if (canvas) {
                 const link = document.createElement('a');
-                link.download = 'yemek-fisi-qr.png'; // TÜRKÇE
+                link.download = 'yemek-fisi-qr.png';
                 link.href = canvas.toDataURL();
                 link.click();
             }
@@ -151,7 +153,7 @@
                 modal.style.display = 'flex';
                 updatePerkStatus(perkType, eventId);
             } else {
-                alert('Fiş oluşturulamadı: ' + (result.message || 'Bilinmeyen hata')); // TÜRKÇE
+                alert('Fiş oluşturulamadı: ' + (result.message || 'Bilinmeyen hata'));
             }
         }
 
@@ -167,22 +169,21 @@
                 const statusText = document.getElementById('meal-perk-status');
                 const statusBtn = document.getElementById('btn-get-meal');
                 if (perk.used) {
-                    statusText.textContent = 'Yemek fişin kullanıldı.'; // TÜRKÇE
-                    statusBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Kullanıldı'; // TÜRKÇE
+                    statusText.textContent = 'Yemek fişin kullanıldı.';
+                    statusBtn.innerHTML = '<i class="fa-solid fa-check-circle"></i> Kullanıldı';
                     statusBtn.disabled = true;
                     statusBtn.style.backgroundColor = '#27ae60';
                 } else {
-                    statusText.textContent = 'Fişin hazır. Göstermek için tıkla.'; // TÜRKÇE
-                    statusBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Fişi Göster'; // TÜRKÇE
+                    statusText.textContent = 'Fişin hazır. Göstermek için tıkla.';
+                    statusBtn.innerHTML = '<i class="fa-solid fa-qrcode"></i> Fişi Göster';
                 }
             }
         }
 
-        // Ana Sayfa Yükleme Fonksiyonu
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
                 console.error("HATA: auth.js veya event-manager.js yüklenemedi.");
-                document.getElementById('eventHub').innerHTML = '<p style="color:red; text-align:center;">Sayfa bağımlılıkları yüklenemedi.</p>'; // TÜRKÇE
+                document.getElementById('eventHub').innerHTML = '<p style="color:red; text-align:center;">Sayfa bağımlılıkları yüklenemedi.</p>';
                 return;
             }
             
@@ -191,33 +192,27 @@
             const eventId = urlParams.get('event');
 
             if (!currentUser) {
-                window.location.href = `login.html?redirect=events.html`;
+                window.location.href = `/login.html?redirect=events.html`; // DÜZELTME: / eklendi
                 return;
             }
             
             if (!eventId) {
-                alert('Etkinlik belirtilmemiş.'); // TÜRKÇE
-                window.location.href = 'events.html';
+                alert('Etkinlik belirtilmemiş.');
+                window.location.href = '/tr/events.html'; // DÜZELTME: /tr/ eklendi
                 return;
             }
             
             const reg = window.EventManager.getUserRegistration(eventId, currentUser.id);
             if (!reg || !reg.checkedIn) {
-                alert('Merkeze erişmek için bu etkinliğe giriş yapmış olmalısınız.'); // TÜRKÇE
-                window.location.href = 'events.html';
+                alert('Merkeze erişmek için bu etkinliğe giriş yapmış olmalısınız.');
+                window.location.href = '/tr/events.html'; // DÜZELTME: /tr/ eklendi
                 return;
             }
             
             document.getElementById('eventHub').style.display = 'block';
             updatePerkStatus('meal', eventId);
             
-            // Tema ve Auth butonlarını yükle
-            (typeof updateAuthButtons === 'function') && updateAuthButtons();
-            
-            // Tema, Mobil Menü ve Auth Buton JS kodlarını buraya da ekle
-            // (Aşağıdaki kodlar diğer sayfalardan kopyalandı)
-
-            // TEMA
+            // TEMA KODU
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             const getTheme = () => { return document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
@@ -229,7 +224,7 @@
             }
             updateIcon(getTheme());
 
-            // MOBİL MENÜ
+            // MOBİL MENÜ KODU
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
@@ -251,7 +246,7 @@
                 }
             });
 
-            // AUTH OVERRIDE (Mobil menüdeki auth butonları için)
+            // AUTH BUTON KODU
             (function setupAuthButtonOverride() {
                 if (typeof window.updateAuthButtons === 'function') {
                     const originalUpdateAuthButtons = window.updateAuthButtons;
@@ -280,7 +275,6 @@
             }
         });
         
-        // Global fonksiyonları ata
         window.getPerk = getPerk;
         window.closeQRModal = closeQRModal;
     </script>

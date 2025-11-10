@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="tr"> <head>
+<html lang="tr">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Etkinlik Kaydı - YAL Thunders 9160</title> <script>
+    <title>Etkinlik Kaydı - YAL Thunders 9160</title>
+    
+    <link rel="stylesheet" href="/style.css">
+    
+    <script>
         (function() {
             const storageKey = 'theme-preference';
             const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -10,29 +15,30 @@
         })();
     </script>
     
-    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <script src="auth.js"></script>
-    <script src="event-manager.js"></script>
+    <script src="/auth.js"></script>
+    <script src="/event-manager.js"></script>
 </head>
 <body>
 
     <header class="site-header">
-        <a href="index.html" class="logo-container site-brand-link">
-            <img src="yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
             <span class="team-name">YAL THUNDERS 9160</span>
         </a>
-        </header>
+    </header>
 
     <main class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
                 <i class="fa-solid fa-ticket auth-icon"></i>
-                <h2 id="eventTitle">Etkinlik Kaydı</h2> <p id="welcomeMessage">Kaydolmak için lütfen bilgilerinizi sağlayın.</p> </div>
+                <h2 id="eventTitle">Etkinlik Kaydı</h2>
+                <p id="welcomeMessage">Kaydolmak için lütfen bilgilerinizi sağlayın.</p>
+            </div>
             
             <form id="frcRegisterForm" class="auth-form">
                 
@@ -79,31 +85,29 @@
             const currentUser = getCurrentUser();
             
             if (!currentUser) {
-                window.location.href = 'login.html?redirect=events.html';
+                window.location.href = '/login.html?redirect=events.html';
                 return;
             }
             
             const urlParams = new URLSearchParams(window.location.search);
             const eventId = urlParams.get('event');
             if (!eventId) {
-                document.getElementById('eventTitle').textContent = 'Hata: Etkinlik Bulunamadı'; // TÜRKÇE
-                showMessage('registerMessage', 'Etkinlik belirtilmemiş. Lütfen etkinlikler sayfasına geri dönün.', 'error'); // TÜRKÇE
+                document.getElementById('eventTitle').textContent = 'Hata: Etkinlik Bulunamadı';
+                showMessage('registerMessage', 'Etkinlik belirtilmemiş. Lütfen etkinlikler sayfasına geri dönün.', 'error');
                 return;
             }
             
             const event = window.EventManager.getEventById(eventId);
             if(event) {
-                // Not: event.name 'EVENTS_DATA' içinden geliyor, o hala İngilizce olabilir.
-                document.getElementById('eventTitle').textContent = `Kayıt: ${event.name}`; // Yarı Türkçe
+                document.getElementById('eventTitle').textContent = `Kayıt: ${event.nameTR || event.name}`;
             }
-            document.getElementById('welcomeMessage').textContent = `Hoş geldin, ${currentUser.name}! Sadece bir adım kaldı.`; // TÜRKÇE
+            document.getElementById('welcomeMessage').textContent = `Hoş geldin, ${currentUser.name}! Sadece bir adım kaldı.`;
 
             const roleSelect = document.getElementById('regRole');
             const teamNumberGroup = document.getElementById('teamNumberGroup');
             
             roleSelect.addEventListener('change', () => {
                 const selectedRole = roleSelect.value;
-                // Sadece Öğrenci ve Mentor ise takım numarası sor
                 if (selectedRole === 'Student' || selectedRole === 'Mentor') {
                     teamNumberGroup.style.display = 'block';
                 } else {
@@ -124,13 +128,12 @@
                 const result = window.EventManager.registerForEvent(eventId, currentUser, extraData);
                 
                 if (result.success) {
-                    showMessage('registerMessage', 'Kayıt başarılı! Yönlendiriliyorsunuz...', 'success'); // TÜRKÇE
+                    showMessage('registerMessage', 'Kayıt başarılı! Yönlendiriliyorsunuz...', 'success');
                     setTimeout(() => {
-                        window.location.href = 'events.html';
+                        window.location.href = '/tr/events.html'; // DÜZELTME: /tr/ eklendi
                     }, 2000);
                 } else {
-                    // Not: result.message 'event-manager.js'den geliyor, o bir sonraki adımda çevrilecek.
-                    showMessage('registerMessage', `Kayıt başarısız: ${result.message}`, 'error'); // TÜRKÇE
+                    showMessage('registerMessage', `Kayıt başarısız: ${result.message}`, 'error');
                 }
             });
         });
