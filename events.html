@@ -216,7 +216,6 @@ permalink: events.html
          * Initialize the events page
          */
         function initPage() {
-            console.log('initPage() called'); // Debug log
             
             // 1. TEMA DEĞİŞTİRME KODU
             const storageKey = 'theme-preference';
@@ -293,22 +292,17 @@ permalink: events.html
             }
             
             const pageLang = document.documentElement.lang || 'en';
-            console.log('Initializing countdowns, pageLang:', pageLang); // Debug log
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
 
             // 3. EVENT MANAGEMENT INITIALIZATION
-            console.log('Initializing event management'); // Debug log
             initEventManagement();
             
             // 4. UPDATE AUTH BUTTONS - call directly and ensure mobile sync
-            console.log('Updating auth buttons'); // Debug log
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
                 // Also update mobile immediately
                 setTimeout(updateMobileAuthButtons, 50);
-            } else {
-                console.log('updateAuthButtons not available yet');
             }
         }
         
@@ -768,13 +762,14 @@ permalink: events.html
             swup.hooks.on('page:view', initPage);
         }
         
-        // Always run initPage on DOMContentLoaded
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initPage);
-        } else {
-            // DOM is already loaded, run immediately
-            initPage();
-        }
+        // Force immediate execution - run initPage as soon as this script executes
+        // This ensures everything works even without DOMContentLoaded
+        (function() {
+            // Small delay to ensure DOM is ready
+            setTimeout(function() {
+                initPage();
+            }, 10);
+        })();
         
     </script>
 </body>
