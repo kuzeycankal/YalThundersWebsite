@@ -23,7 +23,6 @@
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
     <script>
-        // Ön tanımlamalar
         window.YALEventsInit = window.YALEventsInit || false;
         window.handleEventAction = window.handleEventAction || function() { console.log('handleEventAction not yet loaded'); };
         window.toggleAdminPanel = window.toggleAdminPanel || function() { console.log('toggleAdminPanel not yet loaded'); };
@@ -68,12 +67,14 @@
                 <li><a href="events.html" class="active">EVENTS</a></li> 
                 <li><a href="contact.html">CONTACT</a></li>
                 
-                <li class="mobile-auth-item" id="mobileAuthButtons"></li>
+                <li class="mobile-auth-item" id="mobileAuthButtons">
+                    </li>
             </ul>
         </nav>
         
         <div class="header-right">
-            <div class="auth-buttons" id="authButtons"></div>
+            <div class="auth-buttons" id="authButtons">
+                </div>
             
             <div class="language-switcher">
                 <a href="events.html" class="lang-en lang-active">EN</a>
@@ -117,11 +118,7 @@
                     <div class="event-date-highlight">January 10, 2026</div>
                     <h3 class="event-title">2026 FRC Kick-Off Event</h3>
                     <div class="event-countdown" id="kickoff-countdown">
-                        <span class="countdown-value">-</span><span class="countdown-label">days</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">hours</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">min</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">sec</span>
-                    </div>
+                        </div>
                     <div class="event-actions">
                         <button id="registerBtn-kickoff-2026" class="btn-register" onclick="handleEventAction('kickoff-2026')">
                             <i class="fa-solid fa-ticket"></i> Register Now
@@ -139,11 +136,7 @@
                     <div class="event-date-highlight">March 18-21, 2026</div>
                     <h3 class="event-title">2026 FRC Orlando Regional</h3>
                     <div class="event-countdown" id="orlando-countdown">
-                        <span class="countdown-value">-</span><span class="countdown-label">days</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">hours</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">min</span>
-                        <span class="countdown-value">-</span><span class="countdown-label">sec</span>
-                    </div>
+                        </div>
                     <div class="event-info-note">
                         <i class="fa-solid fa-info-circle"></i> Competition event - Registration through FIRST
                     </div>
@@ -197,6 +190,9 @@
         let currentQRCode = null;
         let html5QrcodeScanner = null;
         
+        /**
+         * Sayfadaki tüm dinamik elementleri başlatan ana fonksiyon
+         */
         function initPage() {
             // 1. TEMA DEĞİŞTİRME KODU
             const storageKey = 'theme-preference';
@@ -234,7 +230,7 @@
             }
             updateIcon(getTheme());
 
-            // 2. COUNTDOWN KODU
+            // 2. COUNTDOWN KODU (SAYAÇ)
             function initializeCountdown(elementId, targetDateString, lang) {
                 const countdownElement = document.getElementById(elementId);
                 if (!countdownElement) return;
@@ -274,17 +270,21 @@
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00', pageLang);
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00', pageLang);
 
-            // 3. EVENT MANAGEMENT INITIALIZATION
+            // 3. EVENT MANAGEMENT (ADMİN MENÜSÜ VE BUTON DURUMLARI)
             initEventManagement();
             
-            // 4. UPDATE AUTH BUTTONS
+            // 4. AUTH BUTONLARI (GİRİŞ/ÇIKIŞ)
             if (typeof updateAuthButtons === 'function') {
                 updateAuthButtons();
                 setTimeout(updateMobileAuthButtons, 50);
             }
         }
         
+        /**
+         * Admin menüsünü ve butonları kontrol eder
+         */
         function initEventManagement() {
+            // Kontrol: Gerekli JS dosyaları yüklenmiş mi?
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
                 console.error("HATA: auth.js veya event-manager.js yüklenemedi. Yollar (path) doğru mu?");
                 return;
@@ -292,6 +292,7 @@
             
             const currentUser = getCurrentUser();
             
+            // Admin menüsünü göster (eğer adminse)
             if (currentUser && currentUser.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
@@ -303,12 +304,17 @@
                 }
             }
             
+            // Kayıt butonunun durumunu güncelle (giriş yapmışsa)
             if(currentUser) {
                 updateEventStatus('kickoff-2026');
             }
         }
         
+        /**
+         * "Register Now" butonuna tıklandığında çalışır
+         */
         function handleEventAction(eventId) {
+            // Kontrol: Gerekli JS dosyaları yüklenmiş mi?
             if (typeof getCurrentUser !== 'function' || typeof window.EventManager !== 'object') {
                 console.error("HATA: auth.js veya event-manager.js yüklenemedi.");
                 alert("Sayfa hatası: Gerekli scriptler yüklenemedi.");
@@ -319,7 +325,7 @@
             
             if (!currentUser) {
                 alert('Please login to register for events');
-                window.location.href = 'login.html'; // YOL DÜZELTİLDİ
+                window.location.href = 'login.html'; // DÜZELTME: Göreceli yol
                 return;
             }
             
@@ -329,10 +335,13 @@
                 const registration = window.EventManager.getUserRegistration(eventId, currentUser.id);
                 showQRCode(registration);
             } else {
-                window.location.href = `event-register.html?event=${eventId}`; // YOL DÜZELTİLDİ
+                window.location.href = `event-register.html?event=${eventId}`; // DÜZELTME: Göreceli yol
             }
         }
         
+        /**
+         * Kayıt butonunu "Register" veya "Show QR" olarak günceller
+         */
         function updateEventStatus(eventId) {
             const currentUser = getCurrentUser();
             if (!currentUser) return; 
@@ -361,6 +370,9 @@
             }
         }
         
+        /**
+         * QR Kod modalını gösterir
+         */
         function showQRCode(registration) {
             if (!registration) { return; }
             const modal = document.getElementById('qrModal');
@@ -407,6 +419,9 @@
             }
         }
         
+        /**
+         * Admin Panel fonksiyonları
+         */
         function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             if (panel.style.display === 'none' || !panel.style.display) {
@@ -461,7 +476,7 @@
             if (stats.registrations.length === 0) {
                 html += '<p class="no-data">No registrations yet</p>';
             } else {
-                html += '<div style="overflow-x: auto;">';
+                html += '<div style="overflow-x: auto;">'; // Mobil için kaydırma
                 html += '<table class="admin-table">';
                 html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th></tr></thead>';
                 html += '<tbody>';
@@ -501,15 +516,19 @@
                     onScanSuccess, onScanError
                 ).catch(err => {
                     document.getElementById('scan-result').innerHTML = 
-                        '<div class="scan-error">Camera access denied or not available</div>';
+                        '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı. Lütfen site ayarlarından izin verin (HTTPS gereklidir).</div>';
                 });
             }, 100);
         }
         
+        /**
+         * YAKA KARTI KODU - QR okununca çalışır
+         */
         function onScanSuccess(decodedText, decodedResult) {
             const result = window.EventManager.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
             
+            // Başarılı ve ilk kez giriş
             if (result.success && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
@@ -522,8 +541,9 @@
                         </div>
                         <div class="badge-footer"><i class="fa-solid fa-check-circle"></i> CHECK-IN SUCCESSFUL</div>
                     </div>`;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
+                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000); // 5 saniye göster
             
+            // Başarısız (zaten giriş yapmış)
             } else if (!result.success && result.message === 'Already checked in' && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
@@ -537,6 +557,7 @@
                     </div>`;
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             
+            // Diğer tüm hatalar
             } else {
                 resultDiv.innerHTML = `
                     <div class="scan-error">
@@ -547,7 +568,7 @@
             }
         }
         
-        function onScanError(errorMessage) { /* (Ignore errors) */ }
+        function onScanError(errorMessage) { /* (Hata loglarını görmezden gel) */ }
         
         function loadStatsTab(container) {
             const stats = window.EventManager.getEventStatistics('kickoff-2026');
@@ -565,16 +586,20 @@
             container.innerHTML = html;
         }
         
-        // DÜZELTME: initPage() çağrısı güvenli DOMContentLoaded içine alındı
+        /**
+         * DÜZELTME: Sayfa yükleme yönetimi
+         * Tüm script'ler yüklendikten ve DOM hazır olduktan sonra initPage() çağrılır.
+         */
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Yüklendi. initPage() çağrılıyor.");
             initPage();
             
+            // Admin sekme dinleyicileri
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', () => { loadAdminTab(tab.dataset.tab); });
             });
             
-            // Mobile menu functionality
+            // Mobil menü dinleyicileri
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
@@ -612,7 +637,7 @@
             });
         });
         
-        // CRITICAL: Replace placeholder functions
+        // Global fonksiyonları ata
         window.handleEventAction = handleEventAction;
         window.toggleAdminPanel = toggleAdminPanel;
         window.showQRCode = showQRCode;
@@ -620,6 +645,7 @@
         window.loadAdminTab = loadAdminTab;
         window.YALEventsInit = true;
         
+        // Mobil auth buton senkronizasyonu
         function updateMobileAuthButtons() {
             const authButtons = document.getElementById('authButtons');
             const mobileAuthButtons = document.getElementById('mobileAuthButtons');
@@ -629,7 +655,7 @@
                 if (clonedHTML) {
                     mobileAuthButtons.innerHTML = clonedHTML;
                     const clonedUserBtn = mobileAuthButtons.querySelector('.user-profile-btn');
-                    if (clonedUserBtn) {
+                    if (clonedUserBtn && typeof toggleUserMenu === 'function') {
                         clonedUserBtn.onclick = toggleUserMenu;
                     }
                 }
@@ -660,14 +686,13 @@
             setTimeout(() => clearInterval(checkAuthLoaded), 5000);
         }
         
+        // Modal dışına tıklamayı yönet
         window.onclick = function(event) {
             const modal = document.getElementById('qrModal');
             if (event.target === modal) {
                 closeQRModal();
             }
         }
-        
-        // DÜZELTME: Hatalı IIFE (eski kod) buradan kaldırıldı.
         
     </script>
 </body>
