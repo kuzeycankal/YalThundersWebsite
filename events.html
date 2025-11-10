@@ -108,7 +108,7 @@ permalink: events.html
         </div>
     </header>
 
-    <main id="swup" class="content-events swup-transition-container">
+    <main class="content-events">
         <!-- Admin Panel (only visible to admins) -->
         <div id="adminPanel" class="admin-panel" style="display: none;">
             <div class="admin-header">
@@ -218,7 +218,6 @@ permalink: events.html
         </div>
     </footer>
     
-    <script src="https://unpkg.com/swup@4"></script>
     <script src="/auth.js"></script>
     <script src="/event-manager.js"></script>
     
@@ -257,7 +256,7 @@ permalink: events.html
                 }
             }
             
-            // Swup geçişlerinde çift listener eklemeyi engelle
+            // Prevent duplicate listeners
             if (toggle && !toggle.hasAttribute('data-listener-added')) { 
                 toggle.addEventListener('click', () => {
                     const currentTheme = getTheme();
@@ -774,21 +773,8 @@ permalink: events.html
             }
         }
         
-        // --- SWUP BAŞLATMA ---
-        // Make Swup optional - if it fails to load, page still works
-        if (typeof Swup !== 'undefined') {
-            console.log('[Events] Swup detected, setting up hooks');
-            const swup = new Swup();
-            swup.hooks.on('page:view', function() {
-                console.log('[Events] Swup page:view event - reinitializing');
-                initPage();
-            });
-        } else {
-            console.log('[Events] Swup not detected, using direct initialization');
-        }
-        
+        // Direct initialization - no Swup
         // Force immediate execution - run initPage as soon as this script executes
-        // This ensures everything works even without DOMContentLoaded
         console.log('[Events] Scheduling immediate initialization');
         (function() {
             // Small delay to ensure DOM is ready
