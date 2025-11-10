@@ -742,9 +742,19 @@ permalink: events.html
         }
         
         // --- SWUP BAŞLATMA ---
-        const swup = new Swup();
-        document.addEventListener('DOMContentLoaded', initPage);
-        swup.hooks.on('page:view', initPage);
+        // Make Swup optional - if it fails to load, page still works
+        if (typeof Swup !== 'undefined') {
+            const swup = new Swup();
+            swup.hooks.on('page:view', initPage);
+        }
+        
+        // Always run initPage on DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPage);
+        } else {
+            // DOM is already loaded, run immediately
+            initPage();
+        }
         
     </script>
 </body>

@@ -3603,14 +3603,27 @@ html.is-animating .swup-transition-container {
         width: 100%;
     }
     
-    .mobile-auth-item .auth-button,
+    .mobile-auth-item .auth-btn,
     .mobile-auth-item .user-menu-container {
         width: 100%;
         justify-content: center;
+        display: flex !important;
+        align-items: center;
     }
     
-    .mobile-auth-item .auth-button {
+    .mobile-auth-item .auth-btn {
         padding: 12px 20px;
         font-size: 1em;
+    }
+    
+    /* Ensure text spans are visible on mobile */
+    .mobile-auth-item .auth-btn span,
+    .mobile-auth-item .user-profile-btn span {
+        display: inline !important;
+        margin-left: 8px;
+    }
+    
+    .mobile-auth-item .auth-btn i {
+        display: inline !important;
     }
 }
