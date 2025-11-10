@@ -129,21 +129,34 @@ function getUserRegistration(eventId, userId) {
 // Check-in user
 function checkInUser(registrationData) {
     try {
+        console.log('checkInUser called with:', registrationData);
+        
         const data = typeof registrationData === 'string' ? JSON.parse(registrationData) : registrationData;
         const { eventId, userId, registrationId } = data;
 
+        console.log('Parsed data:', { eventId, userId, registrationId });
+
         const allRegistrations = getAllRegistrations();
+        console.log('All registrations:', allRegistrations);
+        
         const eventRegistrations = allRegistrations[eventId];
         
         if (!eventRegistrations) {
+            console.error('No registrations found for eventId:', eventId);
             return { success: false, message: 'No registrations found for this event' };
         }
+
+        console.log('Event registrations:', eventRegistrations);
 
         const regIndex = eventRegistrations.findIndex(reg => 
             reg.registrationId === registrationId && reg.userId === userId
         );
 
+        console.log('Found registration at index:', regIndex);
+
         if (regIndex === -1) {
+            console.error('Registration not found. Looking for:', { registrationId, userId });
+            console.error('Available registrations:', eventRegistrations.map(r => ({ id: r.registrationId, userId: r.userId })));
             return { success: false, message: 'Registration not found' };
         }
 
@@ -174,7 +187,8 @@ function checkInUser(registrationData) {
             checkInTime: eventRegistrations[regIndex].checkInTime
         };
     } catch (error) {
-        return { success: false, message: 'Invalid QR code' };
+        console.error('Error in checkInUser:', error);
+        return { success: false, message: 'Invalid QR code: ' + error.message };
     }
 }
 

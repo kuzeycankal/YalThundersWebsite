@@ -281,6 +281,11 @@ permalink: events.html
 
             // 3. EVENT MANAGEMENT INITIALIZATION
             initEventManagement();
+            
+            // 4. UPDATE AUTH BUTTONS
+            if (typeof updateAuthButtons === 'function') {
+                updateAuthButtons();
+            }
         }
         
         // Initialize Event Management
@@ -542,8 +547,14 @@ permalink: events.html
         
         // Scanner Success Handler
         function onScanSuccess(decodedText, decodedResult) {
+            // Log the decoded QR data for debugging
+            console.log('Scanned QR data:', decodedText);
+            
             const result = window.EventManager.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
+            
+            // Log the check-in result for debugging
+            console.log('Check-in result:', result);
             
             if (result.success) {
                 resultDiv.innerHTML = `
