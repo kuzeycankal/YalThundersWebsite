@@ -8,21 +8,21 @@ const EVENTS_KEY = 'yal_events';
 const EVENT_REGISTRATIONS_KEY = 'yal_event_registrations';
 const EVENT_CHECKINS_KEY = 'yal_event_checkins';
 const ADMIN_CODE = 'YALTHUNDERS2026'; // Admin registration code
+const EVENT_PERKS_KEY = 'yal_event_perks'; // YEMEK FİŞİ KEY'İ
 
-// Event structure
+// Event structure (Bu bölümdeki 'name' ve 'description' alanları veritabanıdır,
+// çoklu dil desteği için bunları da _tr objelerine taşımak gerekir, ama şimdilik böyle kalabilir)
 const EVENTS_DATA = {
     'kickoff-2026': {
         id: 'kickoff-2026',
         name: 'FRC 2026 Kick-Off Event',
-        nameTR: '2026 FRC Kick-Off Etkinliği',
+        nameTR: '2026 FRC Kick-Off Etkinliği', // Türkçe isim
         date: '2026-01-10T00:00:00+03:00',
         location: 'YAL Thunders Workshop',
-        locationTR: 'YAL Thunders Atölyesi',
-        description: 'Join us for the official FRC 2026 season kick-off! Meet the team, see the new game, and participate in exciting activities.',
-        descriptionTR: 'FRC 2026 sezonunun resmi açılışı için bize katılın! Takımla tanışın, yeni oyunu görün ve heyecan verici etkinliklere katılın.',
+        description: 'Join us for the official FRC 2026 season kick-off!',
         maxCapacity: 100,
         registrationOpen: true,
-        image: '/kickoff_event.jpg'
+        image: 'kickoff_event.jpg'
     }
 };
 
@@ -65,28 +65,26 @@ function isUserRegistered(eventId, userId) {
 }
 
 // Register user for event
-// GÜNCELLENDİ: 'extraData' parametresi eklendi
 function registerForEvent(eventId, user, extraData) {
     const event = getEventById(eventId);
     if (!event) {
-        return { success: false, message: 'Event not found' };
+        return { success: false, message: 'Etkinlik bulunamadı' }; // TÜRKÇE
     }
 
     if (!event.registrationOpen) {
-        return { success: false, message: 'Registration is closed' };
+        return { success: false, message: 'Kayıtlar kapandı' }; // TÜRKÇE
     }
 
     const registrations = getEventRegistrations(eventId);
     
     if (registrations.length >= event.maxCapacity) {
-        return { success: false, message: 'Event is full' };
+        return { success: false, message: 'Etkinlik kapasitesi doldu' }; // TÜRKÇE
     }
 
     if (isUserRegistered(eventId, user.id)) {
-        return { success: false, message: 'Already registered' };
+        return { success: false, message: 'Bu etkinliğe zaten kayıtlısınız' }; // TÜRKÇE
     }
 
-    // Generate unique QR code data
     const qrData = {
         eventId: eventId,
         userId: user.id,
@@ -96,15 +94,13 @@ function registerForEvent(eventId, user, extraData) {
         registeredAt: new Date().toISOString()
     };
 
-    // GÜNCELLENDİ: '...extraData' (rol, takım no vb.) eklendi
     const registration = {
         ...qrData,
         checkedIn: false,
         checkInTime: null,
-        ...extraData // Formdan gelen ekstra veriler (rol, takım no)
+        ...extraData
     };
 
-    // Save registration
     const allRegistrations = getAllRegistrations();
     if (!allRegistrations[eventId]) {
         allRegistrations[eventId] = [];
@@ -112,12 +108,11 @@ function registerForEvent(eventId, user, extraData) {
     allRegistrations[eventId].push(registration);
     localStorage.setItem(EVENT_REGISTRATIONS_KEY, JSON.stringify(allRegistrations));
 
-    // Update user's event count
     updateUserEventCount(user.id, 'register');
 
     return { 
         success: true, 
-        message: 'Registration successful!',
+        message: 'Kayıt başarılı!', // TÜRKÇE
         qrData: JSON.stringify(qrData),
         registration: registration
     };
@@ -130,68 +125,67 @@ function getUserRegistration(eventId, userId) {
 }
 
 // Check-in user
-// GÜNCELLENDİ: Yaka kartı için tüm kayıt bilgisini döndürür
 function checkInUser(registrationData) {
     try {
-        console.log('checkInUser called with:', registrationData);
+        console.log('checkInUser ham veri:', registrationData);
         
-        const data = typeof registrationData === 'string' ? JSON.parse(registrationData) : registrationData;
+        let data;
+        try {
+            data = JSON.parse(registrationData);
+        } catch (e) {
+            return { success: false, message: 'Geçersiz QR Kod (JSON Hatası)' }; // TÜRKÇE
+        }
+        
+        if (typeof data !== 'object' || data === null) {
+            return { success: false, message: 'Geçersiz QR Kod (Obje değil)' }; // TÜRKÇE
+        }
+
         const { eventId, userId, registrationId } = data;
 
-        console.log('Parsed data:', { eventId, userId, registrationId });
+        if (!eventId || !userId || !registrationId) {
+            return { success: false, message: 'Geçersiz QR Kod (Eksik Bilgi)' }; // TÜRKÇE
+        }
+        
+        console.log('Ayrıştırılmış veri:', { eventId, userId, registrationId });
 
         const allRegistrations = getAllRegistrations();
-        console.log('All registrations:', allRegistrations);
-        
         const eventRegistrations = allRegistrations[eventId];
         
         if (!eventRegistrations) {
-            console.error('No registrations found for eventId:', eventId);
-            return { success: false, message: 'No registrations found for this event' };
+            return { success: false, message: 'Bu etkinlik için kayıt bulunamadı' }; // TÜRKÇE
         }
-
-        console.log('Event registrations:', eventRegistrations);
 
         const regIndex = eventRegistrations.findIndex(reg => 
             reg.registrationId === registrationId && reg.userId === userId
         );
 
-        console.log('Found registration at index:', regIndex);
-
         if (regIndex === -1) {
-            console.error('Registration not found. Looking for:', { registrationId, userId });
-            console.error('Available registrations:', eventRegistrations.map(r => ({ id: r.registrationId, userId: r.userId })));
-            return { success: false, message: 'Registration not found' };
+            return { success: false, message: 'Kayıt bulunamadı' }; // TÜRKÇE
         }
 
-        // GÜNCELLENDİ: Zaten giriş yapmışsa bile yaka kartı için bilgiyi döndür
         if (eventRegistrations[regIndex].checkedIn) {
             return { 
                 success: false, 
-                message: 'Already checked in',
+                message: 'Zaten giriş yapılmış', // TÜRKÇE
                 checkInTime: eventRegistrations[regIndex].checkInTime,
-                registration: eventRegistrations[regIndex] // Yaka kartı için eklendi
+                registration: eventRegistrations[regIndex]
             };
         }
 
-        // Mark as checked in
         eventRegistrations[regIndex].checkedIn = true;
         eventRegistrations[regIndex].checkInTime = new Date().toISOString();
-
         localStorage.setItem(EVENT_REGISTRATIONS_KEY, JSON.stringify(allRegistrations));
 
-        // Update user's attended events count
         updateUserEventCount(userId, 'checkin');
 
-        // GÜNCELLENDİ: Yaka kartı için tüm kayıt objesini döndür
         return {
             success: true,
-            message: 'Check-in successful!',
-            registration: eventRegistrations[regIndex] // 'user:' ve 'checkInTime:' yerine bu
+            message: 'Giriş başarılı!', // TÜRKÇE
+            registration: eventRegistrations[regIndex]
         };
     } catch (error) {
-        console.error('Error in checkInUser:', error);
-        return { success: false, message: 'Invalid QR code: ' + error.message };
+        console.error('checkInUser Hatası:', error);
+        return { success: false, message: 'Geçersiz QR Kod: ' + error.message }; // TÜRKÇE
     }
 }
 
@@ -200,7 +194,6 @@ function updateUserEventCount(userId, action) {
     const CURRENT_USER_KEY = 'yal_current_user';
     const USERS_KEY = 'yal_users';
 
-    // Update current user if matches
     let currentUser = localStorage.getItem(CURRENT_USER_KEY);
     let sessionUser = sessionStorage.getItem(CURRENT_USER_KEY);
     
@@ -228,7 +221,6 @@ function updateUserEventCount(userId, action) {
         }
     }
 
-    // Update users database
     const users = localStorage.getItem(USERS_KEY);
     if (users) {
         const usersArray = JSON.parse(users);
@@ -253,7 +245,7 @@ function getEventStatistics(eventId) {
         totalRegistrations: registrations.length,
         checkedIn: checkedInCount,
         notCheckedIn: registrations.length - checkedInCount,
-        registrations: registrations // Admin panel tablosu için tüm veriyi yolla
+        registrations: registrations
     };
 }
 
@@ -261,11 +253,9 @@ function getEventStatistics(eventId) {
 function getAllEventsStatistics() {
     const allRegistrations = getAllRegistrations();
     const stats = {};
-    
     Object.keys(allRegistrations).forEach(eventId => {
         stats[eventId] = getEventStatistics(eventId);
     });
-    
     return stats;
 }
 
@@ -283,7 +273,6 @@ function verifyAdminCode(code) {
 function getUserRegisteredEvents(userId) {
     const allRegistrations = getAllRegistrations();
     const userEvents = [];
-
     Object.keys(allRegistrations).forEach(eventId => {
         const registration = allRegistrations[eventId].find(reg => reg.userId === userId);
         if (registration) {
@@ -294,8 +283,94 @@ function getUserRegisteredEvents(userId) {
             });
         }
     });
-
     return userEvents;
+}
+
+/**
+ * YENİ FONKSİYON 1: Tek Kullanımlık Fiş (Perk) QR Kodu Oluşturur
+ */
+function generatePerkQRCode(eventId, user, perkType) {
+    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
+    const userEventPerks = allPerks[`${eventId}_${user.id}`] || [];
+    let existingPerk = userEventPerks.find(p => p.perkType === perkType);
+    
+    if (existingPerk) {
+        console.log('Mevcut fiş bulundu:', existingPerk.perkId);
+        return { 
+            success: true, 
+            qrData: JSON.stringify(existingPerk), 
+            used: existingPerk.used 
+        };
+    }
+
+    const newPerk = {
+        eventId: eventId,
+        userId: user.id,
+        userName: user.name,
+        perkType: perkType,
+        perkId: `${perkType}-${user.id}-${Date.now()}`,
+        used: false,
+        redeemedAt: null
+    };
+    
+    userEventPerks.push(newPerk);
+    allPerks[`${eventId}_${user.id}`] = userEventPerks;
+    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
+    
+    console.log('Yeni fiş oluşturuldu:', newPerk.perkId);
+    return { 
+        success: true, 
+        qrData: JSON.stringify(newPerk), 
+        used: false 
+    };
+}
+
+/**
+ * YENİ FONKSİYON 2: Fiş (Perk) QR Kodunu Okutup Kullanır
+ */
+function redeemPerk(qrDataString) {
+    let perkData;
+    try {
+        perkData = JSON.parse(qrDataString);
+        if (!perkData.eventId || !perkData.userId || !perkData.perkId) {
+             return { success: false, message: 'Geçersiz Fiş Kodu (Eksik Bilgi)' }; // TÜRKÇE
+        }
+    } catch (e) {
+        return { success: false, message: 'Geçersiz Fiş Kodu (JSON Hatası)' }; // TÜRKÇE
+    }
+    
+    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
+    const userEventPerks = allPerks[`${perkData.eventId}_${perkData.userId}`];
+
+    if (!userEventPerks) {
+        return { success: false, message: 'Bu fiş için kullanıcı bulunamadı' }; // TÜRKÇE
+    }
+
+    const perkIndex = userEventPerks.findIndex(p => p.perkId === perkData.perkId);
+
+    if (perkIndex === -1) {
+        return { success: false, message: 'Fiş bulunamadı' }; // TÜRKÇE
+    }
+    
+    if (userEventPerks[perkIndex].used) {
+        return { 
+            success: false, 
+            message: 'Bu fiş zaten kullanılmış!', // TÜRKÇE
+            perk: userEventPerks[perkIndex]
+        };
+    }
+
+    userEventPerks[perkIndex].used = true;
+    userEventPerks[perkIndex].redeemedAt = new Date().toISOString();
+    
+    allPerks[`${perkData.eventId}_${perkData.userId}`] = userEventPerks;
+    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
+    
+    return { 
+        success: true, 
+        message: 'Fiş başarıyla kullanıldı!', // TÜRKÇE
+        perk: userEventPerks[perkIndex]
+    };
 }
 
 // Initialize on page load
@@ -305,123 +380,21 @@ if (typeof document !== 'undefined') {
     });
 }
 
-// NEW Storage Key
-const EVENT_PERKS_KEY = 'yal_event_perks';
-
-/**
- * NEW FUNCTION 1: Generates a single-use Perk QR Code
- * (e.g., 'meal', 'drink', 'raffle')
- */
-function generatePerkQRCode(eventId, user, perkType) {
-    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
-    
-    // Find perks for this user at this event
-    const userEventPerks = allPerks[`${eventId}_${user.id}`] || [];
-    
-    // Check if a perk of this type was already created
-    let existingPerk = userEventPerks.find(p => p.perkType === perkType);
-    
-    if (existingPerk) {
-        // Already created, return the existing QR data (prevents re-creation)
-        console.log('Existing perk found:', existingPerk.perkId);
-        return { 
-            success: true, 
-            qrData: JSON.stringify(existingPerk), 
-            used: existingPerk.used 
-        };
-    }
-
-    // Create a new perk
-    const newPerk = {
-        eventId: eventId,
-        userId: user.id,
-        userName: user.name, // For the admin to see
-        perkType: perkType, // 'meal'
-        perkId: `${perkType}-${user.id}-${Date.now()}`, // Unique ID
-        used: false,
-        redeemedAt: null
-    };
-    
-    // Save
-    userEventPerks.push(newPerk);
-    allPerks[`${eventId}_${user.id}`] = userEventPerks;
-    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
-    
-    console.log('New perk created:', newPerk.perkId);
-    return { 
-        success: true, 
-        qrData: JSON.stringify(newPerk), 
-        used: false 
-    };
-}
-
-/**
- * NEW FUNCTION 2: Redeems (uses) a Perk QR Code
- */
-function redeemPerk(qrDataString) {
-    let perkData;
-    try {
-        perkData = JSON.parse(qrDataString);
-        if (!perkData.eventId || !perkData.userId || !perkData.perkId) {
-             return { success: false, message: 'Invalid Perk Code (Missing Data)' };
-        }
-    } catch (e) {
-        return { success: false, message: 'Invalid Perk Code (JSON Error)' };
-    }
-    
-    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
-    const userEventPerks = allPerks[`${perkData.eventId}_${perkData.userId}`];
-
-    if (!userEventPerks) {
-        return { success: false, message: 'User not found for this perk' };
-    }
-
-    const perkIndex = userEventPerks.findIndex(p => p.perkId === perkData.perkId);
-
-    if (perkIndex === -1) {
-        return { success: false, message: 'Perk not found' };
-    }
-    
-    if (userEventPerks[perkIndex].used) {
-        // ALREADY USED!
-        return { 
-            success: false, 
-            message: 'This perk has already been used!',
-            perk: userEventPerks[perkIndex]
-        };
-    }
-
-    // MARK AS USED
-    userEventPerks[perkIndex].used = true;
-    userEventPerks[perkIndex].redeemedAt = new Date().toISOString();
-    
-    // Update database
-    allPerks[`${perkData.eventId}_${perkData.userId}`] = userEventPerks;
-    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
-    
-    return { 
-        success: true, 
-        message: 'Perk redeemed successfully!',
-        perk: userEventPerks[perkIndex]
-    };
-}
-
-
 // Export functions for global use
 window.EventManager = {
     initializeEvents,
     getAllEvents,
     getEventById,
     isUserRegistered,
-    registerForEvent, // Güncellendi
+    registerForEvent,
     getUserRegistration,
-    checkInUser, // Güncellendi
+    checkInUser,
     getEventStatistics,
     getAllEventsStatistics,
     isAdmin,
     verifyAdminCode,
     getUserRegisteredEvents,
-    generatePerkQRCode, 
-    redeemPerk,         
-    ADMIN_CODE
+    ADMIN_CODE,
+    generatePerkQRCode,
+    redeemPerk
 };
