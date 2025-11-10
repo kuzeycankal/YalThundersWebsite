@@ -596,31 +596,35 @@
          * YENİ: Yaka Kartı HTML'ini oluşturur
          */
         function getBadgeHTML(reg) {
-            // Not: Logoyu indirebilmek için 'src' yolunun göreceli değil, tam (absolute) olması gerekebilir.
-            // Şimdilik göreceli bırakıyoruz.
             return `
-                <div class="yal-badge" style="width: 320px; margin: 0;">
-                    <div class="badge-header">
-                        <img src="yal_thunders_logo.png" alt="Logo" style="width: 30px; height: 30px;">
-                        <span>YAL THUNDERS KICK-OFF</span>
+                <div class="yal-badge-physical">
+                    <div class="badge-phys-header">
+                        <img src="yal_thunders_logo.png" class="badge-phys-logo">
+                        <div class="badge-phys-event">
+                            <span>FRC 2026</span>
+                            <strong>KICK-OFF EVENT</strong>
+                        </div>
                     </div>
-                    <div class="badge-body">
-                        <div class="badge-name">${reg.userName}</div>
-                        <div class="badge-role">${reg.role || 'Participant'}</div>
-                        <div class="badge-team">Team: ${reg.teamNumber || 'N/A'}</div>
+                    <div class="badge-phys-body">
+                        <div class="badge-phys-name">${reg.userName}</div>
+                        <div class="badge-phys-role">${reg.role || 'Participant'}</div>
                     </div>
-                    <div class="badge-footer">
-                        <i class="fa-solid fa-check-circle"></i> CHECKED-IN
+                    <div class="badge-phys-qr-container">
+                        <div id="badge-qr-code"></div> 
+                    </div>
+                    <div class="badge-phys-footer">
+                        <strong>Team:</strong> ${reg.teamNumber || 'N/A'}
                     </div>
                 </div>`;
         }
 
         /**
-         * YENİ: Yaka Kartını PNG olarak indirir
+         * YENİ: Yaka Kartını (içinde QR kod üreterek) PNG olarak indirir
          */
         function downloadBadge(regObject) {
-            if (typeof html2canvas === 'undefined') {
-                alert('Hata: İndirme kütüphanesi (html2canvas) yüklenemedi.');
+            // Gerekli kütüphaneler yüklü mü?
+            if (typeof html2canvas === 'undefined' || typeof QRCode === 'undefined') {
+                alert('Hata: Gerekli kütüphaneler (html2canvas, QRCode) yüklenemedi.');
                 return;
             }
 
@@ -628,34 +632,52 @@
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'fixed';
             tempDiv.style.left = '-9999px'; // Ekranın dışına at
-            tempDiv.style.fontFamily = "'Cabin', sans-serif"; // Fontu zorla
+            tempDiv.style.fontFamily = "'Cabin', sans-serif"; 
             document.body.appendChild(tempDiv);
             
-            // Yaka kartı HTML'ini bas ve stilleri uygula
+            // 2. Yeni yaka kartı HTML'ini içine bas
             tempDiv.innerHTML = getBadgeHTML(regObject);
-            const badgeElement = tempDiv.querySelector('.yal-badge');
-            
-            // 2. html2canvas ile bu gizli div'in "fotoğrafını" çek
-            html2canvas(badgeElement, { 
-                useCORS: true, // Logoyu yüklemesi için
-                backgroundColor: null, // Arka planı transparan yap
-                logging: true // Hata ayıklama için
-            }).then(canvas => {
-                // 3. Fotoğrafı PNG linkine çevir
-                const link = document.createElement('a');
-                link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`; // Dosya adı
-                link.href = canvas.toDataURL("image/png");
-                
-                // 4. İndirmeyi başlat
-                link.click();
-                
-                // 5. Gizli div'i temizle
-                document.body.removeChild(tempDiv);
-            }).catch(err => {
-                console.error("Yaka kartı indirme hatası:", err);
-                alert("Yaka kartı indirilirken bir hata oluştu.");
-                document.body.removeChild(tempDiv);
+            const badgeElement = tempDiv.querySelector('.yal-badge-physical');
+            const qrElement = tempDiv.querySelector('#badge-qr-code'); // QR kodunun basılacağı yeri bul
+
+            // 3. QR kodun verisini oluştur (kullanıcının kendi verisi)
+            const qrData = JSON.stringify({
+                eventId: regObject.eventId,
+                userId: regObject.userId,
+                registrationId: regObject.registrationId
             });
+
+            // 4. Gizli div'in içine QR kodu ÜRET
+            new QRCode(qrElement, {
+                text: qrData,
+                width: 180, // Yaka kartı için ideal boyut
+                height: 180,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // 5. QR kodun render olması için çok kısa bekle, SONRA resme çevir
+            setTimeout(() => {
+                html2canvas(badgeElement, { 
+                    useCORS: true, // Logoyu düzgün yüklemesi için
+                    backgroundColor: '#ffffff', // Arka planı beyaz yap
+                    logging: true // Hata ayıklama için
+                }).then(canvas => {
+                    // 6. Resmi PNG linkine çevir ve indir
+                    const link = document.createElement('a');
+                    link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`; // Dosya adı
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                    
+                    // 7. Gizli div'i temizle
+                    document.body.removeChild(tempDiv);
+                }).catch(err => {
+                    console.error("Yaka kartı indirme hatası:", err);
+                    alert("Yaka kartı indirilirken bir hata oluştu.");
+                    document.body.removeChild(tempDiv);
+                });
+            }, 100); // 100ms gecikme (QR kodun çizilmesi için)
         }
         
         /**

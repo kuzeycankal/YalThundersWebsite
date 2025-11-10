@@ -3754,3 +3754,96 @@ html.is-animating .swup-transition-container {
 .btn-download-badge i {
     margin-right: 5px;
 }
+
+/* ========================================= */
+/* YENİ FİZİKSEL YAKA KARTI TASARIMI (İNDİRMEK İÇİN) */
+/* ========================================= */
+
+.yal-badge-physical {
+    width: 320px; /* Standart yaka kartı boyutu (piksel) */
+    height: 504px; /* Dikey oran */
+    border: 1px solid #ddd;
+    background-color: #ffffff;
+    font-family: 'Cabin', sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative; /* Ekran dışında render için */
+}
+
+.badge-phys-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: var(--yal-green-primary, #2d5a3d);
+    color: white;
+}
+
+.badge-phys-logo {
+    width: 45px;
+    height: 45px;
+}
+
+.badge-phys-event {
+    text-align: right;
+    font-weight: 700;
+}
+
+.badge-phys-event span {
+    font-size: 0.9em;
+    opacity: 0.8;
+    display: block;
+}
+
+.badge-phys-event strong {
+    font-size: 1.1em;
+    letter-spacing: 1px;
+}
+
+.badge-phys-body {
+    padding: 30px 20px 20px 20px;
+    text-align: center;
+}
+
+.badge-phys-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1em; /* İsim büyük ve net */
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 8px;
+    word-wrap: break-word;
+}
+
+.badge-phys-role {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: var(--yal-green-light, #4a7c59);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.badge-phys-qr-container {
+    flex-grow: 1; /* Kalan boşluğu doldur */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #ffffff;
+}
+
+/* Bu div'in içine qrcode.js kütüphanesi QR kodu basacak */
+#badge-qr-code {
+    padding: 10px; /* QR kod etrafında beyaz boşluk */
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.badge-phys-footer {
+    padding: 15px 20px;
+    background-color: #f4f4f4;
+    text-align: center;
+    font-size: 1.1em;
+    color: #333;
+    border-top: 1px solid #ddd;
+}
