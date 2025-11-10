@@ -305,6 +305,108 @@ if (typeof document !== 'undefined') {
     });
 }
 
+// NEW Storage Key
+const EVENT_PERKS_KEY = 'yal_event_perks';
+
+/**
+ * NEW FUNCTION 1: Generates a single-use Perk QR Code
+ * (e.g., 'meal', 'drink', 'raffle')
+ */
+function generatePerkQRCode(eventId, user, perkType) {
+    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
+    
+    // Find perks for this user at this event
+    const userEventPerks = allPerks[`${eventId}_${user.id}`] || [];
+    
+    // Check if a perk of this type was already created
+    let existingPerk = userEventPerks.find(p => p.perkType === perkType);
+    
+    if (existingPerk) {
+        // Already created, return the existing QR data (prevents re-creation)
+        console.log('Existing perk found:', existingPerk.perkId);
+        return { 
+            success: true, 
+            qrData: JSON.stringify(existingPerk), 
+            used: existingPerk.used 
+        };
+    }
+
+    // Create a new perk
+    const newPerk = {
+        eventId: eventId,
+        userId: user.id,
+        userName: user.name, // For the admin to see
+        perkType: perkType, // 'meal'
+        perkId: `${perkType}-${user.id}-${Date.now()}`, // Unique ID
+        used: false,
+        redeemedAt: null
+    };
+    
+    // Save
+    userEventPerks.push(newPerk);
+    allPerks[`${eventId}_${user.id}`] = userEventPerks;
+    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
+    
+    console.log('New perk created:', newPerk.perkId);
+    return { 
+        success: true, 
+        qrData: JSON.stringify(newPerk), 
+        used: false 
+    };
+}
+
+/**
+ * NEW FUNCTION 2: Redeems (uses) a Perk QR Code
+ */
+function redeemPerk(qrDataString) {
+    let perkData;
+    try {
+        perkData = JSON.parse(qrDataString);
+        if (!perkData.eventId || !perkData.userId || !perkData.perkId) {
+             return { success: false, message: 'Invalid Perk Code (Missing Data)' };
+        }
+    } catch (e) {
+        return { success: false, message: 'Invalid Perk Code (JSON Error)' };
+    }
+    
+    const allPerks = localStorage.getItem(EVENT_PERKS_KEY) ? JSON.parse(localStorage.getItem(EVENT_PERKS_KEY)) : {};
+    const userEventPerks = allPerks[`${perkData.eventId}_${perkData.userId}`];
+
+    if (!userEventPerks) {
+        return { success: false, message: 'User not found for this perk' };
+    }
+
+    const perkIndex = userEventPerks.findIndex(p => p.perkId === perkData.perkId);
+
+    if (perkIndex === -1) {
+        return { success: false, message: 'Perk not found' };
+    }
+    
+    if (userEventPerks[perkIndex].used) {
+        // ALREADY USED!
+        return { 
+            success: false, 
+            message: 'This perk has already been used!',
+            perk: userEventPerks[perkIndex]
+        };
+    }
+
+    // MARK AS USED
+    userEventPerks[perkIndex].used = true;
+    userEventPerks[perkIndex].redeemedAt = new Date().toISOString();
+    
+    // Update database
+    allPerks[`${perkData.eventId}_${perkData.userId}`] = userEventPerks;
+    localStorage.setItem(EVENT_PERKS_KEY, JSON.stringify(allPerks));
+    
+    return { 
+        success: true, 
+        message: 'Perk redeemed successfully!',
+        perk: userEventPerks[perkIndex]
+    };
+}
+
+
 // Export functions for global use
 window.EventManager = {
     initializeEvents,
@@ -319,5 +421,7 @@ window.EventManager = {
     isAdmin,
     verifyAdminCode,
     getUserRegisteredEvents,
+    generatePerkQRCode, 
+    redeemPerk,         
     ADMIN_CODE
 };
