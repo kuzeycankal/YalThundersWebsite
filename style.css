@@ -3873,3 +3873,106 @@ html.is-animating .swup-transition-container {
 .btn-event-hub i {
     margin-right: 8px;
 }
+
+
+
+/* ========================================= */
+/* EVENT HUB STYLES (event-hub.html için)    */
+/* ========================================= */
+
+.event-hub {
+    max-width: 900px;
+    margin: 40px auto;
+    background-color: var(--color-bg-secondary);
+    border-radius: 15px;
+    padding: 25px 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 8px 25px var(--color-shadow-light);
+    border: 2px solid var(--yal-green-accent);
+}
+
+.event-hub-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--color-bg-primary);
+}
+.event-hub-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    color: var(--color-text-header);
+    margin: 0 0 10px 0;
+}
+.event-hub-header p {
+    font-size: 1.1em;
+    color: var(--color-text-secondary);
+    margin: 0;
+}
+
+.event-hub-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.hub-card {
+    background-color: var(--color-bg-primary);
+    border-radius: 10px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid var(--color-bg-primary);
+}
+.hub-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--yal-green-accent);
+}
+
+.hub-card.disabled {
+    opacity: 0.6;
+    transform: none;
+    border-color: var(--color-bg-primary);
+}
+
+.hub-icon {
+    font-size: 2.5em;
+    color: var(--color-text-header);
+    margin-bottom: 15px;
+}
+
+.hub-card h4 {
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.3em;
+    color: var(--color-text-header);
+    margin: 0 0 10px 0;
+}
+.hub-card p {
+    font-size: 0.95em;
+    color: var(--color-text-secondary);
+    margin-bottom: 20px;
+    min-height: 40px;
+}
+
+.btn-hub {
+    background: linear-gradient(135deg, var(--color-text-header), var(--color-text-primary));
+    color: var(--color-white);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-family: 'Cabin', sans-serif;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+.btn-hub:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--color-shadow-dark);
+}
+.btn-hub:disabled {
+    background: var(--color-text-secondary);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
