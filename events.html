@@ -142,9 +142,13 @@
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
+        // --- DÜZELTME BAŞLANGICI: Tarayıcı Değişkenleri ---
+        let checkInScanner = null;  // Giriş tarayıcısı için ayrı
+        let mealScanner = null;     // Yemek tarayıcısı için ayrı
+        let currentScanner = null;  // O an hangisi aktifse onu tutar
+        // --- DÜZELTME SONU ---
+
         let currentQRCode = null;
-        let html5QrcodeScanner = null;
-        
         let currentUser = null;
         let userProfile = null;
         const eventId = 'kickoff-2026'; 
@@ -227,14 +231,11 @@
             document.getElementById('qrModalTitle').innerHTML = `<i class="fa-solid fa-qrcode"></i> Your Event QR Code`;
             document.getElementById('qrModalInfo').textContent = 'Show this QR code at the event entrance for check-in.';
             
-            // --- HATA DÜZELTME 1 BURADA ---
-            // 'registration' objesinde eventId yok, global 'eventId' değişkenini kullan
             const qrData = JSON.stringify({
-                eventId: eventId, // registration.eventId DEĞİL
+                eventId: eventId, // Global eventId'yi kullan
                 userId: registration.userId,
                 registrationId: registration.registrationId
             });
-            // -------------------------------
             
             try {
                 currentQRCode = new QRCode(container, {
@@ -263,22 +264,33 @@
             }
         }
         
-        function toggleAdminPanel() {
+        // --- DÜZELTME BAŞLANGICI: Tarayıcı Kontrol Fonksiyonları ---
+
+        async function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const isOpen = panel.style.display === 'block';
             if (isOpen) {
                 panel.style.display = 'none';
-                if (html5QrcodeScanner) {
-                    try { html5QrcodeScanner.clear(); } catch(e) {}
-                    html5QrcodeScanner = null;
+                // Paneli kapatırken AKTİF olan tarayıcıyı durdur
+                if (currentScanner) { 
+                    try { 
+                        await currentScanner.stop(); 
+                        console.log("Active scanner stopped.");
+                    } catch(e) {
+                        console.warn("Scanner stop failed, was likely already stopped.", e);
+                    }
+                    currentScanner = null;
                 }
+                // Hafızadaki objeleri temizle
+                checkInScanner = null;
+                mealScanner = null;
             } else {
                 panel.style.display = 'block';
-                loadAdminTab('attendees');
+                loadAdminTab('attendees'); // Varsayılan sekme
             }
         }
         
-        function loadAdminTab(tabName) {
+        async function loadAdminTab(tabName) {
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.tab === tabName) {
@@ -286,9 +298,15 @@
                 }
             });
             
-            if (html5QrcodeScanner) {
-                try { html5QrcodeScanner.clear(); } catch(e) {}
-                html5QrcodeScanner = null;
+            // Sekme değiştirirken AKTİF olan tarayıcıyı durdur
+            if (currentScanner) {
+                try { 
+                    await currentScanner.stop(); 
+                    console.log("Switching tabs, scanner stopped.");
+                } catch(e) { 
+                    console.warn("Scanner stop failed, was likely already stopped.", e);
+                }
+                currentScanner = null;
             }
             
             const content = document.getElementById('adminTabContent');
@@ -361,14 +379,22 @@
                 </div>
             `;
             setTimeout(() => {
-                html5QrcodeScanner = new Html5Qrcode("checkin-qr-reader"); 
-                html5QrcodeScanner.start(
-                    { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                    onScanSuccess, onScanError
-                ).catch(err => {
+                try {
+                    // Tarayıcı objesini sadece yoksa oluştur
+                    if (!checkInScanner) {
+                        console.log("Creating new Check-in scanner instance");
+                        checkInScanner = new Html5Qrcode("checkin-qr-reader");
+                    }
+                    checkInScanner.start(
+                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        onScanSuccess, onScanError
+                    );
+                    currentScanner = checkInScanner; // Aktif tarayıcıyı ayarla
+                } catch (err) {
+                    console.error("Check-in scanner start error:", err);
                     document.getElementById('scan-result').innerHTML = 
                         '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
-                });
+                }
             }, 100);
         }
         
@@ -476,14 +502,11 @@
             const badgeElement = tempDiv.querySelector('.yal-badge-physical');
             const qrElement = tempDiv.querySelector('#badge-qr-code');
             
-            // --- HATA DÜZELTME 2 BURADA ---
-            // 'regObject' objesinde eventId yok, global 'eventId' değişkenini kullan
             const qrData = JSON.stringify({
-                eventId: eventId, // regObject.eventId DEĞİL
+                eventId: eventId, // Global eventId'yi kullan
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
-            // -------------------------------
 
             new QRCode(qrElement, {
                 text: qrData,
@@ -520,15 +543,23 @@
                 </div>
             `;
             setTimeout(() => {
-                html5QrcodeScanner = new Html5Qrcode("meal-qr-reader"); 
-                html5QrcodeScanner.start(
-                    { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                    onMealScanSuccess, 
-                    onScanError
-                ).catch(err => {
+                try {
+                    // Tarayıcı objesini sadece yoksa oluştur
+                    if (!mealScanner) {
+                        console.log("Creating new Meal scanner instance");
+                        mealScanner = new Html5Qrcode("meal-qr-reader");
+                    }
+                    mealScanner.start(
+                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        onMealScanSuccess, 
+                        onScanError
+                    );
+                    currentScanner = mealScanner; // Aktif tarayıcıyı ayarla
+                } catch (err) {
+                    console.error("Meal scanner start error:", err);
                     document.getElementById('meal-scan-result').innerHTML = 
                         '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
-                });
+                }
             }, 100);
         }
 
@@ -558,6 +589,9 @@
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             }
         }
+        
+        // --- DÜZELTME SONU ---
+
         
         /**
          * Page Load Management
