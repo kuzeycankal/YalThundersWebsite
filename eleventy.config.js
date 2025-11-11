@@ -5,17 +5,22 @@ module.exports = function(eleventyConfig) {
     
     let md = new markdownIt({ html: true, breaks: true, linkify: true });
 
-    // --- YENİ SİSTEM İÇİN PASSTHROUGH AYARLARI ---
-    // Yeni Firebase JS dosyalarını kopyala
+    // --- YENİ FIREBASE SİSTEMİ İÇİN GEREKLİ KOPYALAMALAR ---
+    // Bu dosyalar, sitemizin "import" komutlarını çalıştırabilmesi için
+    // ana dizine kopyalanmalıdır.
     eleventyConfig.addPassthroughCopy("firebase-init.js");
     eleventyConfig.addPassthroughCopy("auth-firebase.js");
     eleventyConfig.addPassthroughCopy("event-manager-firebase.js");
     
-    // ESKİ JS kopyalamalarını kaldırıyoruz (çakışma olmasın)
+    // --- ESKİ DOSYALARI KOPYALAMAYI DURDUR ---
+    // Bu satırlar, eski (artık silinmiş olan) localStorage
+    // tabanlı .js dosyaları içindi. Çakışmayı önlemek için
+    // bunları "yorum satırı" haline getirdik veya sildik.
     // eleventyConfig.addPassthroughCopy("auth.js");
-    // eleventyConfig.addPassthroughCopy("*.js"); // Bu satır en önemlisi
+    // eleventyConfig.addPassthroughCopy("event-manager.js");
 
-    // Diğer dosyaları kopyala (Senin orijinal ayarların)
+    // --- SENİN MEVCUT DİĞER KOPYALAMALARIN ---
+    // (Bunlar sitenin geri kalanının çalışması için gerekli)
     eleventyConfig.addPassthroughCopy("style.css");
     eleventyConfig.addPassthroughCopy("*.png");
     eleventyConfig.addPassthroughCopy("*.jpg");
