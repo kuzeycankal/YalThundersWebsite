@@ -1,4 +1,5 @@
 // event-manager-firebase.js
+// Imports functions from Firebase CDN and our local 'firebase-init.js'
 import { db } from "./firebase-init.js";
 import { 
     doc, 
@@ -10,14 +11,20 @@ import {
     getDocs 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Firestore Data Paths:
+// --- Firestore Data Paths ---
 // /users/{userId} -> User profile (name, admin, event counts)
 // /events/{eventId}/registrations/{userId} -> User's registration for an event (role, team, checkin status)
 // /perks/{perkId} -> Single-use vouchers (meal, etc.)
 
+/**
+ * Registers a user for a specific event in Firestore.
+ */
 export async function registerForEvent(eventId, user, profile, extraData) {
-    if (!user) return { success: false, message: 'You must be logged in.' };
+    if (!user || !profile) {
+        return { success: false, message: 'You must be logged in to register.' };
+    }
     
+    // Create a reference to where the registration will be stored
     const regRef = doc(db, "events", eventId, "registrations", user.uid);
     
     const docSnap = await getDoc(regRef);
@@ -25,21 +32,24 @@ export async function registerForEvent(eventId, user, profile, extraData) {
         return { success: false, message: 'You are already registered for this event.' };
     }
 
+    // Prepare the data to be saved
     const registrationData = {
         userId: user.uid,
-        userName: profile.name, // Get name from main profile
+        userName: profile.name, // Get name from the main user profile
         userEmail: user.email,
         role: extraData.role,
         teamNumber: extraData.teamNumber,
         registeredAt: new Date().toISOString(),
         checkedIn: false,
         checkInTime: null,
-        registrationId: `${eventId}-${user.uid}-${Date.now()}`
+        registrationId: `${eventId}-${user.uid}-${Date.now()}` // Unique ID for the QR code
     };
 
     try {
+        // Save the registration document
         await setDoc(regRef, registrationData);
         
+        // Also update the main user profile to increment their registered event count
         const userRef = doc(db, "users", user.uid);
         await updateDoc(userRef, {
             registeredEvents: increment(1)
@@ -56,6 +66,9 @@ export async function registerForEvent(eventId, user, profile, extraData) {
     }
 }
 
+/**
+ * Fetches a user's specific registration document for an event.
+ */
 export async function getUserRegistration(eventId, userId) {
     if (!userId) return null;
     const regRef = doc(db, "events", eventId, "registrations", userId);
@@ -63,6 +76,9 @@ export async function getUserRegistration(eventId, userId) {
     return docSnap.exists() ? docSnap.data() : null;
 }
 
+/**
+ * Checks if a user is registered for an event (quicker than fetching the whole doc).
+ */
 export async function isUserRegistered(eventId, userId) {
     if (!userId) return false;
     const regRef = doc(db, "events", eventId, "registrations", userId);
@@ -70,6 +86,9 @@ export async function isUserRegistered(eventId, userId) {
     return docSnap.exists();
 }
 
+/**
+ * Checks in a user by validating their QR code data and updating Firestore.
+ */
 export async function checkInUser(qrDataString) {
     let qrData;
     try {
@@ -89,26 +108,31 @@ export async function checkInUser(qrDataString) {
         if (!docSnap.exists()) {
             return { success: false, message: 'Registration not found' };
         }
+        
         const registration = docSnap.data();
         
+        // Check if already checked in
         if (registration.checkedIn) {
             return { 
                 success: false, 
                 message: 'Already checked in',
-                registration: registration
+                registration: registration // Still return data for the badge
             };
         }
 
+        // --- Mark as checked in ---
         await updateDoc(regRef, {
             checkedIn: true,
             checkInTime: new Date().toISOString()
         });
         
+        // --- Increment the user's main profile 'attendedEvents' counter ---
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, {
             attendedEvents: increment(1)
         });
         
+        // Return the newly updated registration data
         const updatedRegistration = { ...registration, checkedIn: true };
         return {
             success: true,
@@ -122,31 +146,37 @@ export async function checkInUser(qrDataString) {
     }
 }
 
+/**
+ * Generates or retrieves a single-use perk (like a meal voucher).
+ */
 export async function generatePerkQRCode(eventId, user, profile, perkType) {
-    if (!user) return { success: false, message: "User not found." };
+    if (!user || !profile) return { success: false, message: "User or profile not found." };
 
+    // Create a unique ID for this specific perk (e.g., kickoff-2026_USERID_meal)
     const perkId = `${eventId}_${user.uid}_${perkType}`;
-    const perkRef = doc(db, "perks", perkId);
+    const perkRef = doc(db, "perks", perkId); // All perks are stored in one collection
 
     try {
         const docSnap = await getDoc(perkRef);
         
+        // If perk voucher already exists, just return it
         if (docSnap.exists()) {
             console.log("Existing perk found:", perkId);
             const existingPerk = docSnap.data();
             return { 
                 success: true, 
-                qrData: JSON.stringify(existingPerk), 
+                qrData: JSON.stringify(existingPerk), // Return the existing QR data
                 used: existingPerk.used 
             };
         }
 
+        // Perk doesn't exist, create a new one
         const newPerk = {
             perkId: perkId,
             eventId: eventId,
             userId: user.uid,
             userName: profile.name, // Get name from profile
-            perkType: perkType,
+            perkType: perkType, // e.g., 'meal'
             used: false,
             redeemedAt: null,
             createdAt: new Date().toISOString()
@@ -167,6 +197,9 @@ export async function generatePerkQRCode(eventId, user, profile, perkType) {
     }
 }
 
+/**
+ * Redeems (uses) a single-use perk QR code.
+ */
 export async function redeemPerk(qrDataString) {
     let perkData;
     try {
@@ -185,18 +218,22 @@ export async function redeemPerk(qrDataString) {
         if (!docSnap.exists()) {
             return { success: false, message: 'Perk not found' };
         }
+        
         const perk = docSnap.data();
         if (perk.used) {
             return { 
                 success: false, 
                 message: 'This perk has already been used!',
-                perk: perk
+                perk: perk // Still return data to show who used it
             };
         }
+
+        // Mark as used
         await updateDoc(perkRef, {
             used: true,
             redeemedAt: new Date().toISOString()
         });
+        
         const updatedPerk = { ...perk, used: true };
         return { 
             success: true, 
@@ -209,6 +246,9 @@ export async function redeemPerk(qrDataString) {
     }
 }
 
+/**
+ * [Admin] Fetches all registrations for a specific event.
+ */
 export async function getAllRegistrations(eventId) {
     try {
         const registrationsRef = collection(db, "events", eventId, "registrations");
