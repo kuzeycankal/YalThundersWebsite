@@ -142,9 +142,9 @@
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
-        // --- DÜZELTME BAŞLANGICI: Tarayıcı Değişkenleri ---
-        let checkInScanner = null;  // Giriş tarayıcısı için
-        let mealScanner = null;     // Yemek tarayıcısı için
+        // --- İKİLİ OKUMA DÜZELTMESİ (KAMERA) ---
+        let checkInScanner = null;
+        let mealScanner = null;
         // --- DÜZELTME SONU ---
 
         let currentQRCode = null;
@@ -231,7 +231,7 @@
             document.getElementById('qrModalInfo').textContent = 'Show this QR code at the event entrance for check-in.';
             
             const qrData = JSON.stringify({
-                eventId: eventId, // Global eventId'yi kullan
+                eventId: eventId,
                 userId: registration.userId,
                 registrationId: registration.registrationId
             });
@@ -263,7 +263,7 @@
             }
         }
         
-        // --- DÜZELTME BAŞLANGICI: Tarayıcı Kontrol Fonksiyonları ---
+        // --- İKİLİ OKUMA FİX (async/await) ---
 
         /**
          * YARDIMCI: Aktif olan TÜM tarayıcıları güvenle durdurur.
@@ -271,20 +271,49 @@
         async function stopAllScanners() {
             console.log("Stopping all scanners...");
             const scanners = [checkInScanner, mealScanner];
+            
+            // html5-qrcode.min.js yüklendiğinde, 'Html5QrcodeScannerState'
+            // objesini global (window) scope'a ekler.
+            // Onu kontrol ediyoruz.
+            const stateReady = typeof Html5QrcodeScannerState !== 'undefined';
+
             for (const scanner of scanners) {
-                if (scanner && scanner.getState() === Html5QrcodeScannerState.SCANNING) {
-                    try {
-                        await scanner.stop();
-                        console.log("Scanner instance stopped.");
-                    } catch (e) {
-                        console.warn("Scanner stop failed, maybe already stopped.", e);
+                if (scanner) {
+                    let isScanning = false;
+                    
+                    // Tarayıcının durumunu (çalışıyor mu) güvenle kontrol et
+                    if (stateReady) {
+                        try {
+                            isScanning = scanner.getState() === Html5QrcodeScannerState.SCANNING;
+                        } catch (e) {
+                            console.warn("Scanner state check failed (likely already stopped).");
+                            isScanning = false;
+                        }
+                    } else if (scanner.getState) {
+                        // Eğer state objesi yoksa (eski/farklı versiyon?), yine de dene
+                        try { isScanning = scanner.getState() === 2; } // 2 genelde SCANNING demektir
+                        catch(e) { isScanning = false; }
+                    } else {
+                        // Durum kontrol edilemiyorsa, çalıştığını varsay ve durdurmayı dene
+                        isScanning = true; 
+                    }
+
+                    if (isScanning) {
+                        try {
+                            await scanner.stop();
+                            console.log("Scanner instance stopped successfully.");
+                        } catch (e) {
+                            console.warn("Scanner stop failed:", e);
+                        }
                     }
                 }
             }
             // Objeleri temizle
             checkInScanner = null;
             mealScanner = null;
+            console.log("All scanner instances cleared.");
         }
+
 
         /**
          * Admin panelini açar/kapatır.
@@ -317,6 +346,7 @@
             
             const content = document.getElementById('adminTabContent');
             
+            // Yeni sekmeyi yükle
             switch(tabName) {
                 case 'attendees':
                     loadAttendeesTab(content);
@@ -332,6 +362,8 @@
                     break;
             }
         }
+        
+        // --- (Diğer fonksiyonlar 'loadAttendeesTab', 'onScanSuccess' vb. aynı kalır) ---
         
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
@@ -375,9 +407,6 @@
             container.innerHTML = html;
         }
         
-        /**
-         * Giriş (Check-in) tarayıcısını yükler ve başlatır.
-         */
         function loadScannerTab(container) {
             container.innerHTML = `
                 <div class="scanner-container">
@@ -389,7 +418,6 @@
             `;
             setTimeout(() => {
                 try {
-                    // Tarayıcı objesini oluştur
                     console.log("Creating new Check-in scanner instance");
                     checkInScanner = new Html5Qrcode("checkin-qr-reader");
                     
@@ -542,9 +570,6 @@
             }, 100); 
         }
 
-        /**
-         * Yemek (Meal) tarayıcısını yükler ve başlatır.
-         */
         function loadMealScannerTab(container) {
             container.innerHTML = `
                 <div class="scanner-container">
@@ -556,7 +581,6 @@
             `;
             setTimeout(() => {
                 try {
-                    // Tarayıcı objesini oluştur
                     console.log("Creating new Meal scanner instance");
                     mealScanner = new Html5Qrcode("meal-qr-reader"); 
                     
@@ -601,9 +625,6 @@
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             }
         }
-        
-        // --- DÜZELTME SONU ---
-
         
         /**
          * Page Load Management
