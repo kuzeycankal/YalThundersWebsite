@@ -5,17 +5,26 @@ module.exports = function(eleventyConfig) {
     
     let md = new markdownIt({ html: true, breaks: true, linkify: true });
 
-    // Passthrough Copy: CSS, Ana Resimler VE news klasörünü olduğu gibi kopyala
+    // --- YENİ SİSTEM İÇİN PASSTHROUGH AYARLARI ---
+    // Yeni Firebase JS dosyalarını kopyala
+    eleventyConfig.addPassthroughCopy("firebase-init.js");
+    eleventyConfig.addPassthroughCopy("auth-firebase.js");
+    eleventyConfig.addPassthroughCopy("event-manager-firebase.js");
+    
+    // ESKİ JS kopyalamalarını kaldırıyoruz (çakışma olmasın)
+    // eleventyConfig.addPassthroughCopy("auth.js");
+    // eleventyConfig.addPassthroughCopy("*.js"); // Bu satır en önemlisi
+
+    // Diğer dosyaları kopyala (Senin orijinal ayarların)
     eleventyConfig.addPassthroughCopy("style.css");
     eleventyConfig.addPassthroughCopy("*.png");
     eleventyConfig.addPassthroughCopy("*.jpg");
     eleventyConfig.addPassthroughCopy("*.jpeg");
-    eleventyConfig.addPassthroughCopy("news"); // <-- MANUEL HABER KLASÖRÜNÜ KOPYALAR
-    eleventyConfig.addPassthroughCopy("auth.js");
-    eleventyConfig.addPassthroughCopy("*.js");
+    eleventyConfig.addPassthroughCopy("news");
     eleventyConfig.addPassthroughCopy("takimfoto.jpg");
+    // -----------------------------------------------
 
-    // Liquid Filtreleri
+    // Liquid Filtreleri (Senin orijinal ayarların)
     eleventyConfig.addLiquidFilter("postDate", (dateObj) => {
         if (!dateObj) return "Tarih Yok"; 
         try {
@@ -32,9 +41,10 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addLiquidFilter("url_encode", (str) => encodeURIComponent(str || ''));
     eleventyConfig.addFilter("absoluteUrl", (url, base = "https://kuzeycankal.github.io/YalThundersWebsite/") => new URL(url, base).href);
 
-    // .html uzantılı dosyaları şablon olarak tanımasını sağlıyoruz
+    // .html uzantılı dosyaları şablon olarak tanı
     eleventyConfig.addTemplateFormats("html");
 
+    // (Senin orijinal ayarların)
     return {
         dir: {
             input: ".",
@@ -44,6 +54,6 @@ module.exports = function(eleventyConfig) {
         htmlTemplateEngine: "liquid", 
         markdownTemplateEngine: "liquid",
         passthroughFileCopy: true,
-        templateFormats: ["html", "md"] // .html ve .md dosyalarını işle
+        templateFormats: ["html", "md"]
     };
 };
