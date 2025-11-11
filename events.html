@@ -82,12 +82,10 @@
             </div>
             <div id="adminTabContent" class="admin-tab-content"></div>
         </div>
-
         <div class="events-header">
             <h2>Upcoming Events</h2>
             <div id="adminButtonContainer"></div>
         </div>
-
         <div class="events-list">
             <div class="event-card kickoff-card">
                 <div class="event-image-container">
@@ -119,7 +117,6 @@
                 </div>
             </div>
         </div>
-
         <div id="qrModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <div class="modal-header">
@@ -138,60 +135,40 @@
             </div>
         </div>
     </main>
-    
     <footer class="site-footer-new">
         </footer>
     
     <script type="module">
-        // Bu, bu sayfaya özel 'controller' script'idir
-        
-        // Gerekli dosyaları import et (Yollar / ile başlamalı)
-        // Bu dosyalar eleventy.config.js'de kopyalanıyor olmalı
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
         let currentQRCode = null;
         let html5QrcodeScanner = null;
         
-        // Global değişkenler
         let currentUser = null;
         let userProfile = null;
-        const eventId = 'kickoff-2026'; // Bu sayfa sadece bu etkinliği yönetiyor
+        const eventId = 'kickoff-2026'; 
 
-        /**
-         * Sayfa ilk yüklendiğinde veya Auth hazır olduğunda çalışır
-         */
         async function initPage() {
-            // 1. Kullanıcı bilgilerini global değişkenlere ata
             currentUser = Auth.getCurrentUser();
             userProfile = Auth.getCurrentUserProfile();
             
-            // 2. Tema Kodu
             initTheme();
-
-            // 3. Sayaç Kodu
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
-
-            // 4. Admin Paneli ve Buton Durumları
             await initEventManagement();
-            
-            // 5. Statik butonlara dinleyicileri ata
             attachStaticListeners();
         }
         
         async function initEventManagement() {
-            // Admin menüsünü göster (eğer adminse)
             if (currentUser && userProfile && userProfile.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
                     adminContainer.innerHTML = `<button id="adminOpenBtn" class="btn-admin"><i class="fa-solid fa-shield-halved"></i> Admin Panel</button>`;
-                    // Dinamik olarak eklenen butona listener ata
                     document.getElementById('adminOpenBtn').addEventListener('click', toggleAdminPanel);
                 }
             }
             
-            // Kullanıcı giriş yapmışsa buton durumunu güncelle
             if(currentUser) {
                 await updateEventStatus();
             }
@@ -199,21 +176,18 @@
         
         async function handleEventAction(e) {
             const eventId = e.currentTarget.dataset.eventId;
-            
             if (!currentUser) {
                 alert('Please login to register for events');
                 window.location.href = '/login.html'; 
                 return;
             }
             
-            // Firebase'den kontrol et (asenkron)
             const isRegistered = await Events.isUserRegistered(eventId, currentUser.uid);
             
             if (isRegistered) {
                 const registration = await Events.getUserRegistration(eventId, currentUser.uid);
                 showQRCode(registration);
             } else {
-                // İngilizce sayfa, İngilizce forma yönlendir
                 window.location.href = `/event-register.html?event=${eventId}`;
             }
         }
@@ -233,7 +207,6 @@
                 
                 if (registration.checkedIn) {
                     statusElement.innerHTML = `<div class="status-checked-in"><i class="fa-solid fa-check-circle"></i> Checked In</div>`;
-                    // İngilizce sayfa, İngilizce huba yönlendir
                     statusElement.innerHTML += `<a href="/event-hub.html?event=${eventId}" class="btn-event-hub"><i class="fa-solid fa-bolt"></i> Event Menu</a>`;
                 } else {
                     statusElement.innerHTML = `<div class="status-registered"><i class="fa-solid fa-ticket"></i> Registered</div>`;
@@ -254,13 +227,15 @@
             document.getElementById('qrModalTitle').innerHTML = `<i class="fa-solid fa-qrcode"></i> Your Event QR Code`;
             document.getElementById('qrModalInfo').textContent = 'Show this QR code at the event entrance for check-in.';
             
+            // --- HATA DÜZELTME 1 BURADA ---
+            // 'registration' objesinde eventId yok, global 'eventId' değişkenini kullan
             const qrData = JSON.stringify({
-                eventId: registration.eventId,
+                eventId: eventId, // registration.eventId DEĞİL
                 userId: registration.userId,
                 registrationId: registration.registrationId
             });
+            // -------------------------------
             
-            // QRCode (window.QRCode) global kütüphaneden geliyor
             try {
                 currentQRCode = new QRCode(container, {
                     text: qrData, width: 300, height: 300,
@@ -311,7 +286,6 @@
                 }
             });
             
-            // Tarayıcıyı her zaman temizle
             if (html5QrcodeScanner) {
                 try { html5QrcodeScanner.clear(); } catch(e) {}
                 html5QrcodeScanner = null;
@@ -337,7 +311,6 @@
         
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
-            // Firebase'den tüm kayıtları çek
             const registrations = await Events.getAllRegistrations(eventId);
             
             let html = '<div class="attendees-list">';
@@ -352,7 +325,6 @@
                 html += '<tbody>';
                 
                 registrations.forEach(reg => {
-                    // JSON verisini 'data-' attribute'üne güvenli bir şekilde ekle
                     const regJson = JSON.stringify(reg).replace(/'/g, "&apos;");
                     html += `<tr data-reg-json='${regJson}'>`;
                     html += `<td>${reg.userName || '-'}</td>`;
@@ -363,7 +335,7 @@
                     html += `<td>${reg.checkInTime ? new Date(reg.checkInTime).toLocaleString('en-US') : '-'}</td>`;
                     html += '<td>';
                     if (reg.checkedIn) {
-                        html += `<button class='btn-download-badge'>
+                        html += `<button class='btn-download-badge' data-username='${reg.userName}'>
                                     <i class="fa-solid fa-download"></i> Badge
                                  </button>`;
                     } else {
@@ -389,7 +361,6 @@
                 </div>
             `;
             setTimeout(() => {
-                // Html5Qrcode (window.Html5Qrcode) global kütüphaneden geliyor
                 html5QrcodeScanner = new Html5Qrcode("checkin-qr-reader"); 
                 html5QrcodeScanner.start(
                     { facingMode: "environment" }, { fps: 10, qrbox: 250 },
@@ -492,7 +463,6 @@
         }
 
         function downloadBadge(regObject) {
-            // html2canvas ve QRCode (window.) global kütüphanelerden geliyor
             if (typeof html2canvas === 'undefined' || typeof QRCode === 'undefined') {
                 alert('Error: Required libraries (html2canvas, QRCode) not loaded.');
                 return;
@@ -505,11 +475,16 @@
             tempDiv.innerHTML = getBadgeHTML(regObject);
             const badgeElement = tempDiv.querySelector('.yal-badge-physical');
             const qrElement = tempDiv.querySelector('#badge-qr-code');
+            
+            // --- HATA DÜZELTME 2 BURADA ---
+            // 'regObject' objesinde eventId yok, global 'eventId' değişkenini kullan
             const qrData = JSON.stringify({
-                eventId: regObject.eventId,
+                eventId: eventId, // regObject.eventId DEĞİL
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
+            // -------------------------------
+
             new QRCode(qrElement, {
                 text: qrData,
                 width: 180, height: 180,
@@ -590,34 +565,36 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Loaded. Waiting for auth state...");
             
-            // Auth hazır olduğunda sayfayı başlat
             document.addEventListener('authStateReady', () => {
                 console.log("Auth Ready. Calling initPage().");
                 initPage();
             });
             
-            // Eğer auth (cache'den) zaten hazırsa, bekleme, başlat
             if (Auth.isAuthReady()) {
                 console.log("Auth was already ready. Calling initPage().");
                 initPage();
             }
 
-            // Statik Buton Dinleyicileri (Sayfa başında bir kez ata)
+            // Static Button Listeners
+            attachStaticListeners();
+        });
+
+        function attachStaticListeners() {
             document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
             document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
-            document.getElementById('theme-toggle').addEventListener('click', () => {
-                initTheme(true); // 'true' parametresi 'toggle' olduğunu belirtir
-            });
+            document.getElementById('theme-toggle').addEventListener('click', () => initTheme(true));
             document.getElementById('registerBtn-kickoff-2026').addEventListener('click', handleEventAction);
+
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', (e) => loadAdminTab(e.currentTarget.dataset.tab));
             });
+            
             const adminCloseBtn = document.getElementById('adminCloseBtn');
             if (adminCloseBtn) {
                  adminCloseBtn.addEventListener('click', toggleAdminPanel);
             }
 
-            // Dinamik Buton Dinleyicisi (Yaka Kartı İndir)
+            // Dynamic Button Listener (Event delegation)
             document.getElementById('adminTabContent').addEventListener('click', (e) => {
                 const button = e.target.closest('.btn-download-badge');
                 if (button) {
@@ -626,36 +603,15 @@
                     downloadBadge(regData);
                 }
             });
-
-            // Mobil menü
             initMobileMenu();
-        });
+        }
         
-        // --- Helper Functions (DOM'a bağlı) ---
-
         function initTheme(toggle = false) {
             const storageKey = 'theme-preference';
             const toggleBtn = document.getElementById('theme-toggle');
-            
-            const getTheme = () => { 
-                return document.documentElement.getAttribute('data-theme') || 
-                       localStorage.getItem(storageKey) || 
-                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            }
-            const setTheme = (theme) => { 
-                document.documentElement.setAttribute('data-theme', theme); 
-                localStorage.setItem(storageKey, theme); 
-                updateIcon(theme); 
-            }
-            const updateIcon = (theme) => { 
-                if (toggleBtn) { 
-                    if (theme === 'dark') { 
-                        toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>'; 
-                    } else { 
-                        toggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>'; 
-                    } 
-                } 
-            }
+            const getTheme = () => { return document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+            const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
+            const updateIcon = (theme) => { if (toggleBtn) { if (theme === 'dark') { toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } }
             
             if (toggle) {
                 const currentTheme = getTheme();
@@ -698,23 +654,30 @@
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
-            if (menuToggle) {
+            if (menuToggle && !menuToggle.hasAttribute('data-listener-added')) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('active');
                     const icon = this.querySelector('i');
                     if (nav.classList.contains('active')) { icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); } else { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
                 });
+                menuToggle.setAttribute('data-listener-added', 'true');
             }
             dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('click', function(e) { if (window.innerWidth <= 1024) { e.preventDefault(); this.parentElement.classList.toggle('active'); } });
-            });
-            document.addEventListener('click', function(e) {
-                if (nav && menuToggle && !nav.contains(e.target) && !menuToggle.contains(e.target) && nav.classList.contains('active')) {
-                    nav.classList.remove('active');
-                    menuToggle.querySelector('i').classList.remove('fa-times');
-                    menuToggle.querySelector('i').classList.add('fa-bars');
+                if (!dropdown.hasAttribute('data-listener-added')) {
+                    dropdown.addEventListener('click', function(e) { if (window.innerWidth <= 1024) { e.preventDefault(); this.parentElement.classList.toggle('active'); } });
+                    dropdown.setAttribute('data-listener-added', 'true');
                 }
             });
+            if (!document.body.hasAttribute('data-body-listener-added')) {
+                document.addEventListener('click', function(e) {
+                    if (nav && menuToggle && !nav.contains(e.target) && !menuToggle.contains(e.target) && nav.classList.contains('active')) {
+                        nav.classList.remove('active');
+                        menuToggle.querySelector('i').classList.remove('fa-times');
+                        menuToggle.querySelector('i').classList.add('fa-bars');
+                    }
+                });
+                document.body.setAttribute('data-body-listener-added', 'true');
+            }
         }
         
         function updateMobileAuthButtons() {
