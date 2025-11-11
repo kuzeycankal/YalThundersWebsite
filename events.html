@@ -146,9 +146,8 @@ permalink: /events.html
         import * as Events from '/event-manager-firebase.js';
 
         // --- DÜZELTME BAŞLANGICI: Tarayıcı Değişkenleri ---
-        let checkInScanner = null;  // Giriş tarayıcısı için ayrı
-        let mealScanner = null;     // Yemek tarayıcısı için ayrı
-        let currentScanner = null;  // O an hangisi aktifse onu tutar
+        let checkInScanner = null;  // Giriş tarayıcısı için
+        let mealScanner = null;     // Yemek tarayıcısı için
         // --- DÜZELTME SONU ---
 
         let currentQRCode = null;
@@ -269,30 +268,45 @@ permalink: /events.html
         
         // --- DÜZELTME BAŞLANGICI: Tarayıcı Kontrol Fonksiyonları ---
 
+        /**
+         * YARDIMCI: Aktif olan TÜM tarayıcıları güvenle durdurur.
+         */
+        async function stopAllScanners() {
+            console.log("Stopping all scanners...");
+            const scanners = [checkInScanner, mealScanner];
+            for (const scanner of scanners) {
+                if (scanner && scanner.getState() === Html5QrcodeScannerState.SCANNING) {
+                    try {
+                        await scanner.stop();
+                        console.log("Scanner instance stopped.");
+                    } catch (e) {
+                        console.warn("Scanner stop failed, maybe already stopped.", e);
+                    }
+                }
+            }
+            // Objeleri temizle
+            checkInScanner = null;
+            mealScanner = null;
+        }
+
+        /**
+         * Admin panelini açar/kapatır.
+         */
         async function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const isOpen = panel.style.display === 'block';
             if (isOpen) {
                 panel.style.display = 'none';
-                // Paneli kapatırken AKTİF olan tarayıcıyı durdur
-                if (currentScanner) { 
-                    try { 
-                        await currentScanner.stop(); 
-                        console.log("Active scanner stopped.");
-                    } catch(e) {
-                        console.warn("Scanner stop failed, was likely already stopped.", e);
-                    }
-                    currentScanner = null;
-                }
-                // Hafızadaki objeleri temizle
-                checkInScanner = null;
-                mealScanner = null;
+                await stopAllScanners(); // Kapatırken tarayıcıları durdur
             } else {
                 panel.style.display = 'block';
-                loadAdminTab('attendees'); // Varsayılan sekme
+                loadAdminTab('attendees'); // Varsayılan sekmeyi yükle
             }
         }
         
+        /**
+         * Admin panelinde sekmeler arası geçiş yapar.
+         */
         async function loadAdminTab(tabName) {
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
@@ -301,16 +315,8 @@ permalink: /events.html
                 }
             });
             
-            // Sekme değiştirirken AKTİF olan tarayıcıyı durdur
-            if (currentScanner) {
-                try { 
-                    await currentScanner.stop(); 
-                    console.log("Switching tabs, scanner stopped.");
-                } catch(e) { 
-                    console.warn("Scanner stop failed, was likely already stopped.", e);
-                }
-                currentScanner = null;
-            }
+            // Sekme değiştirirken çalışan tüm tarayıcıları durdur
+            await stopAllScanners();
             
             const content = document.getElementById('adminTabContent');
             
@@ -372,6 +378,9 @@ permalink: /events.html
             container.innerHTML = html;
         }
         
+        /**
+         * Giriş (Check-in) tarayıcısını yükler ve başlatır.
+         */
         function loadScannerTab(container) {
             container.innerHTML = `
                 <div class="scanner-container">
@@ -383,20 +392,20 @@ permalink: /events.html
             `;
             setTimeout(() => {
                 try {
-                    // Tarayıcı objesini sadece yoksa oluştur
-                    if (!checkInScanner) {
-                        console.log("Creating new Check-in scanner instance");
-                        checkInScanner = new Html5Qrcode("checkin-qr-reader");
-                    }
+                    // Tarayıcı objesini oluştur
+                    console.log("Creating new Check-in scanner instance");
+                    checkInScanner = new Html5Qrcode("checkin-qr-reader");
+                    
                     checkInScanner.start(
                         { facingMode: "environment" }, { fps: 10, qrbox: 250 },
                         onScanSuccess, onScanError
-                    );
-                    currentScanner = checkInScanner; // Aktif tarayıcıyı ayarla
+                    ).catch(err => {
+                        console.error("Check-in scanner start error:", err);
+                        document.getElementById('scan-result').innerHTML = 
+                            '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
+                    });
                 } catch (err) {
-                    console.error("Check-in scanner start error:", err);
-                    document.getElementById('scan-result').innerHTML = 
-                        '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
+                    console.error("Check-in scanner init error:", err);
                 }
             }, 100);
         }
@@ -536,6 +545,9 @@ permalink: /events.html
             }, 100); 
         }
 
+        /**
+         * Yemek (Meal) tarayıcısını yükler ve başlatır.
+         */
         function loadMealScannerTab(container) {
             container.innerHTML = `
                 <div class="scanner-container">
@@ -547,21 +559,21 @@ permalink: /events.html
             `;
             setTimeout(() => {
                 try {
-                    // Tarayıcı objesini sadece yoksa oluştur
-                    if (!mealScanner) {
-                        console.log("Creating new Meal scanner instance");
-                        mealScanner = new Html5Qrcode("meal-qr-reader");
-                    }
+                    // Tarayıcı objesini oluştur
+                    console.log("Creating new Meal scanner instance");
+                    mealScanner = new Html5Qrcode("meal-qr-reader"); 
+                    
                     mealScanner.start(
                         { facingMode: "environment" }, { fps: 10, qrbox: 250 },
                         onMealScanSuccess, 
                         onScanError
-                    );
-                    currentScanner = mealScanner; // Aktif tarayıcıyı ayarla
+                    ).catch(err => {
+                        console.error("Meal scanner start error:", err);
+                        document.getElementById('meal-scan-result').innerHTML = 
+                            '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
+                    });
                 } catch (err) {
-                    console.error("Meal scanner start error:", err);
-                    document.getElementById('meal-scan-result').innerHTML = 
-                        '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
+                    console.error("Meal scanner init error:", err);
                 }
             }, 100);
         }
@@ -612,7 +624,6 @@ permalink: /events.html
                 initPage();
             }
 
-            // Static Button Listeners
             attachStaticListeners();
         });
 
@@ -631,7 +642,6 @@ permalink: /events.html
                  adminCloseBtn.addEventListener('click', toggleAdminPanel);
             }
 
-            // Dynamic Button Listener (Event delegation)
             document.getElementById('adminTabContent').addEventListener('click', (e) => {
                 const button = e.target.closest('.btn-download-badge');
                 if (button) {
