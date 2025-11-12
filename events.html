@@ -25,6 +25,10 @@ permalink: /events.html
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -141,24 +145,279 @@ permalink: /events.html
     <footer class="site-footer-new">
         </footer>
     
-    <script type="module">
-        import * as Auth from '/auth-firebase.js';
-        import * as Events from '/event-manager-firebase.js';
-
-        // --- İKİLİ OKUMA DÜZELTMESİ (KAMERA) ---
-        let checkInScanner = null;
-        let mealScanner = null;
-        // --- DÜZELTME SONU ---
-
-        let currentQRCode = null;
+    <script>
+        // --- 1. FIREBASE BAŞLATMA ---
+        
         let currentUser = null;
         let userProfile = null;
+        let authReady = false;
+        
+        (function() {
+            if (window.firebaseApp) return; 
+            const firebaseConfig = {
+              apiKey: "AIzaSyBw8zLcIc8bB9ru8yQzqf4s5S3eJdYEgl0",
+              authDomain: "yalthundersauth.firebaseapp.com",
+              projectId: "yalthundersauth",
+              storageBucket: "yalthundersauth.firebasestorage.app",
+              messagingSenderId: "4689191399",
+              appId: "1:4689191399:web:e76187186ff48b0af45d42"
+            };
+            window.firebaseApp = firebase.initializeApp(firebaseConfig);
+            window.firebaseAuth = firebase.auth();
+            window.firebaseDb = firebase.firestore();
+            console.log("Firebase (Global Sürüm) başarıyla başlatıldı.");
+
+            window.firebaseAuth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    userProfile = await fetchUserProfile(user.uid);
+                    console.log("Oturum: Giriş yapıldı", userProfile);
+                } else {
+                    currentUser = null;
+                    userProfile = null;
+                    console.log("Oturum: Çıkış yapıldı");
+                }
+                authReady = true;
+                document.dispatchEvent(new Event("authStateReady"));
+            });
+
+            async function fetchUserProfile(uid) {
+                try {
+                    const userDocRef = window.firebaseDb.collection("users").doc(uid);
+                    const docSnap = await userDocRef.get();
+                    if (docSnap.exists) {
+                        return docSnap.data();
+                    } else {
+                        console.error("Kullanıcı profili (Firestore'da) bulunamadı!");
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Kullanıcı profili çekilemedi:", error);
+                    return null;
+                }
+            }
+        })();
+
+        // --- 2. AUTH YARDIMCI FONKSİYONLARI ---
+        
+        window.isLoggedIn = function() { return currentUser !== null; }
+        window.getCurrentUser = function() { return currentUser; }
+        window.getCurrentUserProfile = function() { return userProfile; }
+        window.isAuthReady = function() { return authReady; }
+
+        window.logout = async function() {
+            try {
+                await firebase.auth().signOut();
+                window.location.href = '/login.html';
+            } catch (error) {
+                console.error("Sign out error:", error);
+            }
+        }
+        
+        window.toggleUserMenu = (event) => {
+            event.stopPropagation();
+            document.getElementById('userDropdown')?.classList.toggle('show');
+        };
+        document.addEventListener('click', (event) => {
+            const dropdown = document.getElementById('userDropdown');
+            const userBtn = document.querySelector('.user-profile-btn');
+            if (dropdown && userBtn && !dropdown.contains(event.target) && !userBtn.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        window.updateAuthButtons = function() {
+            const authButtonsContainer = document.getElementById('authButtons');
+            if (!authButtonsContainer) return;
+            if (isLoggedIn() && userProfile) {
+                const initials = userProfile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                authButtonsContainer.innerHTML = `
+                    <div class="user-menu-container">
+                        <button class="user-profile-btn" onclick="toggleUserMenu(event)">
+                            <span class="user-avatar">${initials}</span>
+                            <span>${userProfile.name.split(' ')[0]}</span>
+                            <i class="fa-solid fa-caret-down"></i>
+                        </button>
+                        <div class="user-dropdown-menu" id="userDropdown">
+                            <a href="/profile.html" class="dropdown-item">
+                                <i class="fa-solid fa-user"></i>
+                                <span>My Profile</span>
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item" onclick="logout()">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            } else {
+                authButtonsContainer.innerHTML = `
+                    <a href="/login.html" class="auth-btn login-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Login</span>
+                    </a>
+                    <a href="/register.html" class="auth-btn register-btn">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Register</span>
+                    </a>
+                `;
+            }
+            updateMobileAuthButtons();
+        }
+        
+        // --- 3. EVENT MANAGER FONKSİYONLARI ---
+
+        const db = () => window.firebaseDb;
+        const fbIncrement = () => firebase.firestore.FieldValue.increment(1);
+
+        window.registerForEvent = async function(eventId, user, profile, extraData) {
+            if (!user) return { success: false, message: 'You must be logged in.' };
+            const regRef = db().collection("events").doc(eventId).collection("registrations").doc(user.uid);
+            const docSnap = await regRef.get();
+            if (docSnap.exists) {
+                return { success: false, message: 'You are already registered for this event.' };
+            }
+            const registrationData = {
+                userId: user.uid, userName: profile.name, userEmail: user.email,
+                role: extraData.role, teamNumber: extraData.teamNumber,
+                registeredAt: new Date().toISOString(), checkedIn: false, checkInTime: null,
+                registrationId: `${eventId}-${user.uid}-${Date.now()}`
+            };
+            try {
+                await regRef.set(registrationData);
+                const userRef = db().collection("users").doc(user.uid);
+                await userRef.update({ registeredEvents: fbIncrement() });
+                return { success: true, message: 'Registration successful!', registration: registrationData };
+            } catch (error) {
+                console.error("Firestore registration error: ", error);
+                return { success: false, message: 'Database registration failed: ' + error.message };
+            }
+        }
+
+        window.getUserRegistration = async function(eventId, userId) {
+            if (!userId) return null;
+            const regRef = db().collection("events").doc(eventId).collection("registrations").doc(userId);
+            const docSnap = await regRef.get();
+            return docSnap.exists ? docSnap.data() : null;
+        }
+
+        window.isUserRegistered = async function(eventId, userId) {
+            if (!userId) return false;
+            const regRef = db().collection("events").doc(eventId).collection("registrations").doc(userId);
+            const docSnap = await regRef.get();
+            return docSnap.exists;
+        }
+
+        window.checkInUser = async function(qrDataString) {
+            let qrData;
+            try {
+                qrData = JSON.parse(qrDataString);
+                if (!qrData.eventId || !qrData.userId || !qrData.registrationId) {
+                     return { success: false, message: 'Invalid QR Code (Missing Data)' };
+                }
+            } catch (e) {
+                return { success: false, message: 'Invalid QR Code (JSON Error)' };
+            }
+            const { eventId, userId } = qrData;
+            const regRef = db().collection("events").doc(eventId).collection("registrations").doc(userId);
+            try {
+                const docSnap = await regRef.get();
+                if (!docSnap.exists) {
+                    return { success: false, message: 'Registration not found' };
+                }
+                const registration = docSnap.data();
+                if (registration.checkedIn) {
+                    return { success: false, message: 'Already checked in', registration: registration };
+                }
+                await regRef.update({
+                    checkedIn: true,
+                    checkInTime: new Date().toISOString()
+                });
+                const userRef = db().collection("users").doc(userId);
+                await userRef.update({ attendedEvents: fbIncrement() });
+                const updatedRegistration = { ...registration, checkedIn: true };
+                return { success: true, message: 'Check-in successful!', registration: updatedRegistration };
+            } catch (error) {
+                console.error("Check-in error: ", error);
+                return { success: false, message: 'Database error: ' + error.message };
+            }
+        }
+
+        window.generatePerkQRCode = async function(eventId, user, profile, perkType) {
+            if (!user) return { success: false, message: "User not found." };
+            const perkId = `${eventId}_${user.uid}_${perkType}`;
+            const perkRef = db().collection("perks").doc(perkId);
+            try {
+                const docSnap = await perkRef.get();
+                if (docSnap.exists) {
+                    const existingPerk = docSnap.data();
+                    return { success: true, qrData: JSON.stringify(existingPerk), used: existingPerk.used };
+                }
+                const newPerk = {
+                    perkId: perkId, eventId: eventId, userId: user.uid, userName: profile.name,
+                    perkType: perkType, used: false, redeemedAt: null, createdAt: new Date().toISOString()
+                };
+                await perkRef.set(newPerk);
+                return { success: true, qrData: JSON.stringify(newPerk), used: false };
+            } catch (error) {
+                console.error("Perk generation error: ", error);
+                return { success: false, message: "Could not generate perk: " + error.message };
+            }
+        }
+
+        window.redeemPerk = async function(qrDataString) {
+            let perkData;
+            try {
+                perkData = JSON.parse(qrDataString);
+                if (!perkData.perkId || !perkData.userId) {
+                     return { success: false, message: 'Invalid Perk Code (Missing Data)' };
+                }
+            } catch (e) {
+                return { success: false, message: 'Invalid Perk Code (JSON Error)' };
+            }
+            const perkRef = db().collection("perks").doc(perkData.perkId);
+            try {
+                const docSnap = await perkRef.get();
+                if (!docSnap.exists()) {
+                    return { success: false, message: 'Perk not found' };
+                }
+                const perk = docSnap.data();
+                if (perk.used) {
+                    return { success: false, message: 'This perk has already been used!', perk: perk };
+                }
+                await perkRef.update({
+                    used: true,
+                    redeemedAt: new Date().toISOString()
+                });
+                const updatedPerk = { ...perk, used: true };
+                return { success: true, message: 'Perk redeemed successfully!', perk: updatedPerk };
+            } catch (error) {
+                console.error("Perk redemption error: ", error);
+                return { success: false, message: "Database error: " + error.message };
+            }
+        }
+
+        window.getAllRegistrations = async function(eventId) {
+            try {
+                const registrationsRef = db().collection("events").doc(eventId).collection("registrations");
+                const querySnapshot = await registrationsRef.get();
+                const registrations = [];
+                querySnapshot.forEach((doc) => registrations.push(doc.data()));
+                return registrations;
+            } catch (error) {
+                console.error("Failed to fetch all registrations: ", error);
+                return [];
+            }
+        }
+        
+        // --- 4. EVENTS.HTML SAYFA KODU ---
+
+        let checkInScanner = null;
+        let mealScanner = null;
         const eventId = 'kickoff-2026'; 
 
         async function initPage() {
-            currentUser = Auth.getCurrentUser();
-            userProfile = Auth.getCurrentUserProfile();
-            
             initTheme();
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
@@ -167,11 +426,13 @@ permalink: /events.html
         }
         
         async function initEventManagement() {
+            const currentUser = window.getCurrentUser();
+            const userProfile = window.getCurrentUserProfile();
+
             if (currentUser && userProfile && userProfile.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
                     adminContainer.innerHTML = `<button id="adminOpenBtn" class="btn-admin"><i class="fa-solid fa-shield-halved"></i> Admin Panel</button>`;
-                    document.getElementById('adminOpenBtn').addEventListener('click', toggleAdminPanel);
                 }
             }
             
@@ -182,16 +443,18 @@ permalink: /events.html
         
         async function handleEventAction(e) {
             const eventId = e.currentTarget.dataset.eventId;
+            const currentUser = window.getCurrentUser();
+
             if (!currentUser) {
                 alert('Please login to register for events');
                 window.location.href = '/login.html'; 
                 return;
             }
             
-            const isRegistered = await Events.isUserRegistered(eventId, currentUser.uid);
+            const isRegistered = await window.isUserRegistered(eventId, currentUser.uid);
             
             if (isRegistered) {
-                const registration = await Events.getUserRegistration(eventId, currentUser.uid);
+                const registration = await window.getUserRegistration(eventId, currentUser.uid);
                 showQRCode(registration);
             } else {
                 window.location.href = `/event-register.html?event=${eventId}`;
@@ -199,13 +462,14 @@ permalink: /events.html
         }
         
         async function updateEventStatus() {
+            const currentUser = window.getCurrentUser();
             if (!currentUser) return; 
             
             const statusElement = document.getElementById(`eventStatus-${eventId}`);
             const btnElement = document.getElementById(`registerBtn-${eventId}`);
             if (!statusElement || !btnElement) return;
             
-            const registration = await Events.getUserRegistration(eventId, currentUser.uid);
+            const registration = await window.getUserRegistration(eventId, currentUser.uid);
             
             if (registration) {
                 btnElement.innerHTML = '<i class="fa-solid fa-qrcode"></i> Show QR Code';
@@ -266,43 +530,35 @@ permalink: /events.html
             }
         }
         
-        // --- İKİLİ OKUMA FİX (async/await) ---
-
-        /**
-         * YARDIMCI: Aktif olan TÜM tarayıcıları güvenle durdurur.
-         */
+        // --- İKİLİ OKUMA FİX (GLOBAL CDN VERSİYONU) ---
+        
         async function stopAllScanners() {
             console.log("Stopping all scanners...");
             const scanners = [checkInScanner, mealScanner];
             
             // html5-qrcode.min.js yüklendiğinde, 'Html5QrcodeScannerState'
             // objesini global (window) scope'a ekler.
-            // Onu kontrol ediyoruz.
-            const stateReady = typeof Html5QrcodeScannerState !== 'undefined';
+            const State = window.Html5QrcodeScannerState;
 
             for (const scanner of scanners) {
                 if (scanner) {
                     let isScanning = false;
-                    
-                    // Tarayıcının durumunu (çalışıyor mu) güvenle kontrol et
-                    if (stateReady) {
-                        try {
-                            isScanning = scanner.getState() === Html5QrcodeScannerState.SCANNING;
-                        } catch (e) {
-                            console.warn("Scanner state check failed (likely already stopped).");
-                            isScanning = false;
+                    try {
+                        // Tarayıcının durumunu (çalışıyor mu) güvenle kontrol et
+                        if (State && scanner.getState() === State.SCANNING) {
+                            isScanning = true;
+                        } else if (!State && scanner.getState) { 
+                            // State objesi yoksa (eski/farklı versiyon?), yine de dene
+                            isScanning = scanner.getState() === 2; // 2 genelde SCANNING demektir
                         }
-                    } else if (scanner.getState) {
-                        // Eğer state objesi yoksa (eski/farklı versiyon?), yine de dene
-                        try { isScanning = scanner.getState() === 2; } // 2 genelde SCANNING demektir
-                        catch(e) { isScanning = false; }
-                    } else {
-                        // Durum kontrol edilemiyorsa, çalıştığını varsay ve durdurmayı dene
-                        isScanning = true; 
+                    } catch (e) {
+                        console.warn("Scanner state check failed (likely already stopped or not initialized).");
+                        isScanning = false; 
                     }
 
                     if (isScanning) {
                         try {
+                            // Sadece "scanning" durumundaysa 'stop' çağır
                             await scanner.stop();
                             console.log("Scanner instance stopped successfully.");
                         } catch (e) {
@@ -311,31 +567,25 @@ permalink: /events.html
                     }
                 }
             }
-            // Objeleri temizle
+            // Objeleri her zaman temizle
             checkInScanner = null;
             mealScanner = null;
             console.log("All scanner instances cleared.");
         }
 
 
-        /**
-         * Admin panelini açar/kapatır.
-         */
         async function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const isOpen = panel.style.display === 'block';
             if (isOpen) {
                 panel.style.display = 'none';
-                await stopAllScanners(); // Kapatırken tarayıcıları durdur
+                await stopAllScanners();
             } else {
                 panel.style.display = 'block';
-                loadAdminTab('attendees'); // Varsayılan sekmeyi yükle
+                loadAdminTab('attendees');
             }
         }
         
-        /**
-         * Admin panelinde sekmeler arası geçiş yapar.
-         */
         async function loadAdminTab(tabName) {
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
@@ -344,12 +594,10 @@ permalink: /events.html
                 }
             });
             
-            // Sekme değiştirirken çalışan tüm tarayıcıları durdur
             await stopAllScanners();
             
             const content = document.getElementById('adminTabContent');
             
-            // Yeni sekmeyi yükle
             switch(tabName) {
                 case 'attendees':
                     loadAttendeesTab(content);
@@ -366,11 +614,9 @@ permalink: /events.html
             }
         }
         
-        // --- (Diğer fonksiyonlar 'loadAttendeesTab', 'onScanSuccess' vb. aynı kalır) ---
-        
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
-            const registrations = await Events.getAllRegistrations(eventId);
+            const registrations = await window.getAllRegistrations(eventId);
             
             let html = '<div class="attendees-list">';
             html += `<h3>Event Registrations (${registrations.length})</h3>`;
@@ -422,6 +668,7 @@ permalink: /events.html
             setTimeout(() => {
                 try {
                     console.log("Creating new Check-in scanner instance");
+                    // 'Html5Qrcode' global kütüphaneden (window) geliyor
                     checkInScanner = new Html5Qrcode("checkin-qr-reader");
                     
                     checkInScanner.start(
@@ -439,7 +686,7 @@ permalink: /events.html
         }
         
         async function onScanSuccess(decodedText, decodedResult) {
-            const result = await Events.checkInUser(decodedText);
+            const result = await window.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
             
             if (result.success && result.registration) {
@@ -483,7 +730,7 @@ permalink: /events.html
         
         async function loadStatsTab(container) {
             container.innerHTML = "<p>Loading statistics...</p>";
-            const registrations = await Events.getAllRegistrations(eventId);
+            const registrations = await window.getAllRegistrations(eventId);
             const checkedInCount = registrations.filter(reg => reg.checkedIn).length;
             const stats = {
                 totalRegistrations: registrations.length,
@@ -543,7 +790,7 @@ permalink: /events.html
             const qrElement = tempDiv.querySelector('#badge-qr-code');
             
             const qrData = JSON.stringify({
-                eventId: eventId, // Global eventId'yi kullan
+                eventId: eventId,
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
@@ -603,7 +850,7 @@ permalink: /events.html
         }
 
         async function onMealScanSuccess(decodedText, decodedResult) {
-            const result = await Events.redeemPerk(decodedText);
+            const result = await window.redeemPerk(decodedText);
             const resultDiv = document.getElementById('meal-scan-result');
             
             if (result.success) {
@@ -629,25 +876,8 @@ permalink: /events.html
             }
         }
         
-        /**
-         * Page Load Management
-         */
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Loaded. Waiting for auth state...");
-            
-            document.addEventListener('authStateReady', () => {
-                console.log("Auth Ready. Calling initPage().");
-                initPage();
-            });
-            
-            if (Auth.isAuthReady()) {
-                console.log("Auth was already ready. Calling initPage().");
-                initPage();
-            }
-
-            attachStaticListeners();
-        });
-
+        // --- Statik Yardımcı Fonksiyonlar (Tema, Sayaç, Mobil Menü) ---
+        
         function attachStaticListeners() {
             document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
             document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
@@ -762,14 +992,26 @@ permalink: /events.html
                 }
             }
         }
-        document.addEventListener('authStateReady', updateMobileAuthButtons);
         
-        window.onclick = function(event) {
-            const modal = document.getElementById('qrModal');
-            if (event.target === modal) {
-                closeQRModal();
+        // --- SAYFA YÜKLEME YÖNETİMİ ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Yüklendi. Auth durumu bekleniyor...");
+            
+            // Firebase hazır olduğunda (auth.js'den) sayfayı başlat
+            document.addEventListener('authStateReady', () => {
+                console.log("Auth Hazır. initPage() çağrılıyor.");
+                window.updateAuthButtons(); // Header'ı hemen güncelle
+                initPage(); // Sayfanın geri kalanını (admin paneli, butonlar) güncelle
+            });
+            
+            // Eğer auth (cache'den) zaten hazırsa, bekleme, başlat
+            if (window.isAuthReady && window.isAuthReady()) {
+                console.log("Auth zaten hazırdı. initPage() çağrılıyor.");
+                window.updateAuthButtons();
+                initPage();
             }
-        }
+        });
+        
     </script>
 </body>
 </html>
