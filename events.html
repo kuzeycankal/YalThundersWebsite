@@ -25,46 +25,6 @@ permalink: /events.html
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <script>
-        (function() {
-            if (window.firebaseApp) return; 
-            const firebaseConfig = {
-              apiKey: "AIzaSyBw8zLcIc8bB9ru8yQzqf4s5S3eJdYEgl0",
-              authDomain: "yalthundersauth.firebaseapp.com",
-              projectId: "yalthundersauth",
-              storageBucket: "yalthundersauth.firebasestorage.app",
-              messagingSenderId: "4689191399",
-              appId: "1:4689191399:web:e76187186ff48b0af45d42"
-            };
-            window.firebaseApp = firebase.initializeApp(firebaseConfig);
-            window.firebaseAuth = firebase.auth();
-            window.firebaseDb = firebase.firestore();
-            
-            window.firebaseAuth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    window.currentUser = user;
-                    window.userProfile = await fetchUserProfile(user.uid);
-                } else {
-                    window.currentUser = null;
-                    window.userProfile = null;
-                }
-                window.authReady = true;
-                document.dispatchEvent(new Event("authStateReady"));
-            });
-
-            async function fetchUserProfile(uid) {
-                try {
-                    const docSnap = await window.firebaseDb.collection("users").doc(uid).get();
-                    return docSnap.exists ? docSnap.data() : null;
-                } catch (e) { return null; }
-            }
-        })();
-    </script>
 </head>
 <body>
 
@@ -181,52 +141,49 @@ permalink: /events.html
     <footer class="site-footer-new">
         </footer>
     
-    <script src="/auth.js"></script>
-    <script src="/event-manager.js"></script>
+    <script type="module">
+        // Doğru dosyalardan import ediyoruz
+        import * as Auth from '/auth-firebase.js';
+        import * as Events from '/event-manager-firebase.js';
 
-    <script>
-        // SINGLE ACTIVE SCANNER VARIABLE
-        // Bu, aynı anda sadece bir tarayıcının açık olmasını garanti eder
-        let activeScanner = null;
-        
+        // --- İKİLİ OKUMA FİX ---
+        // Tek bir değişken kullanıyoruz ki hangisinin açık olduğunu bilelim
+        let activeScanner = null; 
+        // -----------------------
+
         let currentQRCode = null;
+        let currentUser = null;
+        let userProfile = null;
         const eventId = 'kickoff-2026'; 
 
-        // --- SCANNER MANAGEMENT ---
-        // Bu fonksiyon tarayıcıyı tamamen yok eder (stop + clear)
-        async function killActiveScanner() {
+        // --- KAMERA DURDURMA FONKSİYONU (FİX) ---
+        async function stopActiveScanner() {
             if (activeScanner) {
-                console.log("Killing active scanner...");
+                console.log("Stopping active scanner...");
                 try {
-                    // Önce durdurmayı dene
-                    await activeScanner.stop(); 
+                    // Kamerayı durdur ve ekrandan temizle (clear)
+                    await activeScanner.clear(); 
                 } catch (e) {
-                    // Eğer zaten durmuşsa hata verir, önemli değil
-                    console.warn("Scanner stop failed (might be stopped already):", e);
+                    console.warn("Scanner clear error (might be already cleared):", e);
                 }
-                
-                try {
-                    // Sonra ekrandan temizle
-                    activeScanner.clear();
-                } catch (e) {
-                    console.warn("Scanner clear failed:", e);
-                }
-                
                 activeScanner = null;
-                console.log("Scanner killed.");
+                console.log("Scanner stopped and cleared.");
             }
         }
-
-        // --- PAGE LOGIC ---
+        // -----------------------------------------
 
         async function initPage() {
-            const currentUser = window.getCurrentUser();
-            const userProfile = window.getCurrentUserProfile();
+            currentUser = Auth.getCurrentUser();
+            userProfile = Auth.getCurrentUserProfile();
             
             initTheme();
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
-            
+            await initEventManagement();
+            attachStaticListeners();
+        }
+        
+        async function initEventManagement() {
             if (currentUser && userProfile && userProfile.isAdmin) {
                 const adminContainer = document.getElementById('adminButtonContainer');
                 if (adminContainer) {
@@ -238,24 +195,20 @@ permalink: /events.html
             if(currentUser) {
                 await updateEventStatus();
             }
-            
-            attachStaticListeners();
         }
         
         async function handleEventAction(e) {
             const eventId = e.currentTarget.dataset.eventId;
-            const currentUser = window.getCurrentUser();
-
             if (!currentUser) {
                 alert('Please login to register for events');
                 window.location.href = '/login.html'; 
                 return;
             }
             
-            const isRegistered = await window.isUserRegistered(eventId, currentUser.uid);
+            const isRegistered = await Events.isUserRegistered(eventId, currentUser.uid);
             
             if (isRegistered) {
-                const registration = await window.getUserRegistration(eventId, currentUser.uid);
+                const registration = await Events.getUserRegistration(eventId, currentUser.uid);
                 showQRCode(registration);
             } else {
                 window.location.href = `/event-register.html?event=${eventId}`;
@@ -263,14 +216,13 @@ permalink: /events.html
         }
         
         async function updateEventStatus() {
-            const currentUser = window.getCurrentUser();
             if (!currentUser) return; 
             
             const statusElement = document.getElementById(`eventStatus-${eventId}`);
             const btnElement = document.getElementById(`registerBtn-${eventId}`);
             if (!statusElement || !btnElement) return;
             
-            const registration = await window.getUserRegistration(eventId, currentUser.uid);
+            const registration = await Events.getUserRegistration(eventId, currentUser.uid);
             
             if (registration) {
                 btnElement.innerHTML = '<i class="fa-solid fa-qrcode"></i> Show QR Code';
@@ -339,8 +291,8 @@ permalink: /events.html
             
             if (isOpen) {
                 panel.style.display = 'none';
-                // Paneli kapatırken tarayıcıyı öldür
-                await killActiveScanner();
+                // Paneli kapatırken tarayıcıyı tamamen temizle
+                await stopActiveScanner();
             } else {
                 panel.style.display = 'block';
                 loadAdminTab('attendees');
@@ -348,7 +300,6 @@ permalink: /events.html
         }
         
         async function loadAdminTab(tabName) {
-            // Tab butonlarını güncelle
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.tab === tabName) {
@@ -356,13 +307,12 @@ permalink: /events.html
                 }
             });
             
-            // ÖNCE MEVCUT TARAYICIYI ÖLDÜR (Çok Önemli)
-            // Bu işlem bitmeden yeni içerik yükleme!
-            await killActiveScanner();
+            // Sekme değiştirirken MEVCUT tarayıcıyı temizle
+            await stopActiveScanner();
             
             const content = document.getElementById('adminTabContent');
             
-            // İçeriği yükle
+            // Yeni sekmeyi yükle
             switch(tabName) {
                 case 'attendees':
                     loadAttendeesTab(content);
@@ -381,7 +331,7 @@ permalink: /events.html
         
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
-            const registrations = await window.getAllRegistrations(eventId);
+            const registrations = await Events.getAllRegistrations(eventId);
             let html = '<div class="attendees-list">';
             html += `<h3>Event Registrations (${registrations.length})</h3>`;
             if (registrations.length === 0) {
@@ -426,14 +376,20 @@ permalink: /events.html
                 </div>
             `;
             
-            // DOM'un render olması için kısa bekle, sonra başlat
+            // Kısa bir bekleme, DOM'un oluşması için
             setTimeout(() => {
                 try {
-                    // Sadece tek bir scanner değişkeni kullanıyoruz: activeScanner
-                    activeScanner = new Html5Qrcode("checkin-qr-reader");
-                    activeScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                        onScanSuccess, onScanError
+                    // Yeni tarayıcıyı oluştur
+                    const scanner = new Html5Qrcode("checkin-qr-reader");
+                    
+                    // Global değişkene ata ki kapatabilelim
+                    activeScanner = scanner;
+                    
+                    scanner.start(
+                        { facingMode: "environment" }, 
+                        { fps: 10, qrbox: 250 },
+                        onScanSuccess, 
+                        onScanError
                     ).catch(err => {
                         console.error("Scanner start error:", err);
                         document.getElementById('scan-result').innerHTML = '<div class="scan-error">Camera Error. HTTPS required.</div>';
@@ -443,7 +399,7 @@ permalink: /events.html
         }
         
         async function onScanSuccess(decodedText, decodedResult) {
-            const result = await window.checkInUser(decodedText);
+            const result = await Events.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
             if (result.success && result.registration) {
                 const reg = result.registration;
@@ -480,11 +436,17 @@ permalink: /events.html
             `;
             setTimeout(() => {
                 try {
-                    // Yine aynı activeScanner değişkenine atıyoruz
-                    activeScanner = new Html5Qrcode("meal-qr-reader");
-                    activeScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                        onMealScanSuccess, onScanError
+                    // Yeni tarayıcıyı oluştur
+                    const scanner = new Html5Qrcode("meal-qr-reader");
+                    
+                    // Global değişkene ata
+                    activeScanner = scanner;
+                    
+                    scanner.start(
+                        { facingMode: "environment" }, 
+                        { fps: 10, qrbox: 250 },
+                        onMealScanSuccess, 
+                        onScanError
                     ).catch(err => {
                         console.error("Scanner start error:", err);
                         document.getElementById('meal-scan-result').innerHTML = '<div class="scan-error">Camera Error. HTTPS required.</div>';
@@ -494,7 +456,7 @@ permalink: /events.html
         }
 
         async function onMealScanSuccess(decodedText, decodedResult) {
-            const result = await window.redeemPerk(decodedText);
+            const result = await Events.redeemPerk(decodedText);
             const resultDiv = document.getElementById('meal-scan-result');
             if (result.success) {
                 resultDiv.innerHTML = `<div class="scan-success"><i class="fa-solid fa-check-circle"></i><h4>Voucher Approved!</h4><p>User: ${result.perk.userName}</p><p>Meal voucher redeemed successfully.</p></div>`;
@@ -509,7 +471,7 @@ permalink: /events.html
         
         async function loadStatsTab(container) {
             container.innerHTML = "<p>Loading statistics...</p>";
-            const registrations = await window.getAllRegistrations(eventId);
+            const registrations = await Events.getAllRegistrations(eventId);
             const checkedInCount = registrations.filter(reg => reg.checkedIn).length;
             const stats = {
                 totalRegistrations: registrations.length,
@@ -698,14 +660,16 @@ permalink: /events.html
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Yüklendi. Auth durumu bekleniyor...");
+            console.log("DOM Loaded. Waiting for auth state...");
+            
             document.addEventListener('authStateReady', () => {
-                console.log("Auth Hazır. initPage() çağrılıyor.");
+                console.log("Auth Ready. Calling initPage().");
                 window.updateAuthButtons();
                 initPage();
             });
-            if (window.isAuthReady && window.isAuthReady()) {
-                console.log("Auth zaten hazırdı. initPage() çağrılıyor.");
+            
+            if (Auth.isAuthReady()) {
+                console.log("Auth was already ready. Calling initPage().");
                 window.updateAuthButtons();
                 initPage();
             }
