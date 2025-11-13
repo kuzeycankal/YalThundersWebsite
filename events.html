@@ -142,48 +142,42 @@ permalink: /events.html
         </footer>
     
     <script type="module">
-        // Evet, sonu -firebase.js ile biten dosyaları kullanıyoruz!
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
-        // Tarayıcı objelerini burada tutuyoruz
+        // --- İKİLİ OKUMA DÜZELTMESİ (MODÜL VERSİYONU) ---
         let checkInScanner = null;
         let mealScanner = null;
-        
+        // --- DÜZELTME SONU ---
+
         let currentQRCode = null;
         let currentUser = null;
         let userProfile = null;
         const eventId = 'kickoff-2026'; 
 
-        // --- İKİLİ OKUMA FİX (MODÜL VERSİYONU) ---
-        
+        // --- DÜZELTİLMİŞ TARAYICI DURDURMA FONKSİYONU ---
         async function stopAllScanners() {
             console.log("Stopping all scanners...");
             const scanners = [checkInScanner, mealScanner];
             const stopPromises = [];
             
-            // Kütüphaneden 'Html5QrcodeScannerState' objesini al
             const State = window.Html5QrcodeScannerState;
 
             for (const scanner of scanners) {
                 if (scanner) {
                     let isScanning = false;
                     try {
-                        // Tarayıcının durumunu güvenle kontrol et
                         if (State && scanner.getState() === State.SCANNING) {
                             isScanning = true;
                         } else if (!State && scanner.getState) { 
-                            // State objesi yoksa, manuel kontrol (2 = SCANNING)
                             isScanning = scanner.getState() === 2; 
                         }
                     } catch (e) {
-                        // getState hatası (muhtemelen durdurulmuş)
                         isScanning = false; 
                     }
 
                     if (isScanning) {
                         console.log("Active scanner found, stopping...");
-                        // Durdurma işlemini listeye ekle
                         stopPromises.push(
                             scanner.stop().catch(err => console.warn("Stop error (minor):", err))
                         );
@@ -191,17 +185,15 @@ permalink: /events.html
                 }
             }
 
-            // Tüm durdurma işlemlerinin bitmesini BEKLE
             if (stopPromises.length > 0) {
                 await Promise.all(stopPromises);
             }
             
-            // Objeleri temizle
             checkInScanner = null;
             mealScanner = null;
             console.log("Scanners cleared.");
         }
-        // --- FİX SONU ---
+        // --- FONKSİYON SONU ---
 
         async function initPage() {
             currentUser = Auth.getCurrentUser();
@@ -431,11 +423,7 @@ permalink: /events.html
                 resultDiv.innerHTML = `
                     <div class="yal-badge">
                         <div class="badge-header"><img src="/yal_thunders_logo.png" alt="Logo"><span>YAL THUNDERS KICK-OFF</span></div>
-                        <div class="badge-body">
-                            <div class="badge-name">${reg.userName}</div>
-                            <div class="badge-role">${reg.role || 'Participant'}</div>
-                            <div class="badge-team">Team: ${reg.teamNumber || 'N/A'}</div>
-                        </div>
+                        <div class="badge-body"><div class="badge-name">${reg.userName}</div><div class="badge-role">${reg.role || 'Participant'}</div><div class="badge-team">Team: ${reg.teamNumber || 'N/A'}</div></div>
                         <div class="badge-footer"><i class="fa-solid fa-check-circle"></i> CHECK-IN SUCCESSFUL</div>
                     </div>`;
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
@@ -445,11 +433,7 @@ permalink: /events.html
                 resultDiv.innerHTML = `
                     <div class="yal-badge-error">
                         <div class="badge-header-error"><i class="fa-solid fa-exclamation-triangle"></i><span>ALREADY CHECKED IN</span></div>
-                        <div class="badge-body">
-                            <div class="badge-name">${reg.userName}</div>
-                            <div class="badge-role">${reg.role || 'Participant'}</div>
-                            <div class="badge-checkin-time">Checked in at: ${new Date(reg.checkInTime).toLocaleTimeString('en-US')}</div>
-                        </div>
+                        <div class="badge-body"><div class="badge-name">${reg.userName}</div><div class="badge-role">${reg.role || 'Participant'}</div><div class="badge-checkin-time">Checked in at: ${new Date(reg.checkInTime).toLocaleTimeString('en-US')}</div></div>
                     </div>`;
                 setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
             
@@ -492,23 +476,10 @@ permalink: /events.html
         function getBadgeHTML(reg) {
             return `
                 <div class="yal-badge-physical">
-                    <div class="badge-phys-header">
-                        <img src="/yal_thunders_logo.png" class="badge-phys-logo">
-                        <div class="badge-phys-event">
-                            <span>FRC 2026</span>
-                            <strong>KICK-OFF EVENT</strong>
-                        </div>
-                    </div>
-                    <div class="badge-phys-body">
-                        <div class="badge-phys-name">${reg.userName}</div>
-                        <div class="badge-phys-role">${reg.role || 'Participant'}</div>
-                    </div>
-                    <div class="badge-phys-qr-container">
-                        <div id="badge-qr-code"></div> 
-                    </div>
-                    <div class="badge-phys-footer">
-                        <strong>Team:</strong> ${reg.teamNumber || 'N/A'}
-                    </div>
+                    <div class="badge-phys-header"><img src="/yal_thunders_logo.png" class="badge-phys-logo"><div class="badge-phys-event"><span>FRC 2026</span><strong>KICK-OFF EVENT</strong></div></div>
+                    <div class="badge-phys-body"><div class="badge-phys-name">${reg.userName}</div><div class="badge-phys-role">${reg.role || 'Participant'}</div></div>
+                    <div class="badge-phys-qr-container"><div id="badge-qr-code"></div></div>
+                    <div class="badge-phys-footer"><strong>Team:</strong> ${reg.teamNumber || 'N/A'}</div>
                 </div>`;
         }
 
@@ -613,8 +584,25 @@ permalink: /events.html
             }
         }
         
-        // --- Statik Yardımcı Fonksiyonlar (Tema, Sayaç, Mobil Menü) ---
-        
+        /**
+         * Page Load Management
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Loaded. Waiting for auth state...");
+            
+            document.addEventListener('authStateReady', () => {
+                console.log("Auth Ready. Calling initPage().");
+                initPage();
+            });
+            
+            if (Auth.isAuthReady()) {
+                console.log("Auth was already ready. Calling initPage().");
+                initPage();
+            }
+
+            attachStaticListeners();
+        });
+
         function attachStaticListeners() {
             document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
             document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
@@ -730,18 +718,15 @@ permalink: /events.html
             }
         }
         
-        // --- SAYFA YÜKLEME YÖNETİMİ ---
         document.addEventListener('DOMContentLoaded', () => {
             console.log("DOM Yüklendi. Auth durumu bekleniyor...");
             
-            // Firebase hazır olduğunda (auth.js'den) sayfayı başlat
             document.addEventListener('authStateReady', () => {
                 console.log("Auth Hazır. initPage() çağrılıyor.");
-                window.updateAuthButtons(); // Header'ı hemen güncelle
-                initPage(); // Sayfanın geri kalanını (admin paneli, butonlar) güncelle
+                window.updateAuthButtons();
+                initPage();
             });
             
-            // Eğer auth (cache'den) zaten hazırsa, bekleme, başlat
             if (window.isAuthReady && window.isAuthReady()) {
                 console.log("Auth zaten hazırdı. initPage() çağrılıyor.");
                 window.updateAuthButtons();
