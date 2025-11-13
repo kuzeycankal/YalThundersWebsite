@@ -407,33 +407,58 @@
             container.innerHTML = html;
         }
         
-        function loadScannerTab(container) {
-            container.innerHTML = `
-                <div class="scanner-container">
-                    <h3>Check-in QR Scanner</h3>
-                    <p class="scanner-info">Scan attendee QR codes for check-in.</p>
-                    <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-                    <div id="scan-result" class="scan-result"></div>
-                </div>
-            `;
-            setTimeout(() => {
-                try {
-                    console.log("Creating new Check-in scanner instance");
-                    checkInScanner = new Html5Qrcode("checkin-qr-reader");
-                    
-                    checkInScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                        onScanSuccess, onScanError
-                    ).catch(err => {
-                        console.error("Check-in scanner start error:", err);
-                        document.getElementById('scan-result').innerHTML = 
-                            '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
-                    });
-                } catch (err) {
-                    console.error("Check-in scanner init error:", err);
-                }
-            }, 100);
+// checkInScanner değişkeninin global bir yerde tanımlı olduğunu varsayıyorum
+// let checkInScanner = null; 
+
+async function loadScannerTab(container) {
+    // 1. ÖNEMLİ: Eğer halihazırda açık bir scanner varsa önce onu durdur
+    if (checkInScanner) {
+        try {
+            await checkInScanner.stop();
+            checkInScanner.clear();
+        } catch (e) {
+            console.log("Eski scanner temizlenirken önemsiz hata:", e);
         }
+        checkInScanner = null;
+    }
+
+    // 2. HTML içeriğini oluştur
+    container.innerHTML = `
+        <div class="scanner-container">
+            <h3>Check-in QR Scanner</h3>
+            <p class="scanner-info">Scan attendee QR codes for check-in.</p>
+            <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+            <div id="scan-result" class="scan-result"></div>
+        </div>
+    `;
+
+    // 3. DOM render olduktan sonra yeni scanner'ı başlat
+    setTimeout(() => {
+        try {
+            // Ekstra güvenlik: Elementin içinin boş olduğundan emin ol
+            const readerElement = document.getElementById("checkin-qr-reader");
+            if (readerElement) readerElement.innerHTML = "";
+
+            console.log("Creating new Check-in scanner instance");
+            checkInScanner = new Html5Qrcode("checkin-qr-reader");
+            
+            checkInScanner.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: 250 },
+                onScanSuccess, 
+                onScanError
+            ).catch(err => {
+                console.error("Check-in scanner start error:", err);
+                const resultEl = document.getElementById('scan-result');
+                if (resultEl) {
+                    resultEl.innerHTML = '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı (HTTPS gerekli).</div>';
+                }
+            });
+        } catch (err) {
+            console.error("Check-in scanner init error:", err);
+        }
+    }, 100);
+}
         
         async function onScanSuccess(decodedText, decodedResult) {
             const result = await Events.checkInUser(decodedText);
@@ -570,34 +595,58 @@
             }, 100); 
         }
 
-        function loadMealScannerTab(container) {
-            container.innerHTML = `
-                <div class="scanner-container">
-                    <h3>Meal Voucher Scanner</h3>
-                    <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
-                    <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-                    <div id="meal-scan-result" class="scan-result"></div>
-                </div>
-            `;
-            setTimeout(() => {
-                try {
-                    console.log("Creating new Meal scanner instance");
-                    mealScanner = new Html5Qrcode("meal-qr-reader"); 
-                    
-                    mealScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
-                        onMealScanSuccess, 
-                        onScanError
-                    ).catch(err => {
-                        console.error("Meal scanner start error:", err);
-                        document.getElementById('meal-scan-result').innerHTML = 
-                            '<div class="scan-error">Camera access denied or not found (HTTPS required).</div>';
-                    });
-                } catch (err) {
-                    console.error("Meal scanner init error:", err);
-                }
-            }, 100);
+        // mealScanner değişkeninin script'in en başında tanımlı olduğundan emin ol:
+// let mealScanner = null;
+
+async function loadMealScannerTab(container) {
+    // 1. ÖNEMLİ: Eğer açık kalmış bir yemek scanner'ı varsa önce onu kapat
+    if (mealScanner) {
+        try {
+            await mealScanner.stop();
+            mealScanner.clear();
+        } catch (e) {
+            console.log("Eski yemek scanner'ı kapatılırken önemsiz hata:", e);
         }
+        mealScanner = null;
+    }
+
+    // 2. HTML içeriğini bas
+    container.innerHTML = `
+        <div class="scanner-container">
+            <h3>Meal Voucher Scanner</h3>
+            <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
+            <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+            <div id="meal-scan-result" class="scan-result"></div>
+        </div>
+    `;
+
+    // 3. DOM render olduktan sonra yeni scanner'ı başlat
+    setTimeout(() => {
+        try {
+            // Ekstra Güvenlik: Div'in içini sıfırla ki eski video elementleri kalmasın
+            const readerElement = document.getElementById("meal-qr-reader");
+            if (readerElement) readerElement.innerHTML = "";
+
+            console.log("Creating new Meal scanner instance");
+            mealScanner = new Html5Qrcode("meal-qr-reader");
+            
+            mealScanner.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: 250 },
+                onMealScanSuccess, 
+                onScanError
+            ).catch(err => {
+                console.error("Meal scanner start error:", err);
+                const resultEl = document.getElementById('meal-scan-result');
+                if (resultEl) {
+                    resultEl.innerHTML = '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı (HTTPS gerekli).</div>';
+                }
+            });
+        } catch (err) {
+            console.error("Meal scanner init error:", err);
+        }
+    }, 100);
+}
 
         async function onMealScanSuccess(decodedText, decodedResult) {
             const result = await Events.redeemPerk(decodedText);
