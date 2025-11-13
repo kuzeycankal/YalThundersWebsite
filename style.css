@@ -3976,3 +3976,108 @@ html.is-animating .swup-transition-container {
     transform: none;
     box-shadow: none;
 }
+
+
+/* style.css dosyana Ekle/Güncelle */
+
+/* Scanner kapsayıcısı için maksimum genişlik ve ortalama */
+.scanner-container {
+    display: flex; /* İçindeki elemanları ortalamak için */
+    flex-direction: column; /* Dikey sıralama */
+    align-items: center; /* Yatayda ortala */
+    padding: 20px;
+    background-color: var(--card-bg); /* Kart arkaplan rengi, temanına göre ayarlı */
+    border-radius: 8px;
+    box-shadow: var(--shadow-small); /* Hafif gölge */
+    margin: 20px auto; /* Sayfada ortalamak için */
+    max-width: 550px; /* Maksimum genişlik */
+    width: 90%; /* Daha dar ekranlarda küçülsün */
+}
+
+.scanner-container h3 {
+    color: var(--text-color-heading);
+    margin-bottom: 10px;
+}
+
+.scanner-container p.scanner-info {
+    color: var(--text-color-secondary);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Html5Qrcode kütüphanesinin oluşturduğu ana div */
+#checkin-qr-reader,
+#meal-qr-reader {
+    width: 100% !important; /* Kapsayıcısının genişliğini alsın */
+    max-width: 400px; /* Okuyucu alanının maksimum genişliği, kare olması için aynı olacak */
+    aspect-ratio: 1 / 1; /* BURASI ÖNEMLİ: Div'i her zaman kare yapar */
+    margin: 0 auto;
+    border: 2px solid var(--accent-color); /* Çerçevenin rengi, temanına göre */
+    border-radius: 8px; /* Hafif yuvarlak köşeler */
+    overflow: hidden; /* İçindeki kamera ve diğer elemanların taşmasını engelle */
+    position: relative; /* İçindeki kare çerçeve için */
+}
+
+/* Kütüphanenin kamerayı sardığı video elementini ortala ve kare içine sığdır */
+#checkin-qr-reader video,
+#meal-qr-reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover; /* Kameranın görüntüsü div'i tam kaplasın */
+    border-radius: 8px; /* Köşeleri kapsayıcıyla aynı yapsın */
+}
+
+/* Kütüphanenin oluşturduğu QR kutusu (beyaz köşeli olan) için stil */
+.html5-qrcode-element {
+    /* Bu genellikle kütüphanenin kendisi tarafından ayarlanır, 
+       ama üzerine yazmak istersen burayı kullanabilirsin.
+       Çerçeve rengini buradan da ayarlayabiliriz */
+}
+
+/* Görseldeki gibi dış köşeler (kırmızımsı) için */
+/* Kütüphanenin kendi elementleri üzerine yazmak genelde zordur.
+   Ancak, eğer o köşeleri tam olarak kontrol etmek istersen, 
+   kütüphanenin `qrbox` parametresini kullanırız. 
+   Şu anki kodumuzda `qrbox: { width: 300, height: 300 }` ile bu ayar var.
+   Html5Qrcode'un kendi köşelerini stilize etmek için daha derine inmek gerekir.
+   Varsayılan olarak `html5-qrcode-element` sınıfı ile gelir.
+*/
+
+/* Scan sonuçları için */
+.scan-result {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+    box-sizing: border-box;
+}
+
+.scan-success {
+    background-color: #e6ffe6; /* Açık yeşil */
+    color: #1a7a1a; /* Koyu yeşil */
+    border: 1px solid #99e699;
+}
+
+.scan-error {
+    background-color: #ffe6e6; /* Açık kırmızı */
+    color: #cc0000; /* Koyu kırmızı */
+    border: 1px solid #ff9999;
+}
+
+.scan-success h4, .scan-error h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+.scan-success i, .scan-error i {
+    margin-right: 8px;
+}
+
+/* Mobil uyumluluk için */
+@media (max-width: 768px) {
+    #checkin-qr-reader,
+    #meal-qr-reader {
+        max-width: 300px; /* Mobil ekranlarda biraz daha küçült */
+    }
+}
