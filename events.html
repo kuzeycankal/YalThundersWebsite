@@ -145,7 +145,7 @@ permalink: /events.html
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
-        // --- GLOBAL TARAYICI DEĞİŞKENLERİ ---
+        // --- GLOBAL SCANNER DEĞİŞKENLERİ ---
         let checkInScanner = null;
         let mealScanner = null;
 
@@ -162,7 +162,7 @@ permalink: /events.html
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
             await initEventManagement();
-            attachStaticListeners();
+            // DÜZELTME 1: attachStaticListeners BURADAN KALDIRILDI (Zaten DOMContentLoaded içinde çağırılıyor)
         }
         
         async function initEventManagement() {
@@ -265,33 +265,33 @@ permalink: /events.html
             }
         }
         
-        // --- KRİTİK DÜZELTME: STOP SCANNER ---
+        // --- TARAYICI TEMİZLEME FONKSİYONU ---
         async function stopAllScanners() {
             console.log("Tüm tarayıcılar temizleniyor...");
             
-            // 1. Check-in kamerasını kapat
+            // Check-in scanner'ı durdur
             if (checkInScanner) {
                 try {
                     await checkInScanner.stop();
                     checkInScanner.clear();
                 } catch (e) {
-                    console.warn("Check-in durdurma hatası (önemsiz):", e);
+                    console.warn("Check-in durdurma hatası:", e);
                 }
                 checkInScanner = null;
             }
 
-            // 2. Yemek kamerasını kapat
+            // Yemek scanner'ı durdur
             if (mealScanner) {
                 try {
                     await mealScanner.stop();
                     mealScanner.clear();
                 } catch (e) {
-                    console.warn("Meal scanner durdurma hatası (önemsiz):", e);
+                    console.warn("Meal scanner durdurma hatası:", e);
                 }
                 mealScanner = null;
             }
             
-            // 3. HTML divlerini de temizle (Garanti olsun)
+            // HTML içeriğini de temizle
             const checkInDiv = document.getElementById("checkin-qr-reader");
             if (checkInDiv) checkInDiv.innerHTML = "";
             
@@ -301,25 +301,21 @@ permalink: /events.html
 
 
         /**
-         * Admin panelini açar/kapatır.
+         * Admin Panel Yönetimi
          */
         async function toggleAdminPanel() {
             const panel = document.getElementById('adminPanel');
             const isOpen = panel.style.display === 'block';
             if (isOpen) {
                 panel.style.display = 'none';
-                await stopAllScanners(); // Paneli kapatırken kameraları durdur
+                await stopAllScanners();
             } else {
                 panel.style.display = 'block';
-                loadAdminTab('attendees'); // Varsayılan sekmeyi yükle
+                loadAdminTab('attendees');
             }
         }
         
-        /**
-         * Admin panelinde sekmeler arası geçiş yapar.
-         */
         async function loadAdminTab(tabName) {
-            // Sekme stillerini güncelle
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.tab === tabName) {
@@ -327,12 +323,11 @@ permalink: /events.html
                 }
             });
             
-            // ÖNCEKİ SCANNERLARI DURDUR (Çok Önemli)
+            // Sekme değişmeden önce HER ŞEYİ durdur
             await stopAllScanners();
             
             const content = document.getElementById('adminTabContent');
             
-            // Yeni sekmeyi yükle
             switch(tabName) {
                 case 'attendees':
                     await loadAttendeesTab(content);
@@ -391,9 +386,8 @@ permalink: /events.html
             container.innerHTML = html;
         }
         
-        // --- CHECK-IN SCANNER SEKME YÜKLEME ---
+        // --- CHECK-IN SCANNER ---
         async function loadScannerTab(container) {
-            // 1. Güvenlik: Tekrar durdurmayı dene
             await stopAllScanners();
 
             container.innerHTML = `
@@ -406,27 +400,26 @@ permalink: /events.html
             `;
             
             setTimeout(() => {
-                // Timeout süresince kullanıcı başka sekmeye geçtiyse iptal et
                 const readerEl = document.getElementById("checkin-qr-reader");
-                if (!readerEl) return; 
-                
-                // Elementin içi boş mu emin ol
+                if (!readerEl) return;
                 readerEl.innerHTML = "";
 
                 try {
-                    console.log("Creating new Check-in scanner instance");
+                    console.log("Check-in scanner başlatılıyor...");
                     checkInScanner = new Html5Qrcode("checkin-qr-reader");
                     
+                    // DÜZELTME 2: qrbox boyutu 300 yapıldı
                     checkInScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        { facingMode: "environment" }, 
+                        { fps: 10, qrbox: { width: 300, height: 300 } },
                         onScanSuccess, onScanError
                     ).catch(err => {
-                        console.error("Check-in scanner start error:", err);
+                        console.error("Scanner start error:", err);
                         const resBox = document.getElementById('scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera access denied or not found.</div>';
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera error.</div>';
                     });
                 } catch (err) {
-                    console.error("Check-in scanner init error:", err);
+                    console.error("Scanner init error:", err);
                 }
             }, 100);
         }
@@ -473,7 +466,7 @@ permalink: /events.html
             }
         }
         
-        function onScanError(errorMessage) { /* (Ignore errors) */ }
+        function onScanError(errorMessage) { /* Ignore */ }
         
         async function loadStatsTab(container) {
             container.innerHTML = "<p>Loading statistics...</p>";
@@ -524,7 +517,7 @@ permalink: /events.html
 
         function downloadBadge(regObject) {
             if (typeof html2canvas === 'undefined' || typeof QRCode === 'undefined') {
-                alert('Error: Required libraries (html2canvas, QRCode) not loaded.');
+                alert('Error: Required libraries missing.');
                 return;
             }
             const tempDiv = document.createElement('div');
@@ -537,7 +530,7 @@ permalink: /events.html
             const qrElement = tempDiv.querySelector('#badge-qr-code');
             
             const qrData = JSON.stringify({
-                eventId: eventId, // Global eventId'yi kullan
+                eventId: eventId,
                 userId: regObject.userId,
                 registrationId: regObject.registrationId
             });
@@ -561,15 +554,13 @@ permalink: /events.html
                     document.body.removeChild(tempDiv);
                 }).catch(err => {
                     console.error("Badge download error:", err);
-                    alert("An error occurred while downloading the badge.");
                     document.body.removeChild(tempDiv);
                 });
             }, 100); 
         }
 
-        // --- MEAL SCANNER SEKME YÜKLEME ---
+        // --- MEAL SCANNER ---
         async function loadMealScannerTab(container) {
-            // 1. Güvenlik: Tekrar durdur
             await stopAllScanners();
 
             container.innerHTML = `
@@ -582,28 +573,27 @@ permalink: /events.html
             `;
             
             setTimeout(() => {
-                // Sekme değiştiyse iptal et
                 const readerEl = document.getElementById("meal-qr-reader");
                 if (!readerEl) return;
-                
-                // Temizlik
                 readerEl.innerHTML = "";
 
                 try {
-                    console.log("Creating new Meal scanner instance");
+                    console.log("Meal scanner başlatılıyor...");
                     mealScanner = new Html5Qrcode("meal-qr-reader"); 
                     
+                    // DÜZELTME 2: qrbox boyutu 300 yapıldı
                     mealScanner.start(
-                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        { facingMode: "environment" }, 
+                        { fps: 10, qrbox: { width: 300, height: 300 } },
                         onMealScanSuccess, 
                         onScanError
                     ).catch(err => {
-                        console.error("Meal scanner start error:", err);
+                        console.error("Scanner start error:", err);
                         const resBox = document.getElementById('meal-scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera access denied or not found.</div>';
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera error.</div>';
                     });
                 } catch (err) {
-                    console.error("Meal scanner init error:", err);
+                    console.error("Scanner init error:", err);
                 }
             }, 100);
         }
@@ -637,18 +627,17 @@ permalink: /events.html
         }
         
         /**
-         * Page Load Management
+         * Sayfa Yükleme
          */
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Loaded. Waiting for auth state...");
+            console.log("DOM Loaded.");
             
             document.addEventListener('authStateReady', () => {
-                console.log("Auth Ready. Calling initPage().");
+                console.log("Auth Ready.");
                 initPage();
             });
             
             if (Auth.isAuthReady()) {
-                console.log("Auth was already ready. Calling initPage().");
                 initPage();
             }
 
@@ -656,6 +645,7 @@ permalink: /events.html
         });
 
         function attachStaticListeners() {
+            // Bu fonksiyon sadece BİR KERE çalışmalı
             document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
             document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
             document.getElementById('theme-toggle').addEventListener('click', () => initTheme(true));
