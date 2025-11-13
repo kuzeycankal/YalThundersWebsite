@@ -1,6 +1,3 @@
----
-permalink: /events.html
----
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -145,10 +142,9 @@ permalink: /events.html
         import * as Auth from '/auth-firebase.js';
         import * as Events from '/event-manager-firebase.js';
 
-        // --- İKİLİ OKUMA DÜZELTMESİ (KAMERA) ---
+        // --- GLOBAL TARAYICI DEĞİŞKENLERİ ---
         let checkInScanner = null;
         let mealScanner = null;
-        // --- DÜZELTME SONU ---
 
         let currentQRCode = null;
         let currentUser = null;
@@ -266,55 +262,38 @@ permalink: /events.html
             }
         }
         
-        // --- İKİLİ OKUMA FİX (async/await) ---
-
-        /**
-         * YARDIMCI: Aktif olan TÜM tarayıcıları güvenle durdurur.
-         */
+        // --- KRİTİK DÜZELTME: STOP SCANNER ---
         async function stopAllScanners() {
-            console.log("Stopping all scanners...");
-            const scanners = [checkInScanner, mealScanner];
+            console.log("Tüm tarayıcılar temizleniyor...");
             
-            // html5-qrcode.min.js yüklendiğinde, 'Html5QrcodeScannerState'
-            // objesini global (window) scope'a ekler.
-            // Onu kontrol ediyoruz.
-            const stateReady = typeof Html5QrcodeScannerState !== 'undefined';
-
-            for (const scanner of scanners) {
-                if (scanner) {
-                    let isScanning = false;
-                    
-                    // Tarayıcının durumunu (çalışıyor mu) güvenle kontrol et
-                    if (stateReady) {
-                        try {
-                            isScanning = scanner.getState() === Html5QrcodeScannerState.SCANNING;
-                        } catch (e) {
-                            console.warn("Scanner state check failed (likely already stopped).");
-                            isScanning = false;
-                        }
-                    } else if (scanner.getState) {
-                        // Eğer state objesi yoksa (eski/farklı versiyon?), yine de dene
-                        try { isScanning = scanner.getState() === 2; } // 2 genelde SCANNING demektir
-                        catch(e) { isScanning = false; }
-                    } else {
-                        // Durum kontrol edilemiyorsa, çalıştığını varsay ve durdurmayı dene
-                        isScanning = true; 
-                    }
-
-                    if (isScanning) {
-                        try {
-                            await scanner.stop();
-                            console.log("Scanner instance stopped successfully.");
-                        } catch (e) {
-                            console.warn("Scanner stop failed:", e);
-                        }
-                    }
+            // 1. Check-in kamerasını kapat
+            if (checkInScanner) {
+                try {
+                    await checkInScanner.stop();
+                    checkInScanner.clear();
+                } catch (e) {
+                    console.warn("Check-in durdurma hatası (önemsiz):", e);
                 }
+                checkInScanner = null;
             }
-            // Objeleri temizle
-            checkInScanner = null;
-            mealScanner = null;
-            console.log("All scanner instances cleared.");
+
+            // 2. Yemek kamerasını kapat
+            if (mealScanner) {
+                try {
+                    await mealScanner.stop();
+                    mealScanner.clear();
+                } catch (e) {
+                    console.warn("Meal scanner durdurma hatası (önemsiz):", e);
+                }
+                mealScanner = null;
+            }
+            
+            // 3. HTML divlerini de temizle (Garanti olsun)
+            const checkInDiv = document.getElementById("checkin-qr-reader");
+            if (checkInDiv) checkInDiv.innerHTML = "";
+            
+            const mealDiv = document.getElementById("meal-qr-reader");
+            if (mealDiv) mealDiv.innerHTML = "";
         }
 
 
@@ -326,7 +305,7 @@ permalink: /events.html
             const isOpen = panel.style.display === 'block';
             if (isOpen) {
                 panel.style.display = 'none';
-                await stopAllScanners(); // Kapatırken tarayıcıları durdur
+                await stopAllScanners(); // Paneli kapatırken kameraları durdur
             } else {
                 panel.style.display = 'block';
                 loadAdminTab('attendees'); // Varsayılan sekmeyi yükle
@@ -337,6 +316,7 @@ permalink: /events.html
          * Admin panelinde sekmeler arası geçiş yapar.
          */
         async function loadAdminTab(tabName) {
+            // Sekme stillerini güncelle
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.classList.remove('active');
                 if (tab.dataset.tab === tabName) {
@@ -344,7 +324,7 @@ permalink: /events.html
                 }
             });
             
-            // Sekme değiştirirken çalışan tüm tarayıcıları durdur
+            // ÖNCEKİ SCANNERLARI DURDUR (Çok Önemli)
             await stopAllScanners();
             
             const content = document.getElementById('adminTabContent');
@@ -352,21 +332,19 @@ permalink: /events.html
             // Yeni sekmeyi yükle
             switch(tabName) {
                 case 'attendees':
-                    loadAttendeesTab(content);
+                    await loadAttendeesTab(content);
                     break;
                 case 'scanner':
-                    loadScannerTab(content);
+                    await loadScannerTab(content);
                     break;
                 case 'stats':
-                    loadStatsTab(content);
+                    await loadStatsTab(content);
                     break;
                 case 'meal-scanner':
-                    loadMealScannerTab(content);
+                    await loadMealScannerTab(content);
                     break;
             }
         }
-        
-        // --- (Diğer fonksiyonlar 'loadAttendeesTab', 'onScanSuccess' vb. aynı kalır) ---
         
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
@@ -410,63 +388,51 @@ permalink: /events.html
             container.innerHTML = html;
         }
         
-// checkInScanner değişkeninin global bir yerde tanımlı olduğunu varsayıyorum
-// let checkInScanner = null; 
+        // --- CHECK-IN SCANNER SEKME YÜKLEME ---
+        async function loadScannerTab(container) {
+            // 1. Güvenlik: Tekrar durdurmayı dene
+            await stopAllScanners();
 
-async function loadScannerTab(container) {
-    // 1. ÖNEMLİ: Eğer halihazırda açık bir scanner varsa önce onu durdur
-    if (checkInScanner) {
-        try {
-            await checkInScanner.stop();
-            checkInScanner.clear();
-        } catch (e) {
-            console.log("Eski scanner temizlenirken önemsiz hata:", e);
-        }
-        checkInScanner = null;
-    }
-
-    // 2. HTML içeriğini oluştur
-    container.innerHTML = `
-        <div class="scanner-container">
-            <h3>Check-in QR Scanner</h3>
-            <p class="scanner-info">Scan attendee QR codes for check-in.</p>
-            <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-            <div id="scan-result" class="scan-result"></div>
-        </div>
-    `;
-
-    // 3. DOM render olduktan sonra yeni scanner'ı başlat
-    setTimeout(() => {
-        try {
-            // Ekstra güvenlik: Elementin içinin boş olduğundan emin ol
-            const readerElement = document.getElementById("checkin-qr-reader");
-            if (readerElement) readerElement.innerHTML = "";
-
-            console.log("Creating new Check-in scanner instance");
-            checkInScanner = new Html5Qrcode("checkin-qr-reader");
+            container.innerHTML = `
+                <div class="scanner-container">
+                    <h3>Check-in QR Scanner</h3>
+                    <p class="scanner-info">Scan attendee QR codes for check-in.</p>
+                    <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                    <div id="scan-result" class="scan-result"></div>
+                </div>
+            `;
             
-            checkInScanner.start(
-                { facingMode: "environment" }, 
-                { fps: 10, qrbox: 250 },
-                onScanSuccess, 
-                onScanError
-            ).catch(err => {
-                console.error("Check-in scanner start error:", err);
-                const resultEl = document.getElementById('scan-result');
-                if (resultEl) {
-                    resultEl.innerHTML = '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı (HTTPS gerekli).</div>';
+            setTimeout(() => {
+                // Timeout süresince kullanıcı başka sekmeye geçtiyse iptal et
+                const readerEl = document.getElementById("checkin-qr-reader");
+                if (!readerEl) return; 
+                
+                // Elementin içi boş mu emin ol
+                readerEl.innerHTML = "";
+
+                try {
+                    console.log("Creating new Check-in scanner instance");
+                    checkInScanner = new Html5Qrcode("checkin-qr-reader");
+                    
+                    checkInScanner.start(
+                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        onScanSuccess, onScanError
+                    ).catch(err => {
+                        console.error("Check-in scanner start error:", err);
+                        const resBox = document.getElementById('scan-result');
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera access denied or not found.</div>';
+                    });
+                } catch (err) {
+                    console.error("Check-in scanner init error:", err);
                 }
-            });
-        } catch (err) {
-            console.error("Check-in scanner init error:", err);
+            }, 100);
         }
-    }, 100);
-}
         
         async function onScanSuccess(decodedText, decodedResult) {
             const result = await Events.checkInUser(decodedText);
             const resultDiv = document.getElementById('scan-result');
-            
+            if(!resultDiv) return;
+
             if (result.success && result.registration) {
                 const reg = result.registration;
                 resultDiv.innerHTML = `
@@ -479,7 +445,7 @@ async function loadScannerTab(container) {
                         </div>
                         <div class="badge-footer"><i class="fa-solid fa-check-circle"></i> CHECK-IN SUCCESSFUL</div>
                     </div>`;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
+                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
             
             } else if (!result.success && result.message === 'Already checked in' && result.registration) {
                 const reg = result.registration;
@@ -492,7 +458,7 @@ async function loadScannerTab(container) {
                             <div class="badge-checkin-time">Checked in at: ${new Date(reg.checkInTime).toLocaleTimeString('en-US')}</div>
                         </div>
                     </div>`;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
+                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
             
             } else {
                 resultDiv.innerHTML = `
@@ -500,7 +466,7 @@ async function loadScannerTab(container) {
                         <i class="fa-solid fa-times-circle"></i><h4>Check-in Failed</h4>
                         <p>${result.message}</p>
                     </div>`;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 3000);
             }
         }
         
@@ -598,62 +564,51 @@ async function loadScannerTab(container) {
             }, 100); 
         }
 
-        // mealScanner değişkeninin script'in en başında tanımlı olduğundan emin ol:
-// let mealScanner = null;
+        // --- MEAL SCANNER SEKME YÜKLEME ---
+        async function loadMealScannerTab(container) {
+            // 1. Güvenlik: Tekrar durdur
+            await stopAllScanners();
 
-async function loadMealScannerTab(container) {
-    // 1. ÖNEMLİ: Eğer açık kalmış bir yemek scanner'ı varsa önce onu kapat
-    if (mealScanner) {
-        try {
-            await mealScanner.stop();
-            mealScanner.clear();
-        } catch (e) {
-            console.log("Eski yemek scanner'ı kapatılırken önemsiz hata:", e);
-        }
-        mealScanner = null;
-    }
-
-    // 2. HTML içeriğini bas
-    container.innerHTML = `
-        <div class="scanner-container">
-            <h3>Meal Voucher Scanner</h3>
-            <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
-            <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-            <div id="meal-scan-result" class="scan-result"></div>
-        </div>
-    `;
-
-    // 3. DOM render olduktan sonra yeni scanner'ı başlat
-    setTimeout(() => {
-        try {
-            // Ekstra Güvenlik: Div'in içini sıfırla ki eski video elementleri kalmasın
-            const readerElement = document.getElementById("meal-qr-reader");
-            if (readerElement) readerElement.innerHTML = "";
-
-            console.log("Creating new Meal scanner instance");
-            mealScanner = new Html5Qrcode("meal-qr-reader");
+            container.innerHTML = `
+                <div class="scanner-container">
+                    <h3>Meal Voucher Scanner</h3>
+                    <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
+                    <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                    <div id="meal-scan-result" class="scan-result"></div>
+                </div>
+            `;
             
-            mealScanner.start(
-                { facingMode: "environment" }, 
-                { fps: 10, qrbox: 250 },
-                onMealScanSuccess, 
-                onScanError
-            ).catch(err => {
-                console.error("Meal scanner start error:", err);
-                const resultEl = document.getElementById('meal-scan-result');
-                if (resultEl) {
-                    resultEl.innerHTML = '<div class="scan-error">Kamera erişimi reddedildi veya bulunamadı (HTTPS gerekli).</div>';
+            setTimeout(() => {
+                // Sekme değiştiyse iptal et
+                const readerEl = document.getElementById("meal-qr-reader");
+                if (!readerEl) return;
+                
+                // Temizlik
+                readerEl.innerHTML = "";
+
+                try {
+                    console.log("Creating new Meal scanner instance");
+                    mealScanner = new Html5Qrcode("meal-qr-reader"); 
+                    
+                    mealScanner.start(
+                        { facingMode: "environment" }, { fps: 10, qrbox: 250 },
+                        onMealScanSuccess, 
+                        onScanError
+                    ).catch(err => {
+                        console.error("Meal scanner start error:", err);
+                        const resBox = document.getElementById('meal-scan-result');
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera access denied or not found.</div>';
+                    });
+                } catch (err) {
+                    console.error("Meal scanner init error:", err);
                 }
-            });
-        } catch (err) {
-            console.error("Meal scanner init error:", err);
+            }, 100);
         }
-    }, 100);
-}
 
         async function onMealScanSuccess(decodedText, decodedResult) {
             const result = await Events.redeemPerk(decodedText);
             const resultDiv = document.getElementById('meal-scan-result');
+            if (!resultDiv) return;
             
             if (result.success) {
                 resultDiv.innerHTML = `
@@ -664,7 +619,7 @@ async function loadMealScannerTab(container) {
                         <p>Meal voucher redeemed successfully.</p>
                     </div>
                 `;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 3000);
+                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 3000);
             } else {
                 resultDiv.innerHTML = `
                     <div class="scan-error">
@@ -674,7 +629,7 @@ async function loadMealScannerTab(container) {
                         ${result.perk ? `<p>User: ${result.perk.userName}</p>` : ''}
                     </div>
                 `;
-                setTimeout(() => { resultDiv.innerHTML = ''; }, 5000);
+                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
             }
         }
         
