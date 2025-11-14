@@ -19,6 +19,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
     <style>
         body {
             background: var(--color-bg);
@@ -271,6 +273,24 @@
             margin-bottom: 20px;
         }
         
+        /* Scan Sonuç Ekranı */
+        .scan-result {
+            margin-top: 20px;
+            min-height: 100px;
+        }
+        .scan-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px; 
+            border-radius: 8px;
+        }
+        .scan-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px; 
+            border-radius: 8px;
+        }
+        
         @media (max-width: 768px) {
             .admin-panel-container {
                 padding: 20px;
@@ -331,6 +351,7 @@
                 </li>
                 
                 <li><a href="/contact.html">CONTACT</a></li>
+                <li class="mobile-auth-item" id="mobileAuthButtons"></li>
             </ul>
         </nav>
         
@@ -349,13 +370,11 @@
     </header>
 
     <main>
-        <!-- Loading State -->
         <div id="loadingState" class="loading">
             <i class="fas fa-spinner"></i>
             <p>Loading admin panel...</p>
         </div>
         
-        <!-- Access Denied -->
         <div id="accessDenied" class="access-denied" style="display: none;">
             <i class="fas fa-shield-alt"></i>
             <h2>Access Denied</h2>
@@ -365,7 +384,6 @@
             </a>
         </div>
         
-        <!-- Admin Panel Content -->
         <div id="adminPanelContent" class="admin-panel-container" style="display: none;">
             <div class="admin-header">
                 <h1>
@@ -410,7 +428,6 @@
                 </div>
                 
                 <div class="admin-events-grid" id="adminEventsGrid">
-                    <!-- Kick-Off 2026 Event -->
                     <div class="admin-event-card">
                         <div class="admin-event-header">
                             <div>
@@ -449,7 +466,35 @@
                             </a>
                         </div>
                     </div>
-                </div>
+                    
+                    <div class="admin-event-card">
+                        <div class="admin-event-header">
+                            <div>
+                                <h3 class="admin-event-title" style="color: #e67e22;">
+                                    <i class="fas fa-utensils"></i> Meal Voucher Scanner
+                                </h3>
+                                <p class="admin-event-date">
+                                    <i class="fas fa-info-circle"></i> Use for redeeming perks
+                                </p>
+                            </div>
+                            <span class="admin-event-badge" style="background: #e67e22;">Perk System</span>
+                        </div>
+                        
+                        <div id="meal-scanner-container" style="display: none;">
+                            <div id="meal-qr-reader" style="width: 100%; max-width: 400px; margin: 20px auto;"></div>
+                            <div id="meal-scan-result" class="scan-result" style="min-height: 100px;"></div>
+                        </div>
+                        
+                        <div class="admin-event-actions">
+                            <button id="startMealScanBtn" class="btn btn-primary" style="background: #e67e22;">
+                                <i class="fas fa-qrcode"></i> Start Meal Scanner
+                            </button>
+                            <button id="stopMealScanBtn" class="btn btn-secondary" style="display: none;">
+                                <i class="fas fa-stop"></i> Stop Scanner
+                            </button>
+                        </div>
+                    </div>
+                    </div>
             </div>
         </div>
     </main>
@@ -469,40 +514,64 @@
         </div>
     </footer>
     
-    <script src="/auth.js"></script>
-    
     <script type="module">
-        import { auth, db, getCurrentUserData } from '/firebase-config.js';
-        import { collection, query, where, getDocs, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+        // ==========================================================
+        // TAMAMEN DÜZELTİLMİŞ SCRIPT BLOĞU
+        // ==========================================================
+
+        // --- 1. ADIM: DOĞRU YERLERDEN IMPORT ETME ---
         
+        // init.js'den SADECE 'auth' ve 'db'
+        import { auth, db } from '/firebase-init.js';
+        
+        // auth-firebase.js'den KULLANICI FONKSİYONLARI ve HAZIR DURUMU
+        import { getCurrentUserProfile, isAuthReady } from '/auth-firebase.js'; 
+        
+        // (firebase-auth.js'den onAuthStateChanged'e burada ihtiyacımız yok, 
+        //  çünkü auth-firebase.js bizim için 'authStateReady' event'ini tetikliyor)
+        
+        // firebase-firestore.js'den VERİTABANI FONKSİYONLARI
+        import { collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+        
+        // event-manager-firebase.js'den YEMEK FİŞİ FONKSİYONU
+        import { redeemPerk } from '/event-manager-firebase.js';
+
+        // --- Global Değişkenler ---
         const loadingState = document.getElementById('loadingState');
         const accessDenied = document.getElementById('accessDenied');
         const adminPanelContent = document.getElementById('adminPanelContent');
+        let mealScanner = null;
         
-        // Check admin access
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
+        // --- 2. ADIM: SAYFA YÜKLEME MANTIĞI (YARIŞ DURUMUNU ÇÖZER) ---
+        
+        function onPageLoad() {
+            const userData = getCurrentUserProfile();
+
+            // DÜZELTME: 'isAdmin' (Firestore'daki alan) kontrol ediliyor
+            if (!userData || !userData.isAdmin) { 
                 showAccessDenied();
                 return;
             }
-            
-            const userData = await getCurrentUserData();
-            if (!userData || userData.role !== 'admin') {
-                showAccessDenied();
-                return;
-            }
-            
-            // Show admin panel
+
+            // Admin yetkisi var, paneli yükle
             loadingState.style.display = 'none';
             adminPanelContent.style.display = 'block';
             
-            // Load admin username
-            document.getElementById('adminUsername').textContent = userData.username || 'Admin';
+            // DÜZELTME: 'username' yerine 'name' (Firestore'daki alan) kullanılıyor
+            document.getElementById('adminUsername').textContent = userData.name || 'Admin'; 
             
-            // Load statistics
-            await loadStatistics();
-        });
+            // İstatistikleri yükle
+            loadStatistics();
+        }
+
+        // Auth'un hazır olmasını bekle (auth-firebase.js'den gelen event)
+        document.addEventListener('authStateReady', onPageLoad);
         
+        // Auth zaten hazırsa (sayfa hızlı yüklendiyse), hemen çalıştır
+        if (isAuthReady()) {
+            onPageLoad();
+        }
+
         function showAccessDenied() {
             loadingState.style.display = 'none';
             accessDenied.style.display = 'block';
@@ -510,7 +579,7 @@
         
         async function loadStatistics() {
             try {
-                // Total registrations
+                // Total registrations (Bu koleksiyon adını 'events/kickoff-2026/register.html' dosyasından aldım)
                 const registrationsQuery = query(collection(db, 'registrations'));
                 const registrationsSnapshot = await getDocs(registrationsQuery);
                 document.getElementById('statTotalRegistrations').textContent = registrationsSnapshot.size;
@@ -521,7 +590,7 @@
                 document.getElementById('statTotalMembers').textContent = usersSnapshot.size;
                 
                 // Total admins
-                const adminsQuery = query(collection(db, 'users'), where('role', '==', 'admin'));
+                const adminsQuery = query(collection(db, 'users'), where('isAdmin', '==', true));
                 const adminsSnapshot = await getDocs(adminsQuery);
                 document.getElementById('statTotalAdmins').textContent = adminsSnapshot.size;
                 
@@ -552,7 +621,85 @@
             }
         }
         
-        // Theme toggle
+        // --- 3. ADIM: YEMEK FİŞİ TARAYICI FONKSİYONLARI ---
+
+        const startMealBtn = document.getElementById('startMealScanBtn');
+        const stopMealBtn = document.getElementById('stopMealScanBtn');
+        const mealScannerContainer = document.getElementById('meal-scanner-container');
+        const mealResultDiv = document.getElementById('meal-scan-result');
+
+        startMealBtn.addEventListener('click', () => {
+            mealScannerContainer.style.display = 'block';
+            startMealBtn.style.display = 'none';
+            stopMealBtn.style.display = 'block';
+            mealResultDiv.innerHTML = '';
+            
+            if (mealScanner) {
+                try { mealScanner.clear(); } catch(e) {}
+            }
+            
+            mealScanner = new Html5Qrcode("meal-qr-reader");
+            mealScanner.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: { width: 300, height: 300 } },
+                onMealScanSuccess, 
+                (error) => { /* Hataları yoksay */ }
+            ).catch(err => {
+                console.error("Meal scanner error:", err);
+                mealResultDiv.innerHTML = '<div class="scan-error" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">Kamera başlatılamadı.</div>';
+            });
+        });
+
+        stopMealBtn.addEventListener('click', async () => {
+            if (mealScanner) {
+                try {
+                    await mealScanner.stop();
+                    mealScanner.clear();
+                } catch(e) { console.warn("Tarayıcı durdurma hatası:", e); }
+                mealScanner = null;
+            }
+            mealScannerContainer.style.display = 'none';
+            startMealBtn.style.display = 'block';
+            stopMealBtn.style.display = 'none';
+        });
+
+        async function onMealScanSuccess(decodedText) {
+            // Tarayıcıyı duraklat
+            if (mealScanner) {
+                try { mealScanner.pause(true); } catch(e) {}
+            }
+
+            // 'event-manager-firebase.js' dosyasından gelen fonksiyonu çağır
+            const result = await redeemPerk(decodedText);
+            
+            if (result.success) {
+                mealResultDiv.innerHTML = `
+                    <div class="scan-success" style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px;">
+                        <i class="fas fa-check-circle"></i>
+                        <h4>Fiş Onaylandı!</h4>
+                        <p>Kullanıcı: ${result.perk.userName}</p>
+                    </div>`;
+            } else {
+                mealResultDiv.innerHTML = `
+                    <div class="scan-error" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px;">
+                        <i class="fas fa-times-circle"></i>
+                        <h4>Fiş Reddedildi!</h4>
+                        <p>${result.message}</p>
+                        ${result.perk ? `<p>Kullanıcı: ${result.perk.userName}</p>` : ''}
+                    </div>`;
+            }
+            
+            // 3 saniye sonra taramaya devam et
+            setTimeout(() => {
+                if (mealScanner) {
+                    try { mealScanner.resume(); } catch(e) {}
+                }
+                mealResultDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        
+        // --- Tema ve Mobil Menü Yardımcı Fonksiyonları ---
         const storageKey = 'theme-preference';
         const toggle = document.getElementById('theme-toggle');
         
@@ -586,9 +733,7 @@
             });
         }
         updateIcon(getTheme());
-    </script>
-    
-    <script>
+        
         // Mobile menu
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('mobileMenuToggle');
@@ -607,6 +752,26 @@
                     }
                 });
             }
+            
+            // Mobil menü dropdown
+            const dropdowns = document.querySelectorAll('nav li.dropdown > a');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('click', function(e) { 
+                    if (window.innerWidth <= 1024) { 
+                        e.preventDefault(); 
+                        this.parentElement.classList.toggle('active'); 
+                    } 
+                });
+            });
+
+            // Menü dışına tıklama
+            document.addEventListener('click', function(e) {
+                if (nav && menuToggle && !nav.contains(e.target) && !menuToggle.contains(e.target) && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.remove('fa-times');
+                    menuToggle.querySelector('i').classList.add('fa-bars');
+                }
+            });
         });
     </script>
 </body>
