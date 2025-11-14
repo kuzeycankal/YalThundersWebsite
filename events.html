@@ -1,5 +1,6 @@
 ---
 permalink: /events.html
+layout: null
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +26,25 @@ permalink: /events.html
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        #checkin-qr-reader, #meal-qr-reader {
+            width: 100%;
+            max-width: 400px;  /* Scanner'ın maksimum genişliği */
+            aspect-ratio: 1 / 1;  /* Kare olmasını sağlar */
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+            border: none; /* Kütüphanenin kendi çerçevesini kullansın */
+            position: relative;
+            background: #222; /* Video yüklenmezse */
+        }
+
+        /* * Video CSS'lerini kaldırıyoruz. 
+         * Kütüphanenin videoyu kendisinin yönetmesine izin veriyoruz.
+         * Sadece scanner div'ini kare yapmak yeterli.
+         */
+    </style>
 </head>
 <body>
 
@@ -154,6 +174,21 @@ permalink: /events.html
         let userProfile = null;
         const eventId = 'kickoff-2026'; 
 
+        // --- ### DİNAMİK QRBOX FONKSİYONU (OKUMA SORUNUNU ÇÖZER) ### ---
+        // Ekran boyutuna göre tarama alanını (kırmızı çerçeveyi) ayarlar.
+        function getQrBoxSize(viewfinderWidth, viewfinderHeight) {
+            // Ekrana sığacak en küçük kenarı bul
+            let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            
+            // O kenarın %80'i kadar bir kare oluştur, ama 350px'i geçmesin
+            let size = Math.min(Math.floor(minEdge * 0.8), 350); 
+            
+            return {
+                width: size,
+                height: size
+            };
+        }
+
         async function initPage() {
             currentUser = Auth.getCurrentUser();
             userProfile = Auth.getCurrentUserProfile();
@@ -162,7 +197,6 @@ permalink: /events.html
             initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
             initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
             await initEventManagement();
-            // DÜZELTME 1: attachStaticListeners BURADAN KALDIRILDI (Zaten DOMContentLoaded içinde çağırılıyor)
         }
         
         async function initEventManagement() {
@@ -269,29 +303,22 @@ permalink: /events.html
         async function stopAllScanners() {
             console.log("Tüm tarayıcılar temizleniyor...");
             
-            // Check-in scanner'ı durdur
             if (checkInScanner) {
                 try {
                     await checkInScanner.stop();
                     checkInScanner.clear();
-                } catch (e) {
-                    console.warn("Check-in durdurma hatası:", e);
-                }
+                } catch (e) { console.warn("Check-in durdurma hatası:", e); }
                 checkInScanner = null;
             }
 
-            // Yemek scanner'ı durdur
             if (mealScanner) {
                 try {
                     await mealScanner.stop();
                     mealScanner.clear();
-                } catch (e) {
-                    console.warn("Meal scanner durdurma hatası:", e);
-                }
+                } catch (e) { console.warn("Meal scanner durdurma hatası:", e); }
                 mealScanner = null;
             }
             
-            // HTML içeriğini de temizle
             const checkInDiv = document.getElementById("checkin-qr-reader");
             if (checkInDiv) checkInDiv.innerHTML = "";
             
@@ -323,34 +350,22 @@ permalink: /events.html
                 }
             });
             
-            // Sekme değişmeden önce HER ŞEYİ durdur
             await stopAllScanners();
-            
             const content = document.getElementById('adminTabContent');
             
             switch(tabName) {
-                case 'attendees':
-                    await loadAttendeesTab(content);
-                    break;
-                case 'scanner':
-                    await loadScannerTab(content);
-                    break;
-                case 'stats':
-                    await loadStatsTab(content);
-                    break;
-                case 'meal-scanner':
-                    await loadMealScannerTab(content);
-                    break;
+                case 'attendees': await loadAttendeesTab(content); break;
+                case 'scanner': await loadScannerTab(content); break;
+                case 'stats': await loadStatsTab(content); break;
+                case 'meal-scanner': await loadMealScannerTab(content); break;
             }
         }
         
         async function loadAttendeesTab(container) {
             container.innerHTML = "<p>Loading attendees...</p>";
             const registrations = await Events.getAllRegistrations(eventId);
-            
             let html = '<div class="attendees-list">';
             html += `<h3>Event Registrations (${registrations.length})</h3>`;
-            
             if (registrations.length === 0) {
                 html += '<p class="no-data">No registrations yet</p>';
             } else {
@@ -358,7 +373,6 @@ permalink: /events.html
                 html += '<table class="admin-table">';
                 html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th><th>Actions</th></tr></thead>';
                 html += '<tbody>';
-                
                 registrations.forEach(reg => {
                     const regJson = JSON.stringify(reg).replace(/'/g, "&apos;");
                     html += `<tr data-reg-json='${regJson}'>`;
@@ -373,20 +387,16 @@ permalink: /events.html
                         html += `<button class='btn-download-badge' data-username='${reg.userName}'>
                                     <i class="fa-solid fa-download"></i> Badge
                                  </button>`;
-                    } else {
-                        html += 'N/A';
-                    }
-                    html += '</td>';
-                    html += '</tr>';
+                    } else { html += 'N/A'; }
+                    html += '</td></tr>';
                 });
-                
                 html += '</tbody></table></div>';
             }
             html += '</div>';
             container.innerHTML = html;
         }
         
-        // --- CHECK-IN SCANNER ---
+        // --- CHECK-IN SCANNER (DÜZELTİLDİ) ---
         async function loadScannerTab(container) {
             await stopAllScanners();
 
@@ -394,8 +404,7 @@ permalink: /events.html
                 <div class="scanner-container">
                     <h3>Check-in QR Scanner</h3>
                     <p class="scanner-info">Scan attendee QR codes for check-in.</p>
-                    <div id="checkin-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-                    <div id="scan-result" class="scan-result"></div>
+                    <div id="checkin-qr-reader"></div> <div id="scan-result" class="scan-result"></div>
                 </div>
             `;
             
@@ -408,15 +417,14 @@ permalink: /events.html
                     console.log("Check-in scanner başlatılıyor...");
                     checkInScanner = new Html5Qrcode("checkin-qr-reader");
                     
-                    // DÜZELTME 2: qrbox boyutu 300 yapıldı
                     checkInScanner.start(
                         { facingMode: "environment" }, 
-                        { fps: 10, qrbox: { width: 300, height: 300 } },
+                        { fps: 10, qrbox: getQrBoxSize }, // ### DİNAMİK BOYUT ###
                         onScanSuccess, onScanError
                     ).catch(err => {
                         console.error("Scanner start error:", err);
                         const resBox = document.getElementById('scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera error.</div>';
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Kamera başlatılamadı.</div>';
                     });
                 } catch (err) {
                     console.error("Scanner init error:", err);
@@ -455,7 +463,6 @@ permalink: /events.html
                         </div>
                     </div>`;
                 setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
-            
             } else {
                 resultDiv.innerHTML = `
                     <div class="scan-error">
@@ -559,7 +566,7 @@ permalink: /events.html
             }, 100); 
         }
 
-        // --- MEAL SCANNER ---
+        // --- MEAL SCANNER (DÜZELTİLDİ) ---
         async function loadMealScannerTab(container) {
             await stopAllScanners();
 
@@ -567,8 +574,7 @@ permalink: /events.html
                 <div class="scanner-container">
                     <h3>Meal Voucher Scanner</h3>
                     <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
-                    <div id="meal-qr-reader" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
-                    <div id="meal-scan-result" class="scan-result"></div>
+                    <div id="meal-qr-reader"></div> <div id="meal-scan-result" class="scan-result"></div>
                 </div>
             `;
             
@@ -581,16 +587,15 @@ permalink: /events.html
                     console.log("Meal scanner başlatılıyor...");
                     mealScanner = new Html5Qrcode("meal-qr-reader"); 
                     
-                    // DÜZELTME 2: qrbox boyutu 300 yapıldı
                     mealScanner.start(
                         { facingMode: "environment" }, 
-                        { fps: 10, qrbox: { width: 300, height: 300 } },
+                        { fps: 10, qrbox: getQrBoxSize }, // ### DİNAMİK BOYUT ###
                         onMealScanSuccess, 
                         onScanError
                     ).catch(err => {
                         console.error("Scanner start error:", err);
                         const resBox = document.getElementById('meal-scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Camera error.</div>';
+                        if(resBox) resBox.innerHTML = '<div class="scan-error">Kamera başlatılamadı.</div>';
                     });
                 } catch (err) {
                     console.error("Scanner init error:", err);
@@ -645,7 +650,6 @@ permalink: /events.html
         });
 
         function attachStaticListeners() {
-            // Bu fonksiyon sadece BİR KERE çalışmalı
             document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
             document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
             document.getElementById('theme-toggle').addEventListener('click', () => initTheme(true));
