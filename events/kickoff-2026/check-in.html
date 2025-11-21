@@ -1,0 +1,451 @@
+---
+permalink: /events/kickoff-2026/check-in.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-In Scanner | Kick-Off 2026</title>
+    
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --color-primary: #e74c3c;
+            --color-primary-dark: #c0392b;
+            --color-bg: #ffffff;
+            --color-bg-secondary: #f8f9fa;
+            --color-text: #2c3e50;
+            --color-text-secondary: #7f8c8d;
+            --color-border: #e0e0e0;
+        }
+        
+        [data-theme="dark"] {
+            --color-bg: #1a1a1a;
+            --color-bg-secondary: #2d2d2d;
+            --color-text: #ecf0f1;
+            --color-text-secondary: #bdc3c7;
+            --color-border: #444444;
+        }
+        
+        body {
+            background: var(--color-bg);
+            color: var(--color-text);
+            font-family: 'Cabin', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .scanner-container {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            padding: 40px;
+            background: var(--color-bg-secondary);
+            border-radius: 16px;
+        }
+        
+        .scanner-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .scanner-header h1 {
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+        
+        .scanner-header p {
+            color: var(--color-text-secondary);
+        }
+        
+        #reader {
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+            background: #000;
+        }
+        
+        .result-box {
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+        }
+        
+        .result-error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+        
+        .result-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .result-box h2 {
+            margin: 0 0 15px 0;
+            font-size: 32px;
+        }
+        
+        .result-box .attendee-info {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .attendee-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .attendee-info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: var(--color-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--color-border);
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+        
+        .stat-label {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--color-bg);
+            color: var(--color-text);
+            border: 2px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--color-primary);
+            color: var(--color-primary);
+        }
+        
+        .sound-toggle {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .sound-toggle label {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--color-text);
+        }
+    </style>
+</head>
+<body>
+    <div class="scanner-container">
+        <div class="scanner-header">
+            <h1>📱 Check-In Scanner</h1>
+            <p>Scan attendee QR codes to check them in</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalRegistered">0</div>
+                <div class="stat-label">Total Registered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCheckedIn">0</div>
+                <div class="stat-label">Checked In</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="percentageCheckedIn">0%</div>
+                <div class="stat-label">Attendance Rate</div>
+            </div>
+        </div>
+        
+        <div class="sound-toggle">
+            <label>
+                <input type="checkbox" id="soundToggle" checked>
+                <i class="fas fa-volume-up"></i> Sound Effects
+            </label>
+        </div>
+        
+        <div id="reader"></div>
+        
+        <div class="result-box" id="resultBox"></div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-secondary" id="stopScanBtn" style="display: none;">
+                <i class="fas fa-stop"></i> Stop Scanner
+            </button>
+            <button class="btn btn-primary" id="startScanBtn">
+                <i class="fas fa-qrcode"></i> Start Scanning
+            </button>
+            <a href="/events/kickoff-2026/dashboard.html" class="btn btn-secondary">
+                <i class="fas fa-chart-bar"></i> Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { db } from '/firebase-init.js';
+        import { doc, updateDoc, collection, query, where, getDocs, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+        
+        let html5QrcodeScanner = null;
+        let scanning = false;
+        
+        // Load stats
+        loadStats();
+        
+        document.getElementById('startScanBtn').addEventListener('click', startScanning);
+        document.getElementById('stopScanBtn').addEventListener('click', stopScanning);
+        
+        async function loadStats() {
+            try {
+                const q = query(collection(db, 'registrations'), where('eventId', '==', 'kickoff-2026'));
+                const snapshot = await getDocs(q);
+                
+                let total = 0;
+                let checkedIn = 0;
+                
+                snapshot.forEach(doc => {
+                    total++;
+                    if (doc.data().checkedIn) checkedIn++;
+                });
+                
+                document.getElementById('totalRegistered').textContent = total;
+                document.getElementById('totalCheckedIn').textContent = checkedIn;
+                document.getElementById('percentageCheckedIn').textContent = 
+                    total > 0 ? Math.round((checkedIn / total) * 100) + '%' : '0%';
+                
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        function startScanning() {
+            scanning = true;
+            document.getElementById('startScanBtn').style.display = 'none';
+            document.getElementById('stopScanBtn').style.display = 'block';
+            document.getElementById('resultBox').style.display = 'none';
+            
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 250, height: 250 } },
+                onScanSuccess,
+                onScanError
+            ).catch(err => {
+                console.error('Scanner error:', err);
+                alert('Camera access denied or not available');
+                stopScanning();
+            });
+        }
+        
+        function stopScanning() {
+            if (html5QrcodeScanner && scanning) {
+                html5QrcodeScanner.stop().then(() => {
+                    scanning = false;
+                    document.getElementById('startScanBtn').style.display = 'block';
+                    document.getElementById('stopScanBtn').style.display = 'none';
+                });
+            }
+        }
+        
+        async function onScanSuccess(decodedText) {
+            if (!scanning) return;
+            
+            stopScanning();
+            
+            try {
+                const docRef = doc(db, 'registrations', decodedText);
+                const docSnap = await getDoc(docRef);
+                
+                if (!docSnap.exists()) {
+                    showResult('error', 'Invalid QR Code', 'This ticket was not found in the system.');
+                    playSound('error');
+                    return;
+                }
+                
+                const data = docSnap.data();
+                
+                if (data.checkedIn) {
+                    showResult('warning', 'Already Checked In', `
+                        <div class="attendee-info">
+                            <div class="attendee-info-row">
+                                <span>Name:</span>
+                                <span>${data.fullName}</span>
+                            </div>
+                            <div class="attendee-info-row">
+                                <span>Checked in at:</span>
+                                <span>${new Date(data.checkedInAt).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    `);
+                    playSound('warning');
+                } else {
+                    // Check in
+                    await updateDoc(docRef, {
+                        checkedIn: true,
+                        checkedInAt: new Date().toISOString()
+                    });
+                    
+                    showResult('success', '✅ Check-In Successful!', `
+                        <div class="attendee-info">
+                            <div class="attendee-info-row">
+                                <span>Name:</span>
+                                <span>${data.fullName}</span>
+                            </div>
+                            <div class="attendee-info-row">
+                                <span>Email:</span>
+                                <span>${data.email}</span>
+                            </div>
+                            <div class="attendee-info-row">
+                                <span>Role:</span>
+                                <span>${data.role}</span>
+                            </div>
+                            ${data.isAdmin ? '<div class="attendee-info-row"><span>🔐 Admin Access</span></div>' : ''}
+                        </div>
+                    `);
+                    playSound('success');
+                    
+                    // Reload stats
+                    loadStats();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('error', 'Error', error.message);
+                playSound('error');
+            }
+        }
+        
+        function onScanError(error) {
+            // Ignore scan errors (happens frequently while scanning)
+        }
+        
+        function showResult(type, title, content) {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.className = `result-box result-${type}`;
+            resultBox.innerHTML = `
+                <h2>${title}</h2>
+                ${content}
+            `;
+            resultBox.style.display = 'block';
+            
+            setTimeout(() => {
+                startScanning();
+            }, 3000);
+        }
+        
+        function playSound(type) {
+            if (!document.getElementById('soundToggle').checked) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                if (type === 'success') {
+                    oscillator.frequency.value = 800;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                } else if (type === 'error') {
+                    oscillator.frequency.value = 200;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } else if (type === 'warning') {
+                    oscillator.frequency.value = 400;
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.4);
+                }
+            } catch (e) {
+                console.error('Audio error:', e);
+            }
+        }
+    </script>
+</body>
+</html>

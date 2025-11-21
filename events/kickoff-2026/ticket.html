@@ -1,0 +1,397 @@
+---
+permalink: /events/kickoff-2026/ticket.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Ticket | Kick-Off 2026</title>
+    
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        body {
+            background: var(--color-bg);
+            min-height: 100vh;
+        }
+        
+        .ticket-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 40px;
+            background: var(--color-bg-secondary);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        
+        .ticket-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            padding: 30px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 20px 20px 0 0;
+            color: white;
+        }
+        
+        .ticket-header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .ticket-header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+        }
+        
+        .ticket-info {
+            background: var(--color-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .ticket-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .ticket-info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .ticket-info-label {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+        
+        .ticket-info-value {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        .qr-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        #qrcode {
+            display: inline-block;
+        }
+        
+        .ticket-id {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 15px;
+            letter-spacing: 2px;
+        }
+        
+        .qr-instruction {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .status-registered {
+            background: #3498db;
+            color: white;
+        }
+        
+        .status-checked-in {
+            background: #2ecc71;
+            color: white;
+        }
+        
+        .status-admin {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .action-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+        
+        .btn {
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--color-bg);
+            color: var(--color-text);
+            border: 2px solid var(--color-border);
+        }
+        
+        .btn-secondary:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+        
+        .admin-notice {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .admin-notice h3 {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .admin-notice p {
+            margin: 0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--color-text-secondary);
+        }
+        
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+            color: #e74c3c;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @media print {
+            .action-buttons, .admin-notice {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ticket-container {
+                margin: 20px;
+                padding: 20px;
+            }
+            
+            .ticket-header {
+                margin: -20px -20px 20px -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ticket-container">
+        <div class="loading" id="loading">
+            <i class="fas fa-spinner"></i>
+            <p>Loading your ticket...</p>
+        </div>
+        
+        <div id="ticketContent" style="display: none;">
+            <div class="ticket-header">
+                <h1>🎫 Your Ticket</h1>
+                <p>2026 FRC Kick-Off Event</p>
+            </div>
+            
+            <div id="adminNotice" style="display: none;" class="admin-notice">
+                <h3><i class="fas fa-crown"></i> Admin Access Granted</h3>
+                <p>You have admin privileges. You can access the check-in system and dashboard.</p>
+            </div>
+            
+            <div class="ticket-info">
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Name:</span>
+                    <span class="ticket-info-value" id="ticketName">-</span>
+                </div>
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Email:</span>
+                    <span class="ticket-info-value" id="ticketEmail">-</span>
+                </div>
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Role:</span>
+                    <span class="ticket-info-value" id="ticketRole">-</span>
+                </div>
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Event:</span>
+                    <span class="ticket-info-value">2026 FRC Kick-Off</span>
+                </div>
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Date:</span>
+                    <span class="ticket-info-value">January 10, 2026</span>
+                </div>
+                <div class="ticket-info-row">
+                    <span class="ticket-info-label">Status:</span>
+                    <span id="ticketStatus"></span>
+                </div>
+            </div>
+            
+            <div class="qr-section">
+                <div id="qrcode"></div>
+                <div class="ticket-id" id="ticketId">-</div>
+                <p class="qr-instruction">
+                    Show this QR code at the entrance
+                </p>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Ticket
+                </button>
+                
+                <button class="btn btn-primary" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download QR Code
+                </button>
+                
+                <div id="adminButtons" style="display: none;">
+                    <a href="/events/kickoff-2026/check-in.html" class="btn btn-primary">
+                        <i class="fas fa-qrcode"></i> Open Check-In Scanner
+                    </a>
+                    
+                    <a href="/events/kickoff-2026/dashboard.html" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i> Admin Dashboard
+                    </a>
+                </div>
+                
+                <a href="/events.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { db } from '/firebase-init.js';
+        import { doc, getDoc } from 'https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js';
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const ticketId = urlParams.get('id');
+        
+        if (!ticketId) {
+            document.getElementById('loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i><p>Invalid ticket link</p>';
+        } else {
+            loadTicket(ticketId);
+        }
+        
+        async function loadTicket(id) {
+            try {
+                const docRef = doc(db, 'registrations', id);
+                const docSnap = await getDoc(docRef);
+                
+                if (!docSnap.exists()) {
+                    throw new Error('Ticket not found');
+                }
+                
+                const data = docSnap.data();
+                
+                // Display ticket info
+                document.getElementById('ticketName').textContent = data.fullName;
+                document.getElementById('ticketEmail').textContent = data.email;
+                document.getElementById('ticketRole').textContent = data.role.charAt(0).toUpperCase() + data.role.slice(1);
+                document.getElementById('ticketId').textContent = data.ticketId;
+                
+                // Status badge
+                const statusEl = document.getElementById('ticketStatus');
+                if (data.checkedIn) {
+                    statusEl.innerHTML = '<span class="status-badge status-checked-in"><i class="fas fa-check-circle"></i> Checked In</span>';
+                } else {
+                    statusEl.innerHTML = '<span class="status-badge status-registered"><i class="fas fa-clock"></i> Registered</span>';
+                }
+                
+                // Admin badge
+                if (data.isAdmin) {
+                    document.getElementById('adminNotice').style.display = 'block';
+                    document.getElementById('adminButtons').style.display = 'flex';
+                }
+                
+                // Generate QR Code
+                new QRCode(document.getElementById('qrcode'), {
+                    text: id,
+                    width: 200,
+                    height: 200,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                // Show ticket
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('ticketContent').style.display = 'block';
+                
+                // Download button
+                document.getElementById('downloadBtn').addEventListener('click', () => {
+                    const canvas = document.querySelector('#qrcode canvas');
+                    const url = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `ticket-${data.ticketId}.png`;
+                    link.href = url;
+                    link.click();
+                });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error loading ticket: ${error.message}</p>
+                    <a href="/events/kickoff-2026/register.html" class="btn btn-primary" style="margin-top: 20px; display: inline-flex;">Register Again</a>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
