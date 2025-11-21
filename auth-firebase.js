@@ -34,7 +34,7 @@ onAuthStateChanged(auth, async (user) => {
         console.log("Auth State: Logged Out");
     }
     authReady = true;
-    // Notify other scripts (like events.html) that auth is ready
+    // Notify other scripts (like academy.html) that auth is ready
     document.dispatchEvent(new Event("authStateReady"));
 });
 

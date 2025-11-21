@@ -10,7 +10,6 @@ module.exports = function(eleventyConfig) {
     // ana dizine kopyalanmalıdır.
     eleventyConfig.addPassthroughCopy("firebase-init.js");
     eleventyConfig.addPassthroughCopy("auth-firebase.js");
-    eleventyConfig.addPassthroughCopy("event-manager-firebase.js");
     
     // --- ESKİ DOSYALARI KOPYALAMAYI DURDUR ---
     // Bu satırlar, eski (artık silinmiş olan) localStorage
