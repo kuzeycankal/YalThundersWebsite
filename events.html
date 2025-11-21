@@ -8,8 +8,7 @@ layout: null
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YAL Thunders 9160 - Events</title>
-    <link rel="stylesheet" href="/style.css">
-    
+
     <script>
         (function() {
             const storageKey = 'theme-preference';
@@ -18,35 +17,22 @@ layout: null
         })();
     </script>
 
+    <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-    <style>
-        #checkin-qr-reader, #meal-qr-reader {
-            width: 100%;
-            max-width: 400px;  /* Scanner'ın maksimum genişliği */
-            aspect-ratio: 1 / 1;  /* Kare olmasını sağlar */
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 12px;
-            border: none; /* Kütüphanenin kendi çerçevesini kullansın */
-            position: relative;
-            background: #222; /* Video yüklenmezse */
-        }
-
-        /* * Video CSS'lerini kaldırıyoruz. 
-         * Kütüphanenin videoyu kendisinin yönetmesine izin veriyoruz.
-         * Sadece scanner div'ini kare yapmak yeterli.
-         */
-    </style>
 </head>
 <body>
+    <div class="redirect-banner" role="alert">
+        <div>
+            <strong>Heads up:</strong> Events now live inside the Academy hub.
+        </div>
+        <div class="banner-actions">
+            <button class="btn-text" id="cancelRedirect">Stay here</button>
+            <a class="btn-primary" href="/academy.html">Go to Academy</a>
+        </div>
+    </div>
 
     <header class="site-header">
         <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
@@ -60,7 +46,7 @@ layout: null
             <ul>
                 <li><a href="/news.html">NEWS</a></li>
                 <li><a href="/index.html">HOME</a></li>
-                <li><a href="/frc.html">WHAT IS FRC</a></li> 
+                <li><a href="/frc.html">WHAT IS FRC</a></li>
                 <li class="dropdown">
                     <a href="/about.html">ABOUT US <i class="fa-solid fa-caret-down dropdown-caret"></i></a>
                     <ul class="dropdown-menu">
@@ -72,7 +58,8 @@ layout: null
                     </ul>
                 </li>
                 <li><a href="/media.html">MEDIA</a></li>
-                <li><a href="/events.html" class="active">EVENTS</a></li> 
+                <li><a href="/events.html" class="active">EVENTS</a></li>
+                <li><a href="/academy.html">ACADEMY</a></li>
                 <li><a href="/contact.html">CONTACT</a></li>
                 <li class="mobile-auth-item" id="mobileAuthButtons"></li>
             </ul>
@@ -89,666 +76,221 @@ layout: null
         </div>
     </header>
 
-    <main class="content-events">
-        <div id="adminPanel" class="admin-panel" style="display: none;">
-            <div class="admin-header">
-                <h2><i class="fa-solid fa-shield-halved"></i> Admin Panel</h2>
-                <button id="adminCloseBtn" class="btn-close-admin"><i class="fa-solid fa-times"></i></button>
-            </div>
-            <div class="admin-tabs">
-                <button class="admin-tab active" data-tab="attendees">Attendees</button>
-                <button class="admin-tab" data-tab="scanner">Check-in Scanner</button>
-                <button class="admin-tab" data-tab="stats">Statistics</button>
-                <button class="admin-tab" data-tab="meal-scanner" style="background-color: #e67e22;">
-                    <i class="fa-solid fa-utensils"></i> Meal Scanner
-                </button>
-            </div>
-            <div id="adminTabContent" class="admin-tab-content"></div>
-        </div>
-        <div class="events-header">
-            <h2>Upcoming Events</h2>
-            <div id="adminButtonContainer"></div>
-        </div>
-        <div class="events-list">
-            <div class="event-card kickoff-card">
-                <div class="event-image-container">
-                    <img src="/kickoff_event.jpg" alt="YAL Thunders Kick-Off Event" class="event-image">
+    <main class="events-hub">
+        <section class="events-hero">
+            <div class="hero-copy">
+                <div class="hero-label"><i class="fa-solid fa-compass"></i> Events rerouted to the Academy</div>
+                <h1>Join meetings, watch replays, and keep training.</h1>
+                <p>Everything from event prep to live meeting rooms now lives in the Academy. Use this hub to jump into Google-Meet-style sessions, browse recordings, and see what admins scheduled for the team.</p>
+                <div class="hero-actions">
+                    <a class="btn-primary" href="/academy.html"><i class="fa-solid fa-graduation-cap"></i> Open Academy</a>
+                    <a class="btn-secondary" href="#meetings"><i class="fa-solid fa-video"></i> Meeting board</a>
+                    <a class="btn-text" href="#videos"><i class="fa-solid fa-play"></i> Watch library</a>
                 </div>
-                <div class="event-details">
-                    <div class="event-date-highlight">January 10, 2026</div>
-                    <h3 class="event-title">2026 FRC Kick-Off Event</h3>
-                    <div class="event-countdown" id="kickoff-countdown"></div>
-                    <div class="event-actions">
-                        <button id="registerBtn-kickoff-2026" class="btn-register" data-event-id="kickoff-2026">
-                            <i class="fa-solid fa-ticket"></i> Register Now
-                        </button>
+                <div class="hero-stats">
+                    <span><i class="fa-solid fa-lock"></i> Password-protected rooms</span>
+                    <span><i class="fa-solid fa-users"></i> Admin-led approvals</span>
+                    <span><i class="fa-solid fa-mobile-screen"></i> Mobile friendly</span>
+                </div>
+            </div>
+            <div class="hero-panel">
+                <div class="panel-header">
+                    <span class="status-dot"></span> Live access
+                    <span class="panel-tag">Events → Academy</span>
+                </div>
+                <div class="panel-body">
+                    <div class="panel-row">
+                        <div>
+                            <strong>Next meeting</strong>
+                            <p>Build Review — Today 19:00</p>
+                        </div>
+                        <button class="chip">Copy link</button>
                     </div>
-                    <div id="eventStatus-kickoff-2026" class="event-status"></div>
-                </div>
-            </div>
-            <div class="event-card orlando-card">
-                <div class="event-image-container">
-                    <img src="/orlando.jpg" alt="FRC Orlando Regional Logo" class="event-image">
-                </div>
-                <div class="event-details">
-                    <div class="event-date-highlight">March 18-21, 2026</div>
-                    <h3 class="event-title">2026 FRC Orlando Regional</h3>
-                    <div class="event-countdown" id="orlando-countdown"></div>
-                    <div class="event-info-note">
-                        <i class="fa-solid fa-info-circle"></i> Competition event - Registration through FIRST
+                    <div class="panel-row">
+                        <div>
+                            <strong>Admin channel</strong>
+                            <p>Instant publish for trusted accounts</p>
+                        </div>
+                        <a class="chip chip-cta" href="/admin/panel.html">Open panel</a>
+                    </div>
+                    <div class="panel-row">
+                        <div>
+                            <strong>Recording vault</strong>
+                            <p>Rewatch strategy deep-dives</p>
+                        </div>
+                        <button class="chip">View playlist</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div id="qrModal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="qrModalTitle"><i class="fa-solid fa-qrcode"></i> Your Event QR Code</h3>
-                    <button id="qrModalCloseBtn" class="btn-close-modal"><i class="fa-solid fa-times"></i></button>
+        </section>
+
+        <section id="videos" class="events-videos">
+            <div class="section-header">
+                <div class="section-label"><i class="fa-solid fa-clapperboard"></i><span>Watch on demand</span></div>
+                <h2>Latest Academy uploads</h2>
+                <p>Streamlined, YouTube-inspired cards that take you straight to the Academy video library.</p>
+            </div>
+            <div class="video-grid">
+                <article class="video-card">
+                    <div class="video-thumb"><span class="thumb-badge">12:24</span></div>
+                    <div class="video-info">
+                        <h3>Autonomous pathing walkthrough</h3>
+                        <p>Step-by-step coding tips from last competition.</p>
+                        <div class="video-meta"><span><i class="fa-solid fa-eye"></i> 1.2k views</span><span><i class="fa-solid fa-user-shield"></i> Admin first</span></div>
+                    </div>
+                </article>
+                <article class="video-card">
+                    <div class="video-thumb"><span class="thumb-badge">08:10</span></div>
+                    <div class="video-info">
+                        <h3>Electrical safety sprint</h3>
+                        <p>Quick refreshers members submit for approval.</p>
+                        <div class="video-meta"><span><i class="fa-solid fa-eye"></i> 860 views</span><span><i class="fa-solid fa-clock"></i> Awaiting admin</span></div>
+                    </div>
+                </article>
+                <article class="video-card">
+                    <div class="video-thumb"><span class="thumb-badge">21:45</span></div>
+                    <div class="video-info">
+                        <h3>Strategy roundtable replay</h3>
+                        <p>Meeting recording published instantly by mentors.</p>
+                        <div class="video-meta"><span><i class="fa-solid fa-eye"></i> 2.4k views</span><span><i class="fa-solid fa-shield"></i> Passworded room</span></div>
+                    </div>
+                </article>
+            </div>
+            <div class="section-actions">
+                <a class="btn-primary" href="/academy.html#modules">Browse Academy modules</a>
+                <a class="btn-text" href="/academy.html">See all videos</a>
+            </div>
+        </section>
+
+        <section id="meetings" class="events-meetings">
+            <div class="section-header">
+                <div class="section-label"><i class="fa-solid fa-calendar-days"></i><span>Secure rooms</span></div>
+                <h2>Meetings and live rooms</h2>
+                <p>Google Meets–style entries with copyable links and password gates created by admins.</p>
+            </div>
+            <div class="meeting-board">
+                <div class="meeting-row">
+                    <div>
+                        <div class="meeting-title">Strategy & Scouting Sync</div>
+                        <div class="meeting-sub">Friday 19:00 — Online</div>
+                    </div>
+                    <div class="meeting-actions">
+                        <span class="badge badge-lock"><i class="fa-solid fa-lock"></i> Protected</span>
+                        <button class="chip">Copy link</button>
+                        <button class="btn-primary">Enter with password</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <p id="qrModalInfo" class="modal-info">Show this QR code at the event entrance for check-in</p>
-                    <div id="qrCodeContainer" class="qr-code-container"></div>
-                    <div class="qr-actions">
-                        <button id="qrDownloadBtn" class="btn-download">
-                            <i class="fa-solid fa-download"></i> Download QR Code
-                        </button>
+                <div class="meeting-row">
+                    <div>
+                        <div class="meeting-title">Robot Build Q&A</div>
+                        <div class="meeting-sub">Sunday 14:30 — Lab</div>
+                    </div>
+                    <div class="meeting-actions">
+                        <span class="badge"><i class="fa-solid fa-users"></i> Members</span>
+                        <button class="chip">Copy link</button>
+                        <button class="btn-secondary">Join room</button>
+                    </div>
+                </div>
+                <div class="meeting-row">
+                    <div>
+                        <div class="meeting-title">Outreach planning</div>
+                        <div class="meeting-sub">Next Wednesday — Hybrid</div>
+                    </div>
+                    <div class="meeting-actions">
+                        <span class="badge badge-highlight"><i class="fa-solid fa-star"></i> Admin only</span>
+                        <button class="chip">Copy brief</button>
+                        <a class="btn-text" href="/admin/panel.html">Manage</a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <section class="admin-strip">
+            <div class="admin-strip-content">
+                <div>
+                    <div class="section-label"><i class="fa-solid fa-user-shield"></i><span>Admin fast-lane</span></div>
+                    <h2>Publish without waiting</h2>
+                    <p>Admins sign in with the YAL Thunders account to push videos live instantly, create meeting rooms, and approve member uploads.</p>
+                </div>
+                <div class="admin-actions">
+                    <a class="btn-primary" href="/admin/panel.html"><i class="fa-solid fa-gauge-high"></i> Go to admin panel</a>
+                    <a class="btn-secondary" href="/academy.html"><i class="fa-solid fa-graduation-cap"></i> Back to Academy</a>
+                </div>
+            </div>
+        </section>
     </main>
-    <footer class="site-footer-new">
-        </footer>
-    
+
+    <footer class="site-footer-new"></footer>
+
+    <script src="https://unpkg.com/swup@4"></script>
     <script type="module">
         import * as Auth from '/auth-firebase.js';
-        import * as Events from '/event-manager-firebase.js';
 
-        // --- GLOBAL SCANNER DEĞİŞKENLERİ ---
-        let checkInScanner = null;
-        let mealScanner = null;
+        let redirectTimer = null;
+        const redirectDelay = 8000;
 
-        let currentQRCode = null;
-        let currentUser = null;
-        let userProfile = null;
-        const eventId = 'kickoff-2026'; 
-
-        // --- ### DİNAMİK QRBOX FONKSİYONU (OKUMA SORUNUNU ÇÖZER) ### ---
-        // Ekran boyutuna göre tarama alanını (kırmızı çerçeveyi) ayarlar.
-        function getQrBoxSize(viewfinderWidth, viewfinderHeight) {
-            // Ekrana sığacak en küçük kenarı bul
-            let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            
-            // O kenarın %80'i kadar bir kare oluştur, ama 350px'i geçmesin
-            let size = Math.min(Math.floor(minEdge * 0.8), 350); 
-            
-            return {
-                width: size,
-                height: size
-            };
+        function scheduleRedirect() {
+            redirectTimer = setTimeout(() => { window.location.href = '/academy.html'; }, redirectDelay);
         }
 
-        async function initPage() {
-            currentUser = Auth.getCurrentUser();
-            userProfile = Auth.getCurrentUserProfile();
-            
+        function cancelRedirect() {
+            if (redirectTimer) { clearTimeout(redirectTimer); }
+            const banner = document.querySelector('.redirect-banner');
+            if (banner) { banner.classList.add('banner-paused'); }
+        }
+
+        function initPage() {
             initTheme();
-            initializeCountdown('kickoff-countdown', '2026-01-10T00:00:00+03:00');
-            initializeCountdown('orlando-countdown', '2026-03-18T00:00:00+03:00');
-            await initEventManagement();
-        }
-        
-        async function initEventManagement() {
-            if (currentUser && userProfile && userProfile.isAdmin) {
-                const adminContainer = document.getElementById('adminButtonContainer');
-                if (adminContainer) {
-                    adminContainer.innerHTML = `<button id="adminOpenBtn" class="btn-admin"><i class="fa-solid fa-shield-halved"></i> Admin Panel</button>`;
-                    document.getElementById('adminOpenBtn').addEventListener('click', toggleAdminPanel);
-                }
-            }
-            
-            if(currentUser) {
-                await updateEventStatus();
-            }
-        }
-        
-        async function handleEventAction(e) {
-            const eventId = e.currentTarget.dataset.eventId;
-            if (!currentUser) {
-                alert('Please login to register for events');
-                window.location.href = '/login.html'; 
-                return;
-            }
-            
-            const isRegistered = await Events.isUserRegistered(eventId, currentUser.uid);
-            
-            if (isRegistered) {
-                const registration = await Events.getUserRegistration(eventId, currentUser.uid);
-                showQRCode(registration);
-            } else {
-                window.location.href = `/event-register.html?event=${eventId}`;
-            }
-        }
-        
-        async function updateEventStatus() {
-            if (!currentUser) return; 
-            
-            const statusElement = document.getElementById(`eventStatus-${eventId}`);
-            const btnElement = document.getElementById(`registerBtn-${eventId}`);
-            if (!statusElement || !btnElement) return;
-            
-            const registration = await Events.getUserRegistration(eventId, currentUser.uid);
-            
-            if (registration) {
-                btnElement.innerHTML = '<i class="fa-solid fa-qrcode"></i> Show QR Code';
-                btnElement.className = 'btn-show-qr';
-                
-                if (registration.checkedIn) {
-                    statusElement.innerHTML = `<div class="status-checked-in"><i class="fa-solid fa-check-circle"></i> Checked In</div>`;
-                    statusElement.innerHTML += `<a href="/event-hub.html?event=${eventId}" class="btn-event-hub"><i class="fa-solid fa-bolt"></i> Event Menu</a>`;
-                } else {
-                    statusElement.innerHTML = `<div class="status-registered"><i class="fa-solid fa-ticket"></i> Registered</div>`;
-                }
-            } else {
-                btnElement.innerHTML = '<i class="fa-solid fa-ticket"></i> Register Now';
-                btnElement.className = 'btn-register';
-                statusElement.innerHTML = '';
-            }
-        }
-        
-        function showQRCode(registration) {
-            if (!registration) { return; }
-            const modal = document.getElementById('qrModal');
-            const container = document.getElementById('qrCodeContainer');
-            container.innerHTML = '';
-            
-            document.getElementById('qrModalTitle').innerHTML = `<i class="fa-solid fa-qrcode"></i> Your Event QR Code`;
-            document.getElementById('qrModalInfo').textContent = 'Show this QR code at the event entrance for check-in.';
-            
-            const qrData = JSON.stringify({
-                eventId: eventId,
-                userId: registration.userId,
-                registrationId: registration.registrationId
-            });
-            
-            try {
-                currentQRCode = new QRCode(container, {
-                    text: qrData, width: 300, height: 300,
-                    colorDark: "#000000", colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.H
-                });
-                modal.style.display = 'flex';
-            } catch (error) {
-                console.error('Error generating QR code:', error);
-                container.innerHTML = '<div style="color: red;">Error generating QR code.</div>';
-            }
-        }
-
-        function closeQRModal() {
-            document.getElementById('qrModal').style.display = 'none';
-        }
-        
-        function downloadQR() {
-            const canvas = document.querySelector('#qrCodeContainer canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.download = 'event-qr-code.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            }
-        }
-        
-        // --- TARAYICI TEMİZLEME FONKSİYONU ---
-        async function stopAllScanners() {
-            console.log("Tüm tarayıcılar temizleniyor...");
-            
-            if (checkInScanner) {
-                try {
-                    await checkInScanner.stop();
-                    checkInScanner.clear();
-                } catch (e) { console.warn("Check-in durdurma hatası:", e); }
-                checkInScanner = null;
-            }
-
-            if (mealScanner) {
-                try {
-                    await mealScanner.stop();
-                    mealScanner.clear();
-                } catch (e) { console.warn("Meal scanner durdurma hatası:", e); }
-                mealScanner = null;
-            }
-            
-            const checkInDiv = document.getElementById("checkin-qr-reader");
-            if (checkInDiv) checkInDiv.innerHTML = "";
-            
-            const mealDiv = document.getElementById("meal-qr-reader");
-            if (mealDiv) mealDiv.innerHTML = "";
-        }
-
-
-        /**
-         * Admin Panel Yönetimi
-         */
-        async function toggleAdminPanel() {
-            const panel = document.getElementById('adminPanel');
-            const isOpen = panel.style.display === 'block';
-            if (isOpen) {
-                panel.style.display = 'none';
-                await stopAllScanners();
-            } else {
-                panel.style.display = 'block';
-                loadAdminTab('attendees');
-            }
-        }
-        
-        async function loadAdminTab(tabName) {
-            document.querySelectorAll('.admin-tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.tab === tabName) {
-                    tab.classList.add('active');
-                }
-            });
-            
-            await stopAllScanners();
-            const content = document.getElementById('adminTabContent');
-            
-            switch(tabName) {
-                case 'attendees': await loadAttendeesTab(content); break;
-                case 'scanner': await loadScannerTab(content); break;
-                case 'stats': await loadStatsTab(content); break;
-                case 'meal-scanner': await loadMealScannerTab(content); break;
-            }
-        }
-        
-        async function loadAttendeesTab(container) {
-            container.innerHTML = "<p>Loading attendees...</p>";
-            const registrations = await Events.getAllRegistrations(eventId);
-            let html = '<div class="attendees-list">';
-            html += `<h3>Event Registrations (${registrations.length})</h3>`;
-            if (registrations.length === 0) {
-                html += '<p class="no-data">No registrations yet</p>';
-            } else {
-                html += '<div style="overflow-x: auto;">';
-                html += '<table class="admin-table">';
-                html += '<thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Team</th><th>Status</th><th>Check-in Time</th><th>Actions</th></tr></thead>';
-                html += '<tbody>';
-                registrations.forEach(reg => {
-                    const regJson = JSON.stringify(reg).replace(/'/g, "&apos;");
-                    html += `<tr data-reg-json='${regJson}'>`;
-                    html += `<td>${reg.userName || '-'}</td>`;
-                    html += `<td>${reg.userEmail || '-'}</td>`;
-                    html += `<td>${reg.role || 'N/A'}</td>`;
-                    html += `<td>${reg.teamNumber || 'N/A'}</td>`;
-                    html += `<td>${reg.checkedIn ? '<span class="badge-checked-in">Checked In</span>' : '<span class="badge-pending">Pending</span>'}</td>`;
-                    html += `<td>${reg.checkInTime ? new Date(reg.checkInTime).toLocaleString('en-US') : '-'}</td>`;
-                    html += '<td>';
-                    if (reg.checkedIn) {
-                        html += `<button class='btn-download-badge' data-username='${reg.userName}'>
-                                    <i class="fa-solid fa-download"></i> Badge
-                                 </button>`;
-                    } else { html += 'N/A'; }
-                    html += '</td></tr>';
-                });
-                html += '</tbody></table></div>';
-            }
-            html += '</div>';
-            container.innerHTML = html;
-        }
-        
-        // --- CHECK-IN SCANNER (DÜZELTİLDİ) ---
-        async function loadScannerTab(container) {
-            await stopAllScanners();
-
-            container.innerHTML = `
-                <div class="scanner-container">
-                    <h3>Check-in QR Scanner</h3>
-                    <p class="scanner-info">Scan attendee QR codes for check-in.</p>
-                    <div id="checkin-qr-reader"></div> <div id="scan-result" class="scan-result"></div>
-                </div>
-            `;
-            
-            setTimeout(() => {
-                const readerEl = document.getElementById("checkin-qr-reader");
-                if (!readerEl) return;
-                readerEl.innerHTML = "";
-
-                try {
-                    console.log("Check-in scanner başlatılıyor...");
-                    checkInScanner = new Html5Qrcode("checkin-qr-reader");
-                    
-                    checkInScanner.start(
-                        { facingMode: "environment" }, 
-                        { fps: 10, qrbox: getQrBoxSize }, // ### DİNAMİK BOYUT ###
-                        onScanSuccess, onScanError
-                    ).catch(err => {
-                        console.error("Scanner start error:", err);
-                        const resBox = document.getElementById('scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Kamera başlatılamadı.</div>';
-                    });
-                } catch (err) {
-                    console.error("Scanner init error:", err);
-                }
-            }, 100);
-        }
-        
-        async function onScanSuccess(decodedText, decodedResult) {
-            const result = await Events.checkInUser(decodedText);
-            const resultDiv = document.getElementById('scan-result');
-            if(!resultDiv) return;
-
-            if (result.success && result.registration) {
-                const reg = result.registration;
-                resultDiv.innerHTML = `
-                    <div class="yal-badge">
-                        <div class="badge-header"><img src="/yal_thunders_logo.png" alt="Logo"><span>YAL THUNDERS KICK-OFF</span></div>
-                        <div class="badge-body">
-                            <div class="badge-name">${reg.userName}</div>
-                            <div class="badge-role">${reg.role || 'Participant'}</div>
-                            <div class="badge-team">Team: ${reg.teamNumber || 'N/A'}</div>
-                        </div>
-                        <div class="badge-footer"><i class="fa-solid fa-check-circle"></i> CHECK-IN SUCCESSFUL</div>
-                    </div>`;
-                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
-            
-            } else if (!result.success && result.message === 'Already checked in' && result.registration) {
-                const reg = result.registration;
-                resultDiv.innerHTML = `
-                    <div class="yal-badge-error">
-                        <div class="badge-header-error"><i class="fa-solid fa-exclamation-triangle"></i><span>ALREADY CHECKED IN</span></div>
-                        <div class="badge-body">
-                            <div class="badge-name">${reg.userName}</div>
-                            <div class="badge-role">${reg.role || 'Participant'}</div>
-                            <div class="badge-checkin-time">Checked in at: ${new Date(reg.checkInTime).toLocaleTimeString('en-US')}</div>
-                        </div>
-                    </div>`;
-                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
-            } else {
-                resultDiv.innerHTML = `
-                    <div class="scan-error">
-                        <i class="fa-solid fa-times-circle"></i><h4>Check-in Failed</h4>
-                        <p>${result.message}</p>
-                    </div>`;
-                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 3000);
-            }
-        }
-        
-        function onScanError(errorMessage) { /* Ignore */ }
-        
-        async function loadStatsTab(container) {
-            container.innerHTML = "<p>Loading statistics...</p>";
-            const registrations = await Events.getAllRegistrations(eventId);
-            const checkedInCount = registrations.filter(reg => reg.checkedIn).length;
-            const stats = {
-                totalRegistrations: registrations.length,
-                checkedIn: checkedInCount,
-                notCheckedIn: registrations.length - checkedInCount,
-            };
-            
-            const html = `
-                <div class="stats-container">
-                    <h3>Event Statistics</h3>
-                    <div class="stats-grid">
-                        <div class="stat-box"><div class="stat-value">${stats.totalRegistrations}</div><div class="stat-label">Total Registrations</div></div>
-                        <div class="stat-box"><div class="stat-value">${stats.checkedIn}</div><div class="stat-label">Checked In</div></div>
-                        <div class="stat-box"><div class="stat-value">${stats.notCheckedIn}</div><div class="stat-label">Not Checked In</div></div>
-                        <div class="stat-box"><div class="stat-value">${stats.totalRegistrations > 0 ? Math.round((stats.checkedIn / stats.totalRegistrations) * 100) : 0}%</div><div class="stat-label">Attendance Rate</div></div>
-                    </div>
-                </div>
-            `;
-            container.innerHTML = html;
-        }
-
-        function getBadgeHTML(reg) {
-            return `
-                <div class="yal-badge-physical">
-                    <div class="badge-phys-header">
-                        <img src="/yal_thunders_logo.png" class="badge-phys-logo">
-                        <div class="badge-phys-event">
-                            <span>FRC 2026</span>
-                            <strong>KICK-OFF EVENT</strong>
-                        </div>
-                    </div>
-                    <div class="badge-phys-body">
-                        <div class="badge-phys-name">${reg.userName}</div>
-                        <div class="badge-phys-role">${reg.role || 'Participant'}</div>
-                    </div>
-                    <div class="badge-phys-qr-container">
-                        <div id="badge-qr-code"></div> 
-                    </div>
-                    <div class="badge-phys-footer">
-                        <strong>Team:</strong> ${reg.teamNumber || 'N/A'}
-                    </div>
-                </div>`;
-        }
-
-        function downloadBadge(regObject) {
-            if (typeof html2canvas === 'undefined' || typeof QRCode === 'undefined') {
-                alert('Error: Required libraries missing.');
-                return;
-            }
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'fixed';
-            tempDiv.style.left = '-9999px';
-            tempDiv.style.fontFamily = "'Cabin', sans-serif"; 
-            document.body.appendChild(tempDiv);
-            tempDiv.innerHTML = getBadgeHTML(regObject);
-            const badgeElement = tempDiv.querySelector('.yal-badge-physical');
-            const qrElement = tempDiv.querySelector('#badge-qr-code');
-            
-            const qrData = JSON.stringify({
-                eventId: eventId,
-                userId: regObject.userId,
-                registrationId: regObject.registrationId
-            });
-
-            new QRCode(qrElement, {
-                text: qrData,
-                width: 180, height: 180,
-                colorDark: "#000000", colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            setTimeout(() => {
-                html2canvas(badgeElement, { 
-                    useCORS: true, 
-                    backgroundColor: '#ffffff',
-                    logging: true 
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `badge-${regObject.userName.replace(/ /g, '_')}.png`;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                    document.body.removeChild(tempDiv);
-                }).catch(err => {
-                    console.error("Badge download error:", err);
-                    document.body.removeChild(tempDiv);
-                });
-            }, 100); 
-        }
-
-        // --- MEAL SCANNER (DÜZELTİLDİ) ---
-        async function loadMealScannerTab(container) {
-            await stopAllScanners();
-
-            container.innerHTML = `
-                <div class="scanner-container">
-                    <h3>Meal Voucher Scanner</h3>
-                    <p class="scanner-info">Scan attendee meal voucher QR codes.</p>
-                    <div id="meal-qr-reader"></div> <div id="meal-scan-result" class="scan-result"></div>
-                </div>
-            `;
-            
-            setTimeout(() => {
-                const readerEl = document.getElementById("meal-qr-reader");
-                if (!readerEl) return;
-                readerEl.innerHTML = "";
-
-                try {
-                    console.log("Meal scanner başlatılıyor...");
-                    mealScanner = new Html5Qrcode("meal-qr-reader"); 
-                    
-                    mealScanner.start(
-                        { facingMode: "environment" }, 
-                        { fps: 10, qrbox: getQrBoxSize }, // ### DİNAMİK BOYUT ###
-                        onMealScanSuccess, 
-                        onScanError
-                    ).catch(err => {
-                        console.error("Scanner start error:", err);
-                        const resBox = document.getElementById('meal-scan-result');
-                        if(resBox) resBox.innerHTML = '<div class="scan-error">Kamera başlatılamadı.</div>';
-                    });
-                } catch (err) {
-                    console.error("Scanner init error:", err);
-                }
-            }, 100);
-        }
-
-        async function onMealScanSuccess(decodedText, decodedResult) {
-            const result = await Events.redeemPerk(decodedText);
-            const resultDiv = document.getElementById('meal-scan-result');
-            if (!resultDiv) return;
-            
-            if (result.success) {
-                resultDiv.innerHTML = `
-                    <div class="scan-success">
-                        <i class="fa-solid fa-check-circle"></i>
-                        <h4>Voucher Approved!</h4>
-                        <p>User: ${result.perk.userName}</p>
-                        <p>Meal voucher redeemed successfully.</p>
-                    </div>
-                `;
-                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 3000);
-            } else {
-                resultDiv.innerHTML = `
-                    <div class="scan-error">
-                        <i class="fa-solid fa-times-circle"></i>
-                        <h4>Voucher Rejected!</h4>
-                        <p>${result.message}</p>
-                        ${result.perk ? `<p>User: ${result.perk.userName}</p>` : ''}
-                    </div>
-                `;
-                setTimeout(() => { if(resultDiv) resultDiv.innerHTML = ''; }, 5000);
-            }
-        }
-        
-        /**
-         * Sayfa Yükleme
-         */
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM Loaded.");
-            
-            document.addEventListener('authStateReady', () => {
-                console.log("Auth Ready.");
-                initPage();
-            });
-            
-            if (Auth.isAuthReady()) {
-                initPage();
-            }
-
-            attachStaticListeners();
-        });
-
-        function attachStaticListeners() {
-            document.getElementById('qrModalCloseBtn').addEventListener('click', closeQRModal);
-            document.getElementById('qrDownloadBtn').addEventListener('click', downloadQR);
-            document.getElementById('theme-toggle').addEventListener('click', () => initTheme(true));
-            document.getElementById('registerBtn-kickoff-2026').addEventListener('click', handleEventAction);
-
-            document.querySelectorAll('.admin-tab').forEach(tab => {
-                tab.addEventListener('click', (e) => loadAdminTab(e.currentTarget.dataset.tab));
-            });
-            
-            const adminCloseBtn = document.getElementById('adminCloseBtn');
-            if (adminCloseBtn) {
-                 adminCloseBtn.addEventListener('click', toggleAdminPanel);
-            }
-
-            document.getElementById('adminTabContent').addEventListener('click', (e) => {
-                const button = e.target.closest('.btn-download-badge');
-                if (button) {
-                    const row = button.closest('tr');
-                    const regData = JSON.parse(row.dataset.regJson);
-                    downloadBadge(regData);
-                }
-            });
             initMobileMenu();
-        }
-        
-        function initTheme(toggle = false) {
-            const storageKey = 'theme-preference';
-            const toggleBtn = document.getElementById('theme-toggle');
-            const getTheme = () => { return document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
-            const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); }
-            const updateIcon = (theme) => { if (toggleBtn) { if (theme === 'dark') { toggleBtn.innerHTML = '<i class="fa-solid fa-sun"></i>'; } else { toggleBtn.innerHTML = '<i class="fa-solid fa-moon"></i>'; } } }
-            
-            if (toggle) {
-                const currentTheme = getTheme();
-                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                setTheme(newTheme);
-            } else {
-                updateIcon(getTheme());
+            initSwup();
+            scheduleRedirect();
+            const cancelBtn = document.getElementById('cancelRedirect');
+            if (cancelBtn) { cancelBtn.addEventListener('click', cancelRedirect); }
+            if (Auth.isAuthReady() && typeof window.updateAuthButtons === 'function') {
+                window.updateAuthButtons();
             }
         }
 
-        function initializeCountdown(elementId, targetDateString) {
-            const countdownElement = document.getElementById(elementId);
-            if (!countdownElement) return;
-            if (countdownElement.intervalId) { clearInterval(countdownElement.intervalId); }
-            const targetDate = new Date(targetDateString).getTime();
-            const labels = { day: "days", hour: "hours", min: "min", sec: "sec", started: "Event has started!" };
-            function updateCountdown() {
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-                if (distance < 0) {
-                    countdownElement.innerHTML = labels.started;
-                    clearInterval(countdownElement.intervalId); return;
-                }
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                countdownElement.innerHTML = `
-                    <span class="countdown-value">${days}</span><span class="countdown-label">${labels.day}</span>
-                    <span class="countdown-value">${hours}</span><span class="countdown-label">${labels.hour}</span>
-                    <span class="countdown-value">${minutes}</span><span class="countdown-label">${labels.min}</span>
-                    <span class="countdown-value">${seconds}</span><span class="countdown-label">${labels.sec}</span>
-                `;
+        document.addEventListener('authStateReady', initPage);
+        if (Auth.isAuthReady()) { initPage(); }
+
+        function initTheme() {
+            const storageKey = 'theme-preference';
+            const toggle = document.getElementById('theme-toggle');
+            const getTheme = () => document.documentElement.getAttribute('data-theme') || localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            const setTheme = (theme) => { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem(storageKey, theme); updateIcon(theme); };
+            const updateIcon = (theme) => { if (toggle) { toggle.innerHTML = theme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>'; } };
+            if (toggle && !toggle.hasAttribute('data-listener-added')) {
+                toggle.addEventListener('click', () => { const currentTheme = getTheme(); const newTheme = currentTheme === 'light' ? 'dark' : 'light'; setTheme(newTheme); });
+                toggle.setAttribute('data-listener-added', 'true');
             }
-            countdownElement.intervalId = setInterval(updateCountdown, 1000);
-            updateCountdown();
+            updateIcon(getTheme());
         }
-        
+
         function initMobileMenu() {
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
             const dropdowns = document.querySelectorAll('nav li.dropdown > a');
-            if (menuToggle && !menuToggle.hasAttribute('data-listener-added')) {
+            if (menuToggle) {
                 menuToggle.addEventListener('click', function() {
                     nav.classList.toggle('active');
                     const icon = this.querySelector('i');
-                    if (nav.classList.contains('active')) { icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); } else { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
+                    if (nav.classList.contains('active')) { icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); }
+                    else { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
                 });
-                menuToggle.setAttribute('data-listener-added', 'true');
             }
             dropdowns.forEach(dropdown => {
-                if (!dropdown.hasAttribute('data-listener-added')) {
-                    dropdown.addEventListener('click', function(e) { if (window.innerWidth <= 1024) { e.preventDefault(); this.parentElement.classList.toggle('active'); } });
-                    dropdown.setAttribute('data-listener-added', 'true');
+                dropdown.addEventListener('click', function(e) { if (window.innerWidth <= 1024) { e.preventDefault(); this.parentElement.classList.toggle('active'); } });
+            });
+            document.addEventListener('click', function(e) {
+                if (nav && menuToggle && !nav.contains(e.target) && !menuToggle.contains(e.target) && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.remove('fa-times');
+                    menuToggle.querySelector('i').classList.add('fa-bars');
                 }
             });
-            if (!document.body.hasAttribute('data-body-listener-added')) {
-                document.addEventListener('click', function(e) {
-                    if (nav && menuToggle && !nav.contains(e.target) && !menuToggle.contains(e.target) && nav.classList.contains('active')) {
-                        nav.classList.remove('active');
-                        menuToggle.querySelector('i').classList.remove('fa-times');
-                        menuToggle.querySelector('i').classList.add('fa-bars');
-                    }
-                });
-                document.body.setAttribute('data-body-listener-added', 'true');
-            }
         }
-        
+
         function updateMobileAuthButtons() {
             const authButtons = document.getElementById('authButtons');
             const mobileAuthButtons = document.getElementById('mobileAuthButtons');
@@ -757,19 +299,22 @@ layout: null
                 if (clonedHTML) {
                     mobileAuthButtons.innerHTML = clonedHTML;
                     const clonedUserBtn = mobileAuthButtons.querySelector('.user-profile-btn');
-                    if (clonedUserBtn && typeof toggleUserMenu === 'function') {
-                        clonedUserBtn.onclick = toggleUserMenu;
-                    }
+                    if (clonedUserBtn && typeof toggleUserMenu === 'function') { clonedUserBtn.onclick = toggleUserMenu; }
                 }
             }
         }
         document.addEventListener('authStateReady', updateMobileAuthButtons);
-        
-        window.onclick = function(event) {
-            const modal = document.getElementById('qrModal');
-            if (event.target === modal) {
-                closeQRModal();
-            }
+
+        function initSwup() {
+            if (typeof Swup === 'undefined') return;
+            const swup = new Swup();
+            swup.hooks.on('page:view', () => {
+                initTheme();
+                initMobileMenu();
+                if (typeof window.updateAuthButtons === 'function') {
+                    window.updateAuthButtons();
+                }
+            });
         }
     </script>
 </body>
