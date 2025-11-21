@@ -1,38 +1,54 @@
-name: Build and Deploy Eleventy to GitHub Pages
+name: Deploy site to GitHub Pages
 
 on:
   push:
     branches:
-      - main # main dalına her push yapıldığında çalıştır
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' 
+          node-version: 20
 
-      - name: Install Dependencies
-        # Gerekli tüm paketleri kurar
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Run Eleventy Build
-        # Contentful verisini çeker ve siteyi _site klasörüne oluşturur
+      - name: Build site with Eleventy
         run: npm run build
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
 
-      - name: Deploy to GitHub Pages
-        # _site klasörünü gh-pages dalına yayınlar
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload static site
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: _site 
-          publish_branch: gh-pages # Yayınlama için yeni bir dal kullanır
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
