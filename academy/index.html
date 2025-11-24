@@ -1,0 +1,308 @@
+---
+permalink: /academy/index.html
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAL Thunders Academy</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script>
+        (function() {
+            const storageKey = 'theme-preference';
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body class="academy-page">
+    <header class="site-header">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+            <span class="team-name">YAL THUNDERS 9160</span>
+        </a>
+
+        <nav>
+            <ul>
+                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/index.html">HOME</a></li>
+                <li><a href="/frc.html">WHAT IS FRC</a></li>
+                <li class="dropdown">
+                    <a href="/about.html">
+                        ABOUT US
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
+                <li><a href="/media.html">MEDIA</a></li>
+                <li><a href="/events.html">EVENTS</a></li>
+                <li><a href="/academy/index.html" class="active">ACADEMY</a></li>
+                <li><a href="/contact.html">CONTACT</a></li>
+                <li class="mobile-auth-item" id="mobileAuthButtons"></li>
+            </ul>
+        </nav>
+
+        <div class="header-right">
+            <div class="auth-buttons" id="authButtons"></div>
+            <div class="language-switcher">
+                <a href="/academy/index.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/index.html" class="lang-tr">TR</a>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="academy-wrapper">
+        <section class="academy-hero">
+            <div class="hero-badge">FRC KNOWLEDGE HUB</div>
+            <h1>YAL Thunders Academy</h1>
+            <p class="hero-lead">Shared accounts, unified design, and a modern learning experience for software, design, and field-ready teamwork.</p>
+            <div class="hero-actions">
+                <a class="btn primary" href="#video-library"><i class="fa-solid fa-play"></i> Start Watching</a>
+                <a class="btn ghost" href="#meeting-lounge"><i class="fa-solid fa-users"></i> Join a Meeting</a>
+            </div>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Uploads</span>
+                    <span class="meta-value">Admin controlled, Firebase-ready</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Comments</span>
+                    <span class="meta-value">Only YAL Thunders accounts</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Events</span>
+                    <span class="meta-value">Open to everyone, opt-in by code</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="academy-grid" id="video-library">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">VIDEO LIBRARY</p>
+                    <h2>Modern YouTube-style flow for FRC learning</h2>
+                    <p class="section-subtitle">Admins upload once—everyone streams. Categories keep software, design, and strategy organized while matching the main site's palette.</p>
+                </div>
+                <div class="tag-pills">
+                    <span class="pill">Software</span>
+                    <span class="pill">Design</span>
+                    <span class="pill">Strategy</span>
+                    <span class="pill">Events</span>
+                </div>
+            </div>
+            <div class="video-grid">
+                <article class="video-card">
+                    <div class="video-thumb gradient-green">
+                        <i class="fa-solid fa-code"></i>
+                        <span class="video-length">12:48</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="chip">Software</div>
+                        <h3>WPILib Quickstart</h3>
+                        <p>Set up WPILib, connect to your robot, and push your first command safely.</p>
+                        <div class="video-meta"><span>Admin: Robotics Lead</span><span>New • Cloud-ready</span></div>
+                    </div>
+                </article>
+                <article class="video-card">
+                    <div class="video-thumb gradient-teal">
+                        <i class="fa-solid fa-cube"></i>
+                        <span class="video-length">09:31</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="chip">Design</div>
+                        <h3>CAD Pipeline & Licenses</h3>
+                        <p>How to install and license AutoCAD/SOLIDWORKS for team use with official resources.</p>
+                        <div class="video-meta"><span>Admin: Design Mentor</span><span>Updated weekly</span></div>
+                    </div>
+                </article>
+                <article class="video-card">
+                    <div class="video-thumb gradient-blue">
+                        <i class="fa-solid fa-chess-knight"></i>
+                        <span class="video-length">07:22</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="chip">Strategy</div>
+                        <h3>Match Playbook</h3>
+                        <p>Drive team routines, scouting notes, and how to share them before each event.</p>
+                        <div class="video-meta"><span>Admin: Scouting</span><span>HD streaming</span></div>
+                    </div>
+                </article>
+                <article class="video-card">
+                    <div class="video-thumb gradient-gold">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span class="video-length">05:10</span>
+                    </div>
+                    <div class="video-info">
+                        <div class="chip">Events</div>
+                        <h3>Field Walkthroughs</h3>
+                        <p>Behind-the-scenes highlights and volunteer briefings for guests and rookies.</p>
+                        <div class="video-meta"><span>Admin: Media</span><span>Public view</span></div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="academy-panels">
+            <div class="panel upload-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">ADMIN UPLOAD</p>
+                        <h3>Upload videos without leaving the site</h3>
+                        <p class="section-subtitle">Drop files, tag them, and hand off to Firebase storage. No manual folders.</p>
+                    </div>
+                    <span class="panel-badge">Guarded by admin code</span>
+                </div>
+                <form class="upload-form">
+                    <label>Video Title<input type="text" placeholder="Enter title" required></label>
+                    <label>Category<select required>
+                        <option value="">Select category</option>
+                        <option>Software</option>
+                        <option>Design</option>
+                        <option>Strategy</option>
+                        <option>Events</option>
+                    </select></label>
+                    <label>Description<textarea rows="3" placeholder="What does this lesson cover?"></textarea></label>
+                    <label class="file-drop">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <div>
+                            <strong>Upload video</strong>
+                            <p>Drag & drop or browse files. Progress connects to Firebase API.</p>
+                        </div>
+                        <input type="file" accept="video/*">
+                    </label>
+                    <div class="form-actions">
+                        <button type="button" class="btn ghost"><i class="fa-solid fa-shield"></i> Admin Code Required</button>
+                        <button type="submit" class="btn primary"><i class="fa-solid fa-upload"></i> Publish</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel meeting-panel" id="meeting-lounge">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">MEETING LOUNGE</p>
+                        <h3>Team-only rooms with shareable passwords</h3>
+                        <p class="section-subtitle">Admins create rooms, guests join with a code. Every upcoming session is visible to everyone.</p>
+                    </div>
+                    <div class="panel-stats">
+                        <span><i class="fa-solid fa-unlock-keyhole"></i> Open to view</span>
+                        <span><i class="fa-solid fa-key"></i> Code to join</span>
+                    </div>
+                </div>
+
+                <div class="meeting-grid">
+                    <div class="meeting-card">
+                        <div class="chip">Software</div>
+                        <h4>Drive Code Review</h4>
+                        <p>Pair-programming on autonomous routines.</p>
+                        <div class="meeting-meta">
+                            <span><i class="fa-regular fa-clock"></i> Thursday 19:00</span>
+                            <span><i class="fa-solid fa-user-shield"></i> Admin: Eray</span>
+                        </div>
+                        <div class="code-pill">Join code: <strong>THUNDER-DEV</strong></div>
+                    </div>
+                    <div class="meeting-card">
+                        <div class="chip">Design</div>
+                        <h4>CAD License Clinic</h4>
+                        <p>Walkthrough for installing and activating CAD tools.</p>
+                        <div class="meeting-meta">
+                            <span><i class="fa-regular fa-clock"></i> Saturday 14:00</span>
+                            <span><i class="fa-solid fa-user-shield"></i> Admin: Yağmur</span>
+                        </div>
+                        <div class="code-pill">Join code: <strong>CAD-ACCESS</strong></div>
+                    </div>
+                    <div class="meeting-card">
+                        <div class="chip">Strategy</div>
+                        <h4>Event Prep Briefing</h4>
+                        <p>Open for guests, lock-in with team code for interaction.</p>
+                        <div class="meeting-meta">
+                            <span><i class="fa-regular fa-clock"></i> Sunday 17:30</span>
+                            <span><i class="fa-solid fa-user-shield"></i> Admin: Media</span>
+                        </div>
+                        <div class="code-pill">Join code: <strong>9160-MEET</strong></div>
+                    </div>
+                </div>
+
+                <div class="meeting-actions">
+                    <button class="btn ghost"><i class="fa-solid fa-plus"></i> Open new meeting</button>
+                    <button class="btn primary"><i class="fa-solid fa-key"></i> Generate password</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="academy-columns">
+            <div class="column-card">
+                <p class="eyebrow">SOFTWARE TRACK</p>
+                <h3>Robust coding path</h3>
+                <p>From WPILib setup to drivebase tuning and code reviews, every module mirrors the same account system and palette.</p>
+                <ul class="bullet-list">
+                    <li><i class="fa-solid fa-check"></i> Git + Firebase friendly structure</li>
+                    <li><i class="fa-solid fa-check"></i> Inline comments enabled for team logins</li>
+                    <li><i class="fa-solid fa-check"></i> Admin-only publishing workflow</li>
+                </ul>
+            </div>
+            <div class="column-card">
+                <p class="eyebrow">DESIGN TRACK</p>
+                <h3>CAD & media readiness</h3>
+                <p>AutoCAD licensing, sponsor-ready renders, and media uploads share the same UI DNA as the homepage and auth forms.</p>
+                <ul class="bullet-list">
+                    <li><i class="fa-solid fa-check"></i> License guides with download links</li>
+                    <li><i class="fa-solid fa-check"></i> Upload space for renders & videos</li>
+                    <li><i class="fa-solid fa-check"></i> Modern animations with green gradients</li>
+                </ul>
+            </div>
+            <div class="column-card">
+                <p class="eyebrow">COMMUNITY</p>
+                <h3>Shared yet distinct</h3>
+                <p>Navigation matches every page while the layout feels like a fresh platform. Comments are restricted to YAL Thunders accounts.</p>
+                <ul class="bullet-list">
+                    <li><i class="fa-solid fa-check"></i> Public viewing for visitors</li>
+                    <li><i class="fa-solid fa-check"></i> Team-only commenting and RSVP</li>
+                    <li><i class="fa-solid fa-check"></i> Admins manage meetings & uploads</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p class="footer-text">YAL Thunders 9160 · FRC learning platform with shared design language.</p>
+            <div class="footer-links">
+                <a href="mailto:yal-thunders@gmail.com">Email</a>
+                <a href="https://www.instagram.com/yal_thunders9160/" target="_blank" rel="noreferrer">Instagram</a>
+                <a href="https://www.linkedin.com/company/yal-thunders-9160/" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/auth-firebase.js" type="module"></script>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle?.addEventListener('click', () => {
+            const storageKey = 'theme-preference';
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem(storageKey, next);
+        });
+    </script>
+</body>
+</html>
