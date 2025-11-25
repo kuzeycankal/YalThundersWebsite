@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Academy Admin – YAL Thunders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/yal_thunders_logo.png">
+
+    <!-- Icons -->
+    <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
+
+    <!-- Firebase -->
+    <script type="module" src="/firebase-init.js"></script>
+    <script type="module" src="/auth-firebase.js"></script>
+</head>
+
+<body>
+
+<!-- ==========================
+       HEADER (SENİN HEADER)
+=========================== -->
+<header class="site-header">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <a href="/index.html" class="logo-container site-brand-link">
+        <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <span class="team-name">YAL THUNDERS 9160</span>
+    </a>
+
+    <nav>
+        <ul>
+            <li><a href="/news.html">NEWS</a></li>
+            <li><a href="/index.html">HOME</a></li>
+            <li><a href="/frc.html">WHAT IS FRC</a></li>
+
+            <li class="dropdown">
+                <a href="/about.html">
+                    ABOUT US 
+                    <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                    <li><a href="/about.html#our-story">Our Story</a></li>
+                    <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                    <li><a href="/about.html#achievements">Achievements</a></li>
+                    <li><a href="/about.html#alumni">Alumni</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/media.html">MEDIA</a></li>
+            <li><a href="/events.html">EVENTS</a></li>
+
+            <li><a href="/academy.html">ACADEMY</a></li>
+
+            <li><a href="/contact.html">CONTACT</a></li>
+            <li class="mobile-auth-item" id="mobileAuthButtons"></li>
+        </ul>
+    </nav>
+
+    <div class="header-right">
+        <div class="auth-buttons" id="authButtons"></div>
+
+        <div class="language-switcher">
+            <a href="/index.html" class="lang-en lang-active">EN</a>
+            <a href="/tr/index.html" class="lang-tr">TR</a>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+</header>
+
+
+<!-- ==========================
+        ADMIN PANEL
+=========================== -->
+
+<main class="admin-panel">
+    <h1>Academy Admin Panel</h1>
+    <p>Upload videos and create meetings for the YAL Thunders Academy.</p>
+
+    <!-- ADMIN CHECK -->
+    <div id="adminLock" class="admin-warning">
+        Checking admin permissions...
+    </div>
+
+    <!-- REAL CONTENT -->
+    <section id="adminContent" style="display:none;">
+
+        <!-- UPLOAD VIDEO BOX -->
+        <div class="admin-box">
+            <h2><i class="fa-solid fa-cloud-arrow-up"></i> Upload Video</h2>
+
+            <form id="videoUploadForm">
+
+                <label>Title</label>
+                <input id="videoTitle" required>
+
+                <label>Description</label>
+                <textarea id="videoDescription" rows="3"></textarea>
+
+                <label>Category</label>
+                <select id="videoCategory">
+                    <option value="software">Software</option>
+                    <option value="design">Design & CAD</option>
+                    <option value="robotics">Robotics</option>
+                </select>
+
+                <label>Video File</label>
+                <input id="videoFile" type="file" accept="video/*">
+
+                <label>Thumbnail</label>
+                <input id="thumbFile" type="file" accept="image/*">
+
+                <button type="submit" class="primary-btn">
+                    <i class="fa-solid fa-upload"></i> Upload
+                </button>
+
+                <div id="videoUploadMsg" class="admin-msg"></div>
+            </form>
+        </div>
+
+
+        <!-- CREATE MEETING BOX -->
+        <div class="admin-box">
+            <h2><i class="fa-solid fa-calendar-plus"></i> Create Meeting</h2>
+
+            <form id="meetingForm">
+
+                <label>Meeting Title</label>
+                <input id="meetingTitle" required>
+
+                <label>Description</label>
+                <textarea id="meetingDescription" rows="3"></textarea>
+
+                <label>Date & Time</label>
+                <input type="datetime-local" id="meetingDateTime" required>
+
+                <label>Join Code</label>
+                <input id="meetingJoinCode" required>
+
+                <button class="primary-btn">
+                    <i class="fa-solid fa-plus"></i> Create Meeting
+                </button>
+
+                <div id="meetingMsg" class="admin-msg"></div>
+            </form>
+        </div>
+
+    </section>
+</main>
+
+
+<!-- ==========================
+        FOOTER
+=========================== -->
+<footer class="site-footer-new"></footer>
+
+<!-- PAGE SCRIPT -->
+<script type="module" src="/academy-admin.js"></script>
+
+</body>
+</html>
