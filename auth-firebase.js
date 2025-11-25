@@ -1,130 +1,183 @@
-// auth-firebase.js
-import { auth, db } from "/firebase-init.js";
-import {
-    onAuthStateChanged,
+// ----------------------------
+// Firebase Imports
+// ----------------------------
+import { 
+    getAuth, 
+    onAuthStateChanged, 
     signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
     signOut,
-    createUserWithEmailAndPassword
+    updateProfile 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import {
-    doc,
-    getDoc,
-    setDoc
+import { 
+    getFirestore, 
+    doc, 
+    setDoc, 
+    getDoc 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// --------------------------------------
-// ADMIN LIST (Şimdilik mail ile kontrol)
-// --------------------------------------
-const ADMINS = [
-    "kuzeycankal@gmail.com"
-];
+import { app } from "./firebase-init.js";
 
-// --------------------------------------
-// HEADER BUTTONS
-// --------------------------------------
-function updateAuthButtons(userProfile) {
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+
+// ===============================
+// AUTO UI UPDATE ON LOGIN STATUS
+// ===============================
+
+function updateHeaderUI(user) {
     const authButtons = document.getElementById("authButtons");
-    const mobileButtons = document.getElementById("mobileAuthButtons");
+    const mobileAuth = document.getElementById("mobileAuthButtons");
 
-    if (!authButtons || !mobileButtons) return;
+    if (!authButtons) return;
 
-    if (!userProfile) {
-        // Not logged in
+    if (user) {
         authButtons.innerHTML = `
-            <button class="login-btn" onclick="location.href='/login.html'">Login</button>
-            <button class="register-btn" onclick="location.href='/register.html'">Register</button>
+            <div class="user-info">
+                <span>${user.displayName || user.email}</span>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
         `;
-        mobileButtons.innerHTML = authButtons.innerHTML;
-        return;
-    }
 
-    // Logged in
-    const isAdmin = userProfile.isAdmin === true;
+        if (mobileAuth) {
+            mobileAuth.innerHTML = `
+                <button id="logoutBtnMobile" class="logout-btn">Logout</button>
+            `;
+        }
 
-    authButtons.innerHTML = `
-        ${isAdmin ? `<a href="/academy/academy-admin.html" class="admin-link">Admin Panel</a>` : ""}
-        <button class="logout-btn" id="logoutBtn">Logout</button>
-    `;
+        document.getElementById("logoutBtn")?.addEventListener("click", logoutUser);
+        document.getElementById("logoutBtnMobile")?.addEventListener("click", logoutUser);
+    } 
+    else {
+        authButtons.innerHTML = `
+            <a href="/login.html" class="login-btn">Login</a>
+            <a href="/register.html" class="register-btn">Register</a>
+        `;
 
-    mobileButtons.innerHTML = authButtons.innerHTML;
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.onclick = async () => {
-            await signOut(auth);
-            location.href = "/";
-        };
+        if (mobileAuth) {
+            mobileAuth.innerHTML = `
+                <a href="/login.html" class="login-btn">Login</a>
+            `;
+        }
     }
 }
 
-// --------------------------------------
-// USER PROFILE LOADING (FIRESTORE)
-// --------------------------------------
-async function loadUserProfile(uid, email) {
-    const ref = doc(db, "users", uid);
-    const snap = await getDoc(ref);
 
-    // Eğer kullanıcı ilk kez giriyorsa kaydet
-    if (!snap.exists()) {
-        const isAdmin = ADMINS.includes(email);
 
-        await setDoc(ref, {
-            email,
-            isAdmin
-        });
+// ===============================
+// ADMIN CHECK
+// ===============================
 
-        return { email, isAdmin };
-    }
+export async function checkAdmin() {
+    const user = auth.currentUser;
+    if (!user) return false;
 
-    return snap.data();
+    const adminDoc = await getDoc(doc(db, "admins", user.uid));
+    return adminDoc.exists();
 }
 
-// --------------------------------------
-// AUTH STATE LISTENER
-// --------------------------------------
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        updateAuthButtons(null);
+
+
+// ===============================
+// LOGIN HANDLER
+// ===============================
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+    const msg = document.getElementById("loginMessage");
+
+    msg.textContent = "Logging in...";
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        msg.textContent = "Success! Redirecting...";
+        setTimeout(() => { window.location.href = "/index.html"; }, 800);
+    } 
+    catch (err) {
+        msg.textContent = err.message;
+    }
+}
+
+
+
+// ===============================
+// REGISTER HANDLER
+// ===============================
+
+async function handleRegister(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("registerName").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("registerPassword").value;
+    const confirm = document.getElementById("registerPasswordConfirm").value;
+    const adminCode = document.getElementById("adminCode").value;
+    const msg = document.getElementById("registerMessage");
+
+    msg.textContent = "Creating account...";
+
+    if (password !== confirm) {
+        msg.textContent = "Passwords do not match!";
         return;
     }
 
-    const profile = await loadUserProfile(user.uid, user.email);
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-    updateAuthButtons(profile);
+        await updateProfile(user, { displayName: name });
 
-    // Eğer admin ise admin sayfasına yönlendir
-    if (profile.isAdmin && location.pathname.includes("login")) {
-        location.href = "/academy/academy-admin.html";
+        // Admin kaydı
+        if (adminCode === "YALTHUNDERS2026") {
+            await setDoc(doc(db, "admins", user.uid), { admin: true });
+        }
+
+        msg.textContent = "Account created! Redirecting...";
+        setTimeout(() => window.location.href = "/index.html", 800);
+    } 
+    catch (err) {
+        msg.textContent = err.message;
     }
+}
+
+
+
+// ===============================
+// LOGOUT
+// ===============================
+
+async function logoutUser() {
+    await signOut(auth);
+    window.location.href = "/index.html";
+}
+
+
+
+// ===============================
+// EVENT LISTENERS ON PAGE LOAD
+// ===============================
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    if (loginForm) loginForm.addEventListener("submit", handleLogin);
+    if (registerForm) registerForm.addEventListener("submit", handleRegister);
 });
 
-// --------------------------------------
-// LOGIN HANDLER
-// --------------------------------------
-export async function login(email, password) {
-    try {
-        await signInWithEmailAndPassword(auth, email, password);
-        return { success: true };
-    } catch (err) {
-        return { success: false, message: err.message };
-    }
-}
 
-// --------------------------------------
-// REGISTER HANDLER
-// --------------------------------------
-export async function register(email, password, code) {
-    const REQUIRED_CODE = "YALTHUNDERS2026";
+// ===============================
+// AUTH STATE CHANGE LISTENER
+// ===============================
 
-    if (code !== REQUIRED_CODE) {
-        return { success: false, message: "Invalid registration code" };
-    }
+onAuthStateChanged(auth, user => {
+    updateHeaderUI(user);
+});
 
-    try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        return { success: true };
-    } catch (err) {
-        return { success: false, message: err.message };
-    }
-}
+
+// Export
+export { auth, db };
