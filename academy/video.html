@@ -1,33 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8" />
-    <title>Academy Video – YAL Thunders</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>Video – YAL Thunders Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- GLOBAL CSS -->
-    <link rel="stylesheet" href="/style.css" />
-    <link rel="icon" href="/yal_thunders_logo.png" />
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/academy/css/academy.css">
+    <link rel="icon" href="/yal_thunders_logo.png">
 
-    <!-- Icons -->
     <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
-
-    <!-- Firebase -->
-    <script type="module" src="/firebase-init.js"></script>
-    <script type="module" src="/auth-firebase.js"></script>
 </head>
 <body>
 
-<!-- ==========================
-      HEADER (BİREBİR SENİN HEADER)
-========================== -->
 <header class="site-header">
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
         <i class="fa-solid fa-bars"></i>
     </button>
 
     <a href="/index.html" class="logo-container site-brand-link">
-        <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo" />
+        <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
         <span class="team-name">YAL THUNDERS 9160</span>
     </a>
 
@@ -36,7 +28,6 @@
             <li><a href="/news.html">NEWS</a></li>
             <li><a href="/index.html">HOME</a></li>
             <li><a href="/frc.html">WHAT IS FRC</a></li>
-
             <li class="dropdown">
                 <a href="/about.html">
                     ABOUT US
@@ -50,12 +41,9 @@
                     <li><a href="/about.html#alumni">Alumni</a></li>
                 </ul>
             </li>
-
             <li><a href="/media.html">MEDIA</a></li>
             <li><a href="/events.html">EVENTS</a></li>
-
-            <li><a href="/academy.html">ACADEMY</a></li>
-
+            <li><a href="/academy/index.html" class="active">ACADEMY</a></li>
             <li><a href="/contact.html">CONTACT</a></li>
             <li class="mobile-auth-item" id="mobileAuthButtons"></li>
         </ul>
@@ -75,52 +63,37 @@
     </div>
 </header>
 
-<!-- ==========================
-      VIDEO PAGE CONTENT
-========================== -->
-<main class="video-page">
-
-    <div class="video-container">
-
-        <!-- VIDEO PLAYER -->
-        <div class="video-player-box">
-            <video id="academyVideoPlayer" controls>
-                <source id="videoSource" src="" type="video/mp4" />
+<main class="academy-video-page">
+    <section class="video-player-section">
+        <div class="video-player-wrapper">
+            <video id="videoPlayer" controls poster="" class="academy-video-player">
+                <source id="videoSource" src="" type="video/mp4">
+                Your browser does not support the video tag.
             </video>
         </div>
 
-        <!-- VIDEO INFO -->
-        <h1 id="videoTitle" class="video-title">Loading...</h1>
-
         <div class="video-meta">
-            <span id="videoCategory" class="category-tag"></span>
-            <span id="videoDate" class="date-tag"></span>
+            <h1 id="videoTitle">Loading...</h1>
+            <p id="videoCategory" class="video-category-pill"></p>
+            <p id="videoDescription" class="video-description"></p>
         </div>
+    </section>
 
-        <p id="videoDescription" class="video-description"></p>
-
-
-        <!-- COMMENTS -->
-        <section class="comment-box">
-            <h2>Comments</h2>
-
-            <div id="commentList"></div>
-
-            <div id="commentInputWrapper" style="margin-top:20px;"></div>
-        </section>
-
-    </div>
-
+    <aside class="video-sidebar">
+        <h2>More videos</h2>
+        <div id="relatedVideos" class="related-video-list">
+            <!-- filled by JS -->
+        </div>
+    </aside>
 </main>
 
-
-<!-- ==========================
-      FOOTER
-========================== -->
 <footer class="site-footer-new"></footer>
 
-<!-- JS -->
-<script type="module" src="/academy-video-detail.js"></script>
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/auth-firebase.js"></script>
+
+<script type="module" src="/academy/js/firebase.js"></script>
+<script type="module" src="/academy/js/view.js"></script>
 
 </body>
 </html>

@@ -5,21 +5,14 @@
     <title>Academy Meetings – YAL Thunders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Styles -->
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/academy/css/academy.css">
     <link rel="icon" href="/yal_thunders_logo.png">
+
     <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
-
-    <!-- Firebase -->
-    <script type="module" src="/firebase-init.js"></script>
-    <script type="module" src="/auth-firebase.js"></script>
 </head>
-
 <body>
 
-<!-- ==========================
-       HEADER (SENİN HEADER)
-=========================== -->
 <header class="site-header">
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
         <i class="fa-solid fa-bars"></i>
@@ -35,10 +28,9 @@
             <li><a href="/news.html">NEWS</a></li>
             <li><a href="/index.html">HOME</a></li>
             <li><a href="/frc.html">WHAT IS FRC</a></li>
-
             <li class="dropdown">
                 <a href="/about.html">
-                    ABOUT US 
+                    ABOUT US
                     <i class="fa-solid fa-caret-down dropdown-caret"></i>
                 </a>
                 <ul class="dropdown-menu">
@@ -49,12 +41,10 @@
                     <li><a href="/about.html#alumni">Alumni</a></li>
                 </ul>
             </li>
-
             <li><a href="/media.html">MEDIA</a></li>
             <li><a href="/events.html">EVENTS</a></li>
-            <li><a href="/academy.html">ACADEMY</a></li>
+            <li><a href="/academy/index.html" class="active">ACADEMY</a></li>
             <li><a href="/contact.html">CONTACT</a></li>
-
             <li class="mobile-auth-item" id="mobileAuthButtons"></li>
         </ul>
     </nav>
@@ -73,38 +63,35 @@
     </div>
 </header>
 
-
-<!-- ==========================
-        MEETINGS PAGE
-=========================== -->
 <main class="meetings-page">
+    <header class="meetings-header">
+        <h1>Academy Meetings</h1>
+        <p>See upcoming and past meetings created by the Academy admins.</p>
 
-    <h1>Academy Meetings</h1>
-    <p>Join workshops, team training and robotics sessions using your access code.</p>
+        <div class="meetings-actions">
+            <a href="/academy/academy-admin.html" class="secondary-btn">
+                <i class="fa-solid fa-shield-halved"></i> Admin Panel
+            </a>
+        </div>
+    </header>
 
-    <!-- JOIN MEETING -->
-    <div class="join-box">
-        <input id="joinCodeInput" placeholder="Enter join code (e.g. YAL2025)">
-        <button id="joinMeetingBtn">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i>
-            Join
-        </button>
+    <section id="meetingsList" class="meetings-list">
+        <!-- Meeting cards appended by meetings.js -->
+    </section>
+
+    <div id="meetingsEmptyState" class="academy-empty" style="display:none;">
+        <i class="fa-solid fa-calendar-xmark"></i>
+        <p>No meetings have been created yet.</p>
     </div>
-
-    <div id="joinMsg"></div>
-
-    <!-- MEETINGS LIST -->
-    <h2 style="margin-top:40px;">Upcoming Meetings</h2>
-    <div id="meetingList" class="meeting-list"></div>
 </main>
 
-
-<!-- ==========================
-        FOOTER
-=========================== -->
 <footer class="site-footer-new"></footer>
 
-<script type="module" src="/academy-meetings.js"></script>
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/auth-firebase.js"></script>
+
+<script type="module" src="/academy/js/firebase.js"></script>
+<script type="module" src="/academy/js/meetings.js"></script>
 
 </body>
 </html>
