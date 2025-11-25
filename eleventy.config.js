@@ -1,3 +1,6 @@
+
+console.log("ELEVENTY CONFIG YÜKLENDİ!");
+
 const { DateTime } = require("luxon");
 const markdownIt = require("markdown-it");
 
