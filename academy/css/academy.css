@@ -1,0 +1,239 @@
+/* ===============================
+   YAL THUNDERS ACADEMY CSS
+   academy/css/academy.css
+================================*/
+
+/* Renkler */
+:root {
+    --primary: #ffcc00;
+    --dark: #0f0f0f;
+    --light: #ffffff;
+    --gray: #a7a7a7;
+    --card-bg: #1a1a1a;
+}
+
+/* Sayfa genel */
+.academy-page,
+.admin-panel,
+.upload-page,
+.meetings-page,
+.video-view-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 40px 20px;
+    color: var(--light);
+}
+
+/* Başlıklar */
+.academy-page h1,
+.admin-panel h1,
+.upload-page h1,
+.meetings-page h1,
+.video-view-page h1 {
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+/* Alt başlık */
+.academy-page p,
+.admin-panel p {
+    font-size: 18px;
+    color: var(--gray);
+}
+
+/* Butonlar */
+.btn {
+    padding: 10px 20px;
+    background: var(--primary);
+    border-radius: 6px;
+    font-weight: 600;
+    color: #000;
+    text-decoration: none;
+    display: inline-block;
+    margin: 8px 0;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* ===============================
+   Video Liste (index.html)
+================================*/
+
+.video-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.video-filter button {
+    background: #2e2e2e;
+    color: var(--light);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.video-filter button.active {
+    background: var(--primary);
+    color: #000;
+}
+
+.video-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.video-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.2s ease;
+    border: 1px solid #222;
+}
+
+.video-card:hover {
+    transform: scale(1.03);
+}
+
+.video-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.video-card .info {
+    padding: 10px;
+}
+
+.video-card .title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.video-card .cat {
+    font-size: 14px;
+    color: var(--gray);
+}
+
+/* ===============================
+   Admin Panel
+================================*/
+
+.admin-warning {
+    padding: 20px;
+    background: #7a0000;
+    border-radius: 6px;
+    color: #fff;
+    font-weight: 600;
+}
+
+#adminContent {
+    margin-top: 20px;
+}
+
+/* Kart tasarımları */
+.admin-card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin-bottom: 25px;
+}
+
+.admin-card h2 {
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* ===============================
+   Upload Sayfası
+================================*/
+
+.upload-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-width: 600px;
+}
+
+.upload-page input,
+.upload-page textarea,
+.upload-page select {
+    padding: 10px;
+    background: #111;
+    border: 1px solid #333;
+    color: var(--light);
+    border-radius: 6px;
+}
+
+/* ===============================
+   Meetings
+================================*/
+
+#meetingList {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.meeting-card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #333;
+}
+
+.meeting-card h3 {
+    color: var(--primary);
+}
+
+.meeting-card small {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+/* ===============================
+   Video İzleme
+================================*/
+
+.video-view-page video {
+    width: 100%;
+    max-height: 500px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.video-description {
+    font-size: 16px;
+    color: var(--gray);
+}
+
+/* ===============================
+   Responsive
+================================*/
+
+@media (max-width: 768px) {
+    .video-list {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+
+    .academy-page h1,
+    .admin-panel h1 {
+        font-size: 28px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}

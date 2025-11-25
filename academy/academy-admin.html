@@ -5,23 +5,14 @@
     <title>Academy Admin – YAL Thunders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Global Styles -->
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/academy/css/academy.css">
     <link rel="icon" href="/yal_thunders_logo.png">
 
-    <!-- Icons -->
     <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
-
-    <!-- Firebase -->
-    <script type="module" src="/firebase-init.js"></script>
-    <script type="module" src="/auth-firebase.js"></script>
 </head>
-
 <body>
 
-<!-- ==========================
-       HEADER (SENİN HEADER)
-=========================== -->
 <header class="site-header">
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
         <i class="fa-solid fa-bars"></i>
@@ -37,10 +28,9 @@
             <li><a href="/news.html">NEWS</a></li>
             <li><a href="/index.html">HOME</a></li>
             <li><a href="/frc.html">WHAT IS FRC</a></li>
-
             <li class="dropdown">
                 <a href="/about.html">
-                    ABOUT US 
+                    ABOUT US
                     <i class="fa-solid fa-caret-down dropdown-caret"></i>
                 </a>
                 <ul class="dropdown-menu">
@@ -51,12 +41,9 @@
                     <li><a href="/about.html#alumni">Alumni</a></li>
                 </ul>
             </li>
-
             <li><a href="/media.html">MEDIA</a></li>
             <li><a href="/events.html">EVENTS</a></li>
-
-            <li><a href="/academy/academy.html">ACADEMY</a></li>
-
+            <li><a href="/academy/index.html" class="active">ACADEMY</a></li>
             <li><a href="/contact.html">CONTACT</a></li>
             <li class="mobile-auth-item" id="mobileAuthButtons"></li>
         </ul>
@@ -76,94 +63,90 @@
     </div>
 </header>
 
-
-<!-- ==========================
-        ADMIN PANEL
-=========================== -->
-
 <main class="admin-panel">
-    <h1>Academy Admin Panel</h1>
-    <p>Upload videos and create meetings for the YAL Thunders Academy.</p>
+    <header class="admin-header">
+        <h1>Academy Admin Panel</h1>
+        <p>Upload training videos and create meetings for YAL Thunders members.</p>
+        <p id="adminStatus" class="admin-status">Checking admin permissions...</p>
+    </header>
 
-    <!-- ADMIN CHECK -->
-    <div id="adminLock" class="admin-warning">
-        Checking admin permissions...
-    </div>
+    <section class="admin-grid">
 
-    <!-- REAL CONTENT -->
-    <section id="adminContent" style="display:none;">
-
-        <!-- UPLOAD VIDEO BOX -->
-        <div class="admin-box">
+        <!-- Video Upload Card -->
+        <article class="admin-card">
             <h2><i class="fa-solid fa-cloud-arrow-up"></i> Upload Video</h2>
 
-            <form id="videoUploadForm">
+            <form id="videoUploadForm" class="admin-form">
+                <label for="videoTitle">Title</label>
+                <input id="videoTitle" name="videoTitle" type="text" required>
 
-                <label>Title</label>
-                <input id="videoTitle" required>
+                <label for="videoDescription">Description</label>
+                <textarea id="videoDescription" name="videoDescription" rows="3"></textarea>
 
-                <label>Description</label>
-                <textarea id="videoDescription" rows="3"></textarea>
-
-                <label>Category</label>
-                <select id="videoCategory">
+                <label for="videoCategory">Category</label>
+                <select id="videoCategory" name="videoCategory">
                     <option value="software">Software</option>
                     <option value="design">Design & CAD</option>
                     <option value="robotics">Robotics</option>
                 </select>
 
-                <label>Video File</label>
-                <input id="videoFile" type="file" accept="video/*">
+                <label for="videoFile">Video File</label>
+                <input id="videoFile" name="videoFile" type="file" accept="video/*" required>
 
-                <label>Thumbnail</label>
-                <input id="thumbFile" type="file" accept="image/*">
+                <label for="thumbnailFile">Thumbnail</label>
+                <input id="thumbnailFile" name="thumbnailFile" type="file" accept="image/*" required>
 
                 <button type="submit" class="primary-btn">
                     <i class="fa-solid fa-upload"></i> Upload
                 </button>
 
-                <div id="videoUploadMsg" class="admin-msg"></div>
+                <p id="videoUploadMessage" class="admin-message"></p>
             </form>
-        </div>
+        </article>
 
-
-        <!-- CREATE MEETING BOX -->
-        <div class="admin-box">
+        <!-- Meeting Create Card -->
+        <article class="admin-card">
             <h2><i class="fa-solid fa-calendar-plus"></i> Create Meeting</h2>
 
-            <form id="meetingForm">
+            <form id="meetingCreateForm" class="admin-form">
+                <label for="meetingTitle">Meeting Title</label>
+                <input id="meetingTitle" name="meetingTitle" type="text" required>
 
-                <label>Meeting Title</label>
-                <input id="meetingTitle" required>
+                <label for="meetingDescription">Description</label>
+                <textarea id="meetingDescription" name="meetingDescription" rows="3"></textarea>
 
-                <label>Description</label>
-                <textarea id="meetingDescription" rows="3"></textarea>
+                <label for="meetingDate">Date &amp; Time</label>
+                <input id="meetingDate" name="meetingDate" type="datetime-local" required>
 
-                <label>Date & Time</label>
-                <input type="datetime-local" id="meetingDateTime" required>
+                <label for="meetingCode">Join Code</label>
+                <input id="meetingCode" name="meetingCode" type="text" required>
 
-                <label>Join Code</label>
-                <input id="meetingJoinCode" required>
-
-                <button class="primary-btn">
+                <button type="submit" class="primary-btn">
                     <i class="fa-solid fa-plus"></i> Create Meeting
                 </button>
 
-                <div id="meetingMsg" class="admin-msg"></div>
+                <p id="meetingCreateMessage" class="admin-message"></p>
             </form>
-        </div>
+
+            <div class="admin-link">
+                <a href="/academy/academy-meetings.html">
+                    <i class="fa-solid fa-list"></i> Go to meetings list
+                </a>
+            </div>
+        </article>
 
     </section>
 </main>
 
-
-<!-- ==========================
-        FOOTER
-=========================== -->
 <footer class="site-footer-new"></footer>
 
-<!-- PAGE SCRIPT -->
-<script type="module" src="/academy-admin.js"></script>
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/auth-firebase.js"></script>
+
+<script type="module" src="/academy/js/firebase.js"></script>
+<script type="module" src="/academy/js/admin.js"></script>
+<script type="module" src="/academy/js/upload.js"></script>
+<script type="module" src="/academy/js/meetings.js"></script>
 
 </body>
 </html>

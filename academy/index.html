@@ -2,26 +2,19 @@
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>YAL Thunders Academy</title>
+    <title>Academy – YAL Thunders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Global Styles -->
+    <!-- Global + Academy styles -->
     <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/academy/css/academy.css">
     <link rel="icon" href="/yal_thunders_logo.png">
 
     <!-- Icons -->
     <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
-
-    <!-- Firebase -->
-    <script type="module" src="/firebase-init.js"></script>
-    <script type="module" src="/auth-firebase.js"></script>
 </head>
-
 <body>
 
-<!-- ==========================
-       HEADER (BİREBİR SENİN HEADER)
-=========================== -->
 <header class="site-header">
     <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
         <i class="fa-solid fa-bars"></i>
@@ -40,7 +33,7 @@
 
             <li class="dropdown">
                 <a href="/about.html">
-                    ABOUT US 
+                    ABOUT US
                     <i class="fa-solid fa-caret-down dropdown-caret"></i>
                 </a>
                 <ul class="dropdown-menu">
@@ -54,10 +47,7 @@
 
             <li><a href="/media.html">MEDIA</a></li>
             <li><a href="/events.html">EVENTS</a></li>
-
-            <!-- ACADEMY MENU ITEM (A seçeneği) -->
-            <li><a href="/academy/academy.html" class="active">ACADEMY</a></li>
-
+            <li><a href="/academy/index.html" class="active">ACADEMY</a></li>
             <li><a href="/contact.html">CONTACT</a></li>
             <li class="mobile-auth-item" id="mobileAuthButtons"></li>
         </ul>
@@ -77,73 +67,69 @@
     </div>
 </header>
 
-
-<!-- ==========================
-       ACADEMY CONTENT
-=========================== -->
 <main class="academy-layout">
-
-    <!-- SIDEBAR -->
+    <!-- Sidebar -->
     <aside class="academy-sidebar">
-        <div class="academy-header-box">
-            <img src="/yal_thunders_logo.png" class="academy-logo">
-            <h2 class="academy-title">ACADEMY</h2>
-            <p class="academy-subtitle">Learn robotics, software and design</p>
+        <h2 class="sidebar-title">Academy</h2>
+        <p class="sidebar-subtitle">Learn robotics, software and design.</p>
+
+        <div class="academy-filters">
+            <button class="filter-btn active" data-category="all">
+                <i class="fa-solid fa-list"></i> All Videos
+            </button>
+            <button class="filter-btn" data-category="software">
+                <i class="fa-solid fa-code"></i> Software
+            </button>
+            <button class="filter-btn" data-category="design">
+                <i class="fa-solid fa-pencil-ruler"></i> Design & CAD
+            </button>
+            <button class="filter-btn" data-category="robotics">
+                <i class="fa-solid fa-robot"></i> Robotics
+            </button>
         </div>
 
-        <button class="academy-nav-item active" data-category="all">
-            <i class="fa-solid fa-play-circle"></i> All Videos
-        </button>
+        <div class="academy-search">
+            <label for="videoSearch">Search</label>
+            <input id="videoSearch" type="text" placeholder="Search videos...">
+        </div>
 
-        <button class="academy-nav-item" data-category="software">
-            <i class="fa-solid fa-code"></i> Software
-        </button>
-
-        <button class="academy-nav-item" data-category="design">
-            <i class="fa-solid fa-pen-ruler"></i> Design & CAD
-        </button>
-
-        <button class="academy-nav-item" data-category="robotics">
-            <i class="fa-solid fa-robot"></i> Robotics
-        </button>
-
-        <a href="/academy/academy-meetings.html" class="academy-nav-item">
-            <i class="fa-solid fa-users"></i> Meetings
-        </a>
-
-        <a href="/academy/academy-admin.html" id="academyAdminLink" class="academy-nav-item">
-            <i class="fa-solid fa-shield"></i> Admin Panel
-        </a>
+        <div class="academy-side-links">
+            <a href="/academy/academy-meetings.html">
+                <i class="fa-solid fa-calendar"></i> Meetings
+            </a>
+            <a href="/academy/academy-admin.html">
+                <i class="fa-solid fa-shield-halved"></i> Admin Panel
+            </a>
+        </div>
     </aside>
 
-
-    <!-- MAIN VIDEO LISTING -->
+    <!-- Main content -->
     <section class="academy-main">
+        <header class="academy-main-header">
+            <h1>Latest Videos</h1>
+            <span id="videoCount" class="academy-count-badge">0 videos</span>
+        </header>
 
-        <!-- Search -->
-        <div class="academy-search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="videoSearchInput" type="search" placeholder="Search videos...">
+        <div id="videoGrid" class="academy-video-grid">
+            <!-- cards will be injected by /academy/js/video-list.js -->
         </div>
 
-        <h2 class="academy-section-title">Latest Videos</h2>
-
-        <div id="videoGrid" class="video-grid"></div>
-
-        <div id="videoGridEmpty" class="video-empty" style="display:none;">
-            No videos found.
+        <div id="videoEmptyState" class="academy-empty" style="display:none;">
+            <i class="fa-regular fa-circle-play"></i>
+            <p>No videos have been uploaded yet.</p>
         </div>
     </section>
-
 </main>
 
-
-<!-- ==========================
-       FOOTER
-=========================== -->
 <footer class="site-footer-new"></footer>
 
-<script type="module" src="/academy-videos.js"></script>
+<!-- Firebase auth used by header -->
+<script type="module" src="/firebase-init.js"></script>
+<script type="module" src="/auth-firebase.js"></script>
+
+<!-- Academy scripts -->
+<script type="module" src="/academy/js/firebase.js"></script>
+<script type="module" src="/academy/js/video-list.js"></script>
 
 </body>
 </html>
