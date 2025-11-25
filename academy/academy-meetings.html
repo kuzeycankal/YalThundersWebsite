@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Academy Meetings – YAL Thunders</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="/yal_thunders_logo.png">
+    <script src="https://kit.fontawesome.com/3a1e0b0c52.js" crossorigin="anonymous"></script>
+
+    <!-- Firebase -->
+    <script type="module" src="/firebase-init.js"></script>
+    <script type="module" src="/auth-firebase.js"></script>
+</head>
+
+<body>
+
+<!-- ==========================
+       HEADER (SENİN HEADER)
+=========================== -->
+<header class="site-header">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <a href="/index.html" class="logo-container site-brand-link">
+        <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+        <span class="team-name">YAL THUNDERS 9160</span>
+    </a>
+
+    <nav>
+        <ul>
+            <li><a href="/news.html">NEWS</a></li>
+            <li><a href="/index.html">HOME</a></li>
+            <li><a href="/frc.html">WHAT IS FRC</a></li>
+
+            <li class="dropdown">
+                <a href="/about.html">
+                    ABOUT US 
+                    <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                    <li><a href="/about.html#our-story">Our Story</a></li>
+                    <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                    <li><a href="/about.html#achievements">Achievements</a></li>
+                    <li><a href="/about.html#alumni">Alumni</a></li>
+                </ul>
+            </li>
+
+            <li><a href="/media.html">MEDIA</a></li>
+            <li><a href="/events.html">EVENTS</a></li>
+            <li><a href="/academy.html">ACADEMY</a></li>
+            <li><a href="/contact.html">CONTACT</a></li>
+
+            <li class="mobile-auth-item" id="mobileAuthButtons"></li>
+        </ul>
+    </nav>
+
+    <div class="header-right">
+        <div class="auth-buttons" id="authButtons"></div>
+
+        <div class="language-switcher">
+            <a href="/index.html" class="lang-en lang-active">EN</a>
+            <a href="/tr/index.html" class="lang-tr">TR</a>
+        </div>
+
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+</header>
+
+
+<!-- ==========================
+        MEETINGS PAGE
+=========================== -->
+<main class="meetings-page">
+
+    <h1>Academy Meetings</h1>
+    <p>Join workshops, team training and robotics sessions using your access code.</p>
+
+    <!-- JOIN MEETING -->
+    <div class="join-box">
+        <input id="joinCodeInput" placeholder="Enter join code (e.g. YAL2025)">
+        <button id="joinMeetingBtn">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            Join
+        </button>
+    </div>
+
+    <div id="joinMsg"></div>
+
+    <!-- MEETINGS LIST -->
+    <h2 style="margin-top:40px;">Upcoming Meetings</h2>
+    <div id="meetingList" class="meeting-list"></div>
+</main>
+
+
+<!-- ==========================
+        FOOTER
+=========================== -->
+<footer class="site-footer-new"></footer>
+
+<script type="module" src="/academy-meetings.js"></script>
+
+</body>
+</html>
