@@ -1,29 +1,64 @@
-import { put } from "@vercel/blob";
+// ===============================
+//   YAL THUNDERS BLOB UPLOADER
+// ===============================
 
+// Node.js Runtime (EN ÖNEMLİ SATIR)
 export const config = {
-  runtime: "edge",
+  runtime: "nodejs", 
 };
 
-export default async function (req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const filename = searchParams.get("filename");
+import { put } from "@vercel/blob";
+import formidable from "formidable";
+import fs from "fs";
 
-    if (!filename) {
-      return new Response("Filename required", { status: 400 });
+// Vercel’in ES Module ortamında temporary directory kullanımına izin
+export const GET = () => new Response("Use POST instead.");
+
+// ===============================
+//   POST → dosya yükleme
+// ===============================
+export async function POST(req) {
+  try {
+    // formidable form parser
+    const form = formidable({ multiples: false });
+
+    // form verisini çöz
+    const { fields, files } = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) reject(err);
+        else resolve({ fields, files });
+      });
+    });
+
+    const file = files.file;
+    if (!file) {
+      return new Response(JSON.stringify({ error: "No file uploaded" }), {
+        status: 400,
+      });
     }
 
-    const blob = await put(filename, req.body, {
+    // dosya bufferını oku
+    const fileBuffer = fs.readFileSync(file.filepath);
+
+    // vercel blob’a yükle
+    const blob = await put(file.originalFilename, fileBuffer, {
       access: "public",
     });
 
-    return new Response(JSON.stringify({ url: blob.url }), {
-      status: 200
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+        url: blob.url,
+      }),
+      { status: 200 }
+    );
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
-      status: 500
-    });
+    return new Response(
+      JSON.stringify({
+        error: err.message || "Upload failed",
+      }),
+      { status: 500 }
+    );
   }
 }
