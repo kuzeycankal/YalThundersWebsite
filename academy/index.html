@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YAL Academy – Videos</title>
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+
+<header class="site-header">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        
+        <a href="/index.html" class="logo-container site-brand-link">
+            <img src="/yal_thunders_logo.png" alt="YAL Thunders Logo" class="logo">
+            <span class="team-name">YAL THUNDERS 9160</span>
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/index.html" class="active">HOME</a></li>
+                <li><a href="/frc.html">WHAT IS FRC</a></li>
+                
+                <li class="dropdown">
+                    <a href="/about.html">
+                        ABOUT US 
+                        <i class="fa-solid fa-caret-down dropdown-caret"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/about.html#who-we-are">Who Are We?</a></li>
+                        <li><a href="/about.html#our-story">Our Story</a></li>
+                        <li><a href="/about.html#mission-vision">Mission & Vision</a></li>
+                        <li><a href="/about.html#achievements">Achievements</a></li>
+                        <li><a href="/about.html#alumni">Alumni</a></li>
+                    </ul>
+                </li>
+                
+                <li><a href="/media.html">MEDIA</a></li>
+                <li><a href="/events.html">EVENTS</a></li> 
+                <li><a href="/contact.html">CONTACT</a></li>
+                 <li class="mobile-auth-item" id="mobileAuthButtons"></li>
+            </ul>
+        </nav>
+        
+        <div class="header-right">
+             <div class="auth-buttons" id="authButtons">
+                </div>
+            
+            <div class="language-switcher">
+                <a href="/index.html" class="lang-en lang-active">EN</a>
+                <a href="/tr/index.html" class="lang-tr">TR</a>
+            </div>
+            
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+
+<main class="page-container">
+    <h1>Academy</h1>
+    <p>Learn software, design, and robotics skills.</p>
+
+    <div id="videoList" class="video-grid"></div>
+</main>
+
+<script type="module" src="/academy-videos.js"></script>
+</body>
+</html>
