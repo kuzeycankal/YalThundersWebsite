@@ -2,27 +2,38 @@ const { DateTime } = require("luxon");
 const markdownIt = require("markdown-it");
 
 module.exports = function(eleventyConfig) {
-
+    
     let md = new markdownIt({ html: true, breaks: true, linkify: true });
 
-    // --- FIREBASE SİSTEMİ İÇİN GEREKLİ KOPYALAMALAR ---
+    // ======================
+    // JS dosyalarını ELEVENTY'DEN TAMAMEN IGNORE ET
+    // ======================
+    eleventyConfig.ignores.add("**/*.js");
+
+    // ======================
+    //  PASSTHROUGH AYARLARI
+    // ======================
     eleventyConfig.addPassthroughCopy("firebase-init.js");
     eleventyConfig.addPassthroughCopy("auth-firebase.js");
     eleventyConfig.addPassthroughCopy("event-manager-firebase.js");
 
-    // --- TÜM JS DOSYALARINI OTOMATİK KOPYALA ---
-    eleventyConfig.addPassthroughCopy("*.js");
-    eleventyConfig.addPassthroughCopy("**/*.js");
-
-    // --- STATİK DOSYALAR ---
     eleventyConfig.addPassthroughCopy("style.css");
     eleventyConfig.addPassthroughCopy("*.png");
     eleventyConfig.addPassthroughCopy("*.jpg");
     eleventyConfig.addPassthroughCopy("*.jpeg");
-    eleventyConfig.addPassthroughCopy("takimfoto.jpg");
     eleventyConfig.addPassthroughCopy("news");
+    eleventyConfig.addPassthroughCopy("takimfoto.jpg");
 
-    // --- FİLTRELER ---
+    // ACADEMY DOSYALARI
+    eleventyConfig.addPassthroughCopy("academy");
+    eleventyConfig.addPassthroughCopy("academy-admin.html");
+    eleventyConfig.addPassthroughCopy("academy-meetings.html");
+    eleventyConfig.addPassthroughCopy("admin-upload.html");
+    eleventyConfig.addPassthroughCopy("video.html");
+
+    // ======================
+    //  FİLTRELER
+    // ======================
     eleventyConfig.addLiquidFilter("postDate", (dateObj) => {
         if (!dateObj) return "Tarih Yok"; 
         try {
@@ -38,10 +49,7 @@ module.exports = function(eleventyConfig) {
     });
 
     eleventyConfig.addLiquidFilter("url_encode", (str) => encodeURIComponent(str || ''));
-
-    eleventyConfig.addFilter("absoluteUrl", (url, base = "https://kuzeycankal.github.io/YalThundersWebsite/") => 
-        new URL(url, base).href
-    );
+    eleventyConfig.addFilter("absoluteUrl", (url, base = "https://kuzeycankal.github.io/YalThundersWebsite/") => new URL(url, base).href);
 
     eleventyConfig.addTemplateFormats("html");
 
@@ -49,9 +57,9 @@ module.exports = function(eleventyConfig) {
         dir: {
             input: ".",
             output: "_site",
-            data: "_data"
+            data: "_data" 
         },
-        htmlTemplateEngine: "liquid",
+        htmlTemplateEngine: "liquid", 
         markdownTemplateEngine: "liquid",
         passthroughFileCopy: true,
         templateFormats: ["html", "md"]
