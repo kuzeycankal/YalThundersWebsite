@@ -1,12 +1,11 @@
 // academy/js/firebase.js
-// Firebase initialization for Academy section
-// Using Firestore for data, Vercel Blob for files
+// Firebase initialization - using Storage for reliable file uploads
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBw8zLcIc8bB9ru8yQzqf4s5S3eJdYEgl0",
   authDomain: "yalthundersauth.firebaseapp.com",
@@ -16,13 +15,9 @@ const firebaseConfig = {
   appId: "1:4689191399:web:e76187186ff48b0af45d42"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Export Firebase services
-// Auth: User authentication
-// DB: Firestore for metadata
-// NO Storage: Using Vercel Blob for videos/thumbnails
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
