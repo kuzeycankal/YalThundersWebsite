@@ -1,11 +1,10 @@
 // academy/js/upload.js
-// Video upload functionality for admin panel (Vercel compatible)
+// Video upload functionality using Vercel Blob
 
 import { auth, db } from './firebase.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("Upload JS Loaded");
+console.log("Upload JS Loaded - Using Vercel Blob");
 
 // Admin email list (fallback method)
 const ADMIN_EMAILS = [
@@ -31,32 +30,32 @@ async function checkIfAdmin(user) {
     }
 }
 
-// Upload file to Vercel Blob Storage via API
-async function uploadFileToVercel(file, type) {
+// Upload file to Vercel Blob
+async function uploadToBlob(file, type) {
     try {
-        console.log(`Starting ${type} upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        console.log(`Uploading ${type}: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
         
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('type', type);
+        const timestamp = Date.now();
+        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        const filename = `academy/${type}s/${timestamp}_${safeName}`;
         
-        const response = await fetch('/api/upload', {
+        const response = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
             method: 'POST',
-            body: formData
+            body: file,
         });
         
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Upload failed' }));
-            throw new Error(errorData.error || 'Upload failed');
+        const data = await response.json();
+        
+        if (!response.ok || !data.success) {
+            throw new Error(data.error || data.message || 'Upload failed');
         }
         
-        const data = await response.json();
-        console.log(`${type} uploaded successfully:`, data.url);
+        console.log(`✅ ${type} uploaded:`, data.url);
         return data.url;
         
     } catch (err) {
-        console.error(`${type} upload error:`, err);
-        throw err;
+        console.error(`❌ ${type} upload error:`, err);
+        throw new Error(`${type} upload failed: ${err.message}`);
     }
 }
 
@@ -135,15 +134,15 @@ async function handleVideoUpload(e) {
             messageElement.style.color = "#10b981";
         }
         
-        const thumbnailURL = await uploadFileToVercel(thumbnailFile, 'thumbnail');
+        const thumbnailURL = await uploadToBlob(thumbnailFile, 'thumbnail');
         
         // Upload video
         if (messageElement) {
-            messageElement.textContent = "⏳ Uploading video... This may take a while.";
+            messageElement.textContent = "⏳ Uploading video... Please wait.";
             messageElement.style.color = "#10b981";
         }
         
-        const videoURL = await uploadFileToVercel(videoFile, 'video');
+        const videoURL = await uploadToBlob(videoFile, 'video');
         
         // Save to Firestore
         if (messageElement) {
@@ -190,4 +189,5 @@ document.addEventListener('DOMContentLoaded', () => {
         uploadForm.addEventListener('submit', handleVideoUpload);
     }
 });
+verifyAdmin();
 
