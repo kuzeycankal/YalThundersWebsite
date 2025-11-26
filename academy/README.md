@@ -197,11 +197,48 @@ The Academy uses a professional emerald green color palette that:
 - CSS Custom Properties (CSS Variables)
 
 ## Dependencies
-- Firebase 10.12.2 (via CDN)
+
+### Frontend (CDN)
+- Firebase 10.12.2
   - Firebase Auth
   - Cloud Firestore
-  - Firebase Storage
 - Font Awesome 6.x (icons)
+
+### Backend (npm)
+- `@vercel/blob` - Vercel Blob Storage
+- `formidable` - Form data parsing
+- `@11ty/eleventy` - Static site generator
+
+## Deployment
+
+### Quick Deploy to Vercel:
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Deploy
+vercel
+
+# 3. Add environment variable in Vercel Dashboard:
+BLOB_READ_WRITE_TOKEN = your_vercel_blob_token
+```
+
+See `DEPLOYMENT.md` for detailed instructions.
+
+## System Architecture
+
+**Storage:**
+- Videos & Thumbnails: Vercel Blob Storage (public URLs)
+- Metadata: Firebase Firestore
+- Authentication: Firebase Auth
+
+**Upload Flow:**
+1. User selects files in admin panel
+2. Frontend sends to `/api/upload` (Vercel Function)
+3. Vercel Function uploads to Blob Storage
+4. Returns public URL
+5. Frontend saves URL + metadata to Firestore
 
 ## License
 Part of YAL Thunders 9160 official website.
