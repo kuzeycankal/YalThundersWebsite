@@ -1,10 +1,11 @@
 // academy/js/upload.js
-// Video upload functionality using Vercel Blob
+// Video upload using Firebase Storage (reliable & direct)
 
-import { auth, db } from './firebase.js';
+import { auth, db, storage } from './firebase.js';
+import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("Upload JS Loaded - Using Vercel Blob");
+console.log("Upload JS Loaded - Firebase Storage");
 
 // Admin email list (fallback method)
 const ADMIN_EMAILS = [
@@ -30,33 +31,24 @@ async function checkIfAdmin(user) {
     }
 }
 
-// Upload file to Vercel Blob
-async function uploadToBlob(file, type) {
-    try {
-        console.log(`Uploading ${type}: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+// Upload to Firebase Storage with progress
+async function uploadToStorage(file, path, onProgress) {
+    return new Promise((resolve, reject) => {
+        const storageRef = ref(storage, path);
+        const uploadTask = uploadBytesResumable(storageRef, file);
         
-        const timestamp = Date.now();
-        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const filename = `academy/${type}s/${timestamp}_${safeName}`;
-        
-        const response = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
-            method: 'POST',
-            body: file,
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok || !data.success) {
-            throw new Error(data.error || data.message || 'Upload failed');
-        }
-        
-        console.log(`✅ ${type} uploaded:`, data.url);
-        return data.url;
-        
-    } catch (err) {
-        console.error(`❌ ${type} upload error:`, err);
-        throw new Error(`${type} upload failed: ${err.message}`);
-    }
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                if (onProgress) onProgress(progress);
+            },
+            (error) => reject(error),
+            async () => {
+                const url = await getDownloadURL(uploadTask.snapshot.ref);
+                resolve(url);
+            }
+        );
+    });
 }
 
 // Save video metadata to Firestore
@@ -134,15 +126,25 @@ async function handleVideoUpload(e) {
             messageElement.style.color = "#10b981";
         }
         
-        const thumbnailURL = await uploadToBlob(thumbnailFile, 'thumbnail');
+        const thumbnailPath = `academy/thumbnails/${Date.now()}_${thumbnailFile.name}`;
+        const thumbnailURL = await uploadToStorage(thumbnailFile, thumbnailPath, (progress) => {
+            if (messageElement) {
+                messageElement.textContent = `⏳ Thumbnail: ${Math.round(progress)}%`;
+            }
+        });
         
         // Upload video
         if (messageElement) {
-            messageElement.textContent = "⏳ Uploading video... Please wait.";
+            messageElement.textContent = "⏳ Uploading video...";
             messageElement.style.color = "#10b981";
         }
         
-        const videoURL = await uploadToBlob(videoFile, 'video');
+        const videoPath = `academy/videos/${Date.now()}_${videoFile.name}`;
+        const videoURL = await uploadToStorage(videoFile, videoPath, (progress) => {
+            if (messageElement) {
+                messageElement.textContent = `⏳ Video: ${Math.round(progress)}%`;
+            }
+        });
         
         // Save to Firestore
         if (messageElement) {
