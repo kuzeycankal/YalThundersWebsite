@@ -1,153 +1,112 @@
 // academy/js/meetings.js
-// Meetings Page – Create + List Meetings
+// Meeting creation and management functionality
+
+import { auth, db } from './firebase.js';
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 console.log("Meetings JS Loaded");
 
-const ADMINS = ["kuzeycankal@gmail.com"];
-
-// Firebase hazır olana kadar bekle
-function waitForFirebase() {
-    return new Promise(resolve => {
-        const check = () => {
-            if (window.firebase && firebase.auth) resolve();
-            else setTimeout(check, 50);
-        };
-        check();
-    });
-}
-
-// ADMIN KONTROL
-async function verifyAdminAccess() {
-    await waitForFirebase();
-
-    firebase.auth().onAuthStateChanged(user => {
-        const msg = document.getElementById("meetingMsg");
-        const form = document.getElementById("meetingForm");
-
-        if (!user) {
-            msg.innerHTML = "You must be logged in to create a meeting.";
-            msg.style.color = "red";
-            form.style.display = "none";
-            return;
-        }
-
-        if (!ADMINS.includes(user.email)) {
-            msg.innerHTML = "You are not an admin.";
-            msg.style.color = "red";
-            form.style.display = "none";
-            return;
-        }
-
-        // Admin ise
-        msg.innerHTML = "";
-        form.style.display = "flex";
-    });
-}
-
-// API'den toplantıları çek
-async function fetchMeetings() {
+// Check if user is admin
+async function checkIfAdmin(user) {
     try {
-        const res = await fetch("/api/list-meetings");
-        return await res.json();
+        const adminDoc = await getDoc(doc(db, "admins", user.uid));
+        return adminDoc.exists();
     } catch (err) {
-        console.error("Meeting fetch error:", err);
-        return [];
+        console.error("Error checking admin status:", err);
+        return false;
     }
 }
 
-// Toplantıları listele
-function renderMeetings(meetings) {
-    const list = document.getElementById("meetingList");
-    list.innerHTML = "";
-
-    meetings.forEach(m => {
-        const div = document.createElement("div");
-        div.className = "meeting-card";
-
-        const dateText = new Date(m.date).toLocaleString();
-
-        div.innerHTML = `
-            <h3>${m.title}</h3>
-            <small>${dateText}</small>
-            <p>${m.description}</p>
-
-            <div>
-                <strong>Join Code:</strong> ${m.joinCode}
-            </div>
-
-            <button class="btn delete-btn" data-id="${m.id}">Delete</button>
-        `;
-
-        // Silme
-        div.querySelector(".delete-btn").addEventListener("click", async () => {
-            if (!confirm("Delete this meeting?")) return;
-
-            const res = await fetch("/api/delete-meeting", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: m.id })
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                alert("Meeting deleted!");
-                loadMeetings();
-            } else {
-                alert("Delete failed.");
-            }
-        });
-
-        list.appendChild(div);
-    });
-}
-
-// Yeni toplantı oluşturma
-const form = document.getElementById("meetingForm");
-
-form.addEventListener("submit", async (e) => {
+// Handle meeting creation
+async function handleMeetingCreate(e) {
     e.preventDefault();
-
-    const msg = document.getElementById("meetingMsg");
-
-    const title = document.getElementById("meetingTitle").value.trim();
-    const description = document.getElementById("meetingDescription").value.trim();
-    const date = document.getElementById("meetingDate").value;
-    const joinCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    if (!title || !date) {
-        msg.innerHTML = "Please enter all required fields.";
-        msg.style.color = "red";
+    
+    const form = e.target;
+    const messageElement = document.getElementById("meetingCreateMessage");
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Check if user is logged in
+    if (!auth.currentUser) {
+        if (messageElement) {
+            messageElement.textContent = "❌ You must be logged in to create meetings.";
+            messageElement.style.color = "#ff4444";
+        }
         return;
     }
-
-    msg.innerHTML = "Creating...";
-    msg.style.color = "yellow";
-
-    const res = await fetch("/api/create-meeting", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, date, joinCode })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        msg.innerHTML = "Meeting created successfully!";
-        msg.style.color = "lime";
-        form.reset();
-        loadMeetings();
-    } else {
-        msg.innerHTML = "Failed to create meeting.";
-        msg.style.color = "red";
+    
+    // Get form data
+    const title = document.getElementById("meetingTitle").value.trim();
+    const description = document.getElementById("meetingDescription").value.trim();
+    const dateTime = document.getElementById("meetingDate").value;
+    const joinCode = document.getElementById("meetingCode").value.trim();
+    
+    if (!title || !dateTime || !joinCode) {
+        if (messageElement) {
+            messageElement.textContent = "❌ Please fill in all required fields.";
+            messageElement.style.color = "#ff4444";
+        }
+        return;
     }
-});
-
-// Meetings yükle
-async function loadMeetings() {
-    const meetings = await fetchMeetings();
-    renderMeetings(meetings);
+    
+    // Disable submit button
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Creating...';
+    }
+    
+    try {
+        // Check if user is admin
+        const isAdmin = await checkIfAdmin(auth.currentUser);
+        
+        if (!isAdmin) {
+            if (messageElement) {
+                messageElement.textContent = "❌ You do not have permission to create meetings.";
+                messageElement.style.color = "#ff4444";
+            }
+            return;
+        }
+        
+        // Create meeting
+        await addDoc(collection(db, "meetings"), {
+            title: title,
+            description: description,
+            dateTime: dateTime,
+            joinCode: joinCode,
+            createdBy: auth.currentUser.uid,
+            creatorName: auth.currentUser.displayName || auth.currentUser.email,
+            createdAt: serverTimestamp()
+        });
+        
+        // Success
+        if (messageElement) {
+            messageElement.textContent = "✅ Meeting created successfully!";
+            messageElement.style.color = "#44ff44";
+        }
+        
+        // Reset form
+        form.reset();
+        
+    } catch (err) {
+        console.error("Meeting creation error:", err);
+        if (messageElement) {
+            messageElement.textContent = `❌ Failed to create meeting: ${err.message}`;
+            messageElement.style.color = "#ff4444";
+        }
+    } finally {
+        // Re-enable submit button
+        if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fa-solid fa-plus"></i> Create Meeting';
+        }
+    }
 }
 
-verifyAdminAccess();
-loadMeetings();
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    const meetingForm = document.getElementById('meetingCreateForm');
+    if (meetingForm) {
+        meetingForm.addEventListener('submit', handleMeetingCreate);
+    }
+});
