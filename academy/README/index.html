@@ -82,17 +82,22 @@ User registers with admin code: <code>YALTHUNDERS2026</code></p>
 <li>Smooth transitions between themes</li>
 </ul>
 <h3>Theme Colors</h3>
-<h4>Light Theme</h4>
+<h4>Light Theme - Emerald Green Palette</h4>
 <ul>
-<li>Primary: #ffcc00 (Yellow/Gold)</li>
-<li>Background: #ffffff, #f5f5f5, #e8e8e8</li>
-<li>Text: #1a1a1a, #4a4a4a, #7a7a7a</li>
+<li>Primary: #10b981 (Emerald Green)</li>
+<li>Primary Dark: #059669 (Dark Emerald)</li>
+<li>Primary Light: #34d399 (Light Emerald)</li>
+<li>Background: #ffffff, #f0fdf4 (Light green tint), #dcfce7</li>
+<li>Text: #064e3b (Dark green), #065f46, #10b981</li>
+<li>Card Border: #d1fae5 (Green border)</li>
 </ul>
-<h4>Dark Theme</h4>
+<h4>Dark Theme - Forest Green Palette</h4>
 <ul>
-<li>Primary: #ffcc00 (Yellow/Gold)</li>
-<li>Background: #0f0f0f, #1a1a1a, #2a2a2a</li>
-<li>Text: #ffffff, #d1d1d1, #a1a1a1</li>
+<li>Primary: #10b981 (Emerald Green)</li>
+<li>Background: #0a1f1a (Dark forest), #0f2f26, #1a4d3d</li>
+<li>Text: #ecfdf5 (Light mint), #d1fae5, #a7f3d0</li>
+<li>Card Border: #1a4d3d (Dark green border)</li>
+<li>Shadows: Green glow effects</li>
 </ul>
 <h2>Firebase Collections</h2>
 <h3>videos</h3>
@@ -151,15 +156,28 @@ User registers with admin code: <code>YALTHUNDERS2026</code></p>
 <h3>Customizing Theme</h3>
 <p>Edit CSS variables in <code>academy/css/academy.css</code>:</p>
 <pre><code class="language-css">[data-theme=&quot;light&quot;] {
-  --primary: #ffcc00;
+  --primary: #10b981;          /* Emerald Green */
+  --primary-dark: #059669;     /* Dark Emerald */
+  --primary-light: #34d399;    /* Light Emerald */
   /* ... other variables */
 }
 
 [data-theme=&quot;dark&quot;] {
-  --primary: #ffcc00;
+  --primary: #10b981;          /* Emerald Green */
+  --bg-primary: #0a1f1a;       /* Very dark green */
+  --bg-secondary: #0f2f26;     /* Dark forest green */
   /* ... other variables */
 }
 </code></pre>
+<h3>Color Philosophy</h3>
+<p>The Academy uses a professional emerald green color palette that:</p>
+<ul>
+<li>Represents growth, learning, and nature</li>
+<li>Provides excellent readability in both light and dark modes</li>
+<li>Creates a calming and focused learning environment</li>
+<li>Matches the YAL Thunders brand identity</li>
+<li>Offers great contrast ratios for accessibility</li>
+</ul>
 <h2>Browser Support</h2>
 <ul>
 <li>Modern browsers (Chrome, Firefox, Safari, Edge)</li>
