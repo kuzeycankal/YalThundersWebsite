@@ -35,6 +35,12 @@ async function checkIfAdmin(user) {
 // Upload file to Firebase Storage
 async function uploadFile(file, path, onProgress) {
     try {
+        console.log(`Starting upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        
+        if (!storage) {
+            throw new Error("Firebase Storage is not initialized");
+        }
+        
         const storageRef = ref(storage, path);
         const uploadTask = uploadBytesResumable(storageRef, file);
         
@@ -42,20 +48,31 @@ async function uploadFile(file, path, onProgress) {
             uploadTask.on('state_changed',
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log(`Upload progress: ${progress.toFixed(2)}% - ${file.name}`);
                     if (onProgress) onProgress(progress);
                 },
                 (error) => {
-                    console.error("Upload error:", error);
+                    console.error("Upload error details:", {
+                        code: error.code,
+                        message: error.message,
+                        serverResponse: error.serverResponse
+                    });
                     reject(error);
                 },
                 async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    resolve(downloadURL);
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        console.log(`Upload complete: ${file.name}`);
+                        resolve(downloadURL);
+                    } catch (err) {
+                        console.error("Error getting download URL:", err);
+                        reject(err);
+                    }
                 }
             );
         });
     } catch (err) {
-        console.error("Upload error:", err);
+        console.error("Upload initialization error:", err);
         throw err;
     }
 }
@@ -116,10 +133,17 @@ async function handleVideoUpload(e) {
             messageElement.style.color = "#ffcc00";
         }
         
+        console.log("Starting thumbnail upload...");
         const thumbnailPath = `academy/thumbnails/${Date.now()}_${thumbnailFile.name}`;
-        const thumbnailURL = await uploadFile(thumbnailFile, thumbnailPath);
+        const thumbnailURL = await uploadFile(thumbnailFile, thumbnailPath, (progress) => {
+            if (messageElement) {
+                messageElement.textContent = `⏳ Uploading thumbnail... ${Math.round(progress)}%`;
+            }
+        });
+        console.log("Thumbnail uploaded successfully:", thumbnailURL);
         
         // Upload video
+        console.log("Starting video upload...");
         if (messageElement) {
             messageElement.textContent = "⏳ Uploading video... This may take a while.";
             messageElement.style.color = "#ffcc00";
@@ -131,6 +155,7 @@ async function handleVideoUpload(e) {
                 messageElement.textContent = `⏳ Uploading video... ${Math.round(progress)}%`;
             }
         });
+        console.log("Video uploaded successfully:", videoURL);
         
         // Save to Firestore
         if (messageElement) {

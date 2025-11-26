@@ -89,15 +89,20 @@ Academy uses the same theme system as the main site:
 
 ### Theme Colors
 
-#### Light Theme
-- Primary: #ffcc00 (Yellow/Gold)
-- Background: #ffffff, #f5f5f5, #e8e8e8
-- Text: #1a1a1a, #4a4a4a, #7a7a7a
+#### Light Theme - Emerald Green Palette
+- Primary: #10b981 (Emerald Green)
+- Primary Dark: #059669 (Dark Emerald)
+- Primary Light: #34d399 (Light Emerald)
+- Background: #ffffff, #f0fdf4 (Light green tint), #dcfce7
+- Text: #064e3b (Dark green), #065f46, #10b981
+- Card Border: #d1fae5 (Green border)
 
-#### Dark Theme
-- Primary: #ffcc00 (Yellow/Gold)
-- Background: #0f0f0f, #1a1a1a, #2a2a2a
-- Text: #ffffff, #d1d1d1, #a1a1a1
+#### Dark Theme - Forest Green Palette
+- Primary: #10b981 (Emerald Green)
+- Background: #0a1f1a (Dark forest), #0f2f26, #1a4d3d
+- Text: #ecfdf5 (Light mint), #d1fae5, #a7f3d0
+- Card Border: #1a4d3d (Dark green border)
+- Shadows: Green glow effects
 
 ## Firebase Collections
 
@@ -163,15 +168,27 @@ Document ID: user UID
 Edit CSS variables in `academy/css/academy.css`:
 ```css
 [data-theme="light"] {
-  --primary: #ffcc00;
+  --primary: #10b981;          /* Emerald Green */
+  --primary-dark: #059669;     /* Dark Emerald */
+  --primary-light: #34d399;    /* Light Emerald */
   /* ... other variables */
 }
 
 [data-theme="dark"] {
-  --primary: #ffcc00;
+  --primary: #10b981;          /* Emerald Green */
+  --bg-primary: #0a1f1a;       /* Very dark green */
+  --bg-secondary: #0f2f26;     /* Dark forest green */
   /* ... other variables */
 }
 ```
+
+### Color Philosophy
+The Academy uses a professional emerald green color palette that:
+- Represents growth, learning, and nature
+- Provides excellent readability in both light and dark modes
+- Creates a calming and focused learning environment
+- Matches the YAL Thunders brand identity
+- Offers great contrast ratios for accessibility
 
 ## Browser Support
 - Modern browsers (Chrome, Firefox, Safari, Edge)
