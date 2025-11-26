@@ -1,0 +1,182 @@
+<h1>YAL Thunders Academy System</h1>
+<p>Modern, theme-aware video learning platform for YAL Thunders FRC Team.</p>
+<h2>Features</h2>
+<h3>🎓 Video Library</h3>
+<ul>
+<li>Browse training videos by category (Software, Design, CAD, Robotics)</li>
+<li>Search videos by title, description, or category</li>
+<li>Watch videos with modern video player</li>
+<li>Related videos sidebar</li>
+<li>Responsive grid layout</li>
+</ul>
+<h3>👨‍💼 Admin Panel</h3>
+<ul>
+<li>Upload videos with thumbnails</li>
+<li>Create and manage meetings</li>
+<li>Admin authentication (email-based + Firestore)</li>
+<li>Firebase Storage integration</li>
+</ul>
+<h3>🎨 Modern Design</h3>
+<ul>
+<li>Light/Dark theme support (synced with main site)</li>
+<li>Smooth animations and transitions</li>
+<li>Modern color palette</li>
+<li>Responsive design for all devices</li>
+<li>Professional card-based layout</li>
+</ul>
+<h3>🔐 Security</h3>
+<ul>
+<li>Firebase Authentication</li>
+<li>Admin-only access to upload/create features</li>
+<li>Firestore security rules ready</li>
+</ul>
+<h2>File Structure</h2>
+<pre><code>academy/
+├── index.html              # Main academy page (video list)
+├── video.html              # Video player page
+├── academy-admin.html      # Admin panel (upload &amp; create)
+├── academy-meetings.html   # Meetings list page
+│
+├── css/
+│   └── academy.css         # Complete Academy styles with theme support
+│
+└── js/
+    ├── firebase.js         # Firebase initialization
+    ├── theme.js            # Theme switcher (light/dark)
+    ├── video-list.js       # Video listing &amp; filtering
+    ├── view.js             # Video player functionality
+    ├── admin.js            # Admin authentication
+    ├── upload.js           # Video upload with Firebase Storage
+    ├── meetings.js         # Meeting creation
+    └── list-meetings.js    # Meeting listing &amp; deletion
+</code></pre>
+<h2>Admin Setup</h2>
+<h3>Add Admin Users</h3>
+<p>Admin users are controlled by:</p>
+<ol>
+<li><strong>Email list</strong> (hardcoded in <code>admin.js</code>, <code>upload.js</code>, <code>meetings.js</code>, <code>list-meetings.js</code>)</li>
+<li><strong>Firestore</strong> (users who register with admin code)</li>
+</ol>
+<p>To add a new admin:</p>
+<p><strong>Option 1: Update Email List</strong>
+Edit these files and add email to <code>ADMIN_EMAILS</code> array:</p>
+<ul>
+<li><code>academy/js/admin.js</code></li>
+<li><code>academy/js/upload.js</code></li>
+<li><code>academy/js/meetings.js</code></li>
+<li><code>academy/js/list-meetings.js</code></li>
+</ul>
+<pre><code class="language-javascript">const ADMIN_EMAILS = [
+    &quot;kuzeycankal@gmail.com&quot;,
+    &quot;newemail@example.com&quot;  // Add here
+];
+</code></pre>
+<p><strong>Option 2: Use Admin Code</strong>
+User registers with admin code: <code>YALTHUNDERS2026</code></p>
+<h2>Theme System</h2>
+<p>Academy uses the same theme system as the main site:</p>
+<ul>
+<li>Automatically syncs with main site theme</li>
+<li>Stored in localStorage as <code>theme-preference</code></li>
+<li>Supports system preference detection</li>
+<li>Smooth transitions between themes</li>
+</ul>
+<h3>Theme Colors</h3>
+<h4>Light Theme</h4>
+<ul>
+<li>Primary: #ffcc00 (Yellow/Gold)</li>
+<li>Background: #ffffff, #f5f5f5, #e8e8e8</li>
+<li>Text: #1a1a1a, #4a4a4a, #7a7a7a</li>
+</ul>
+<h4>Dark Theme</h4>
+<ul>
+<li>Primary: #ffcc00 (Yellow/Gold)</li>
+<li>Background: #0f0f0f, #1a1a1a, #2a2a2a</li>
+<li>Text: #ffffff, #d1d1d1, #a1a1a1</li>
+</ul>
+<h2>Firebase Collections</h2>
+<h3>videos</h3>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Video Title&quot;,
+  &quot;description&quot;: &quot;Video description&quot;,
+  &quot;category&quot;: &quot;software|design|robotics|cad&quot;,
+  &quot;videoUrl&quot;: &quot;Firebase Storage URL&quot;,
+  &quot;thumbnail&quot;: &quot;Firebase Storage URL&quot;,
+  &quot;uploadedBy&quot;: &quot;user UID&quot;,
+  &quot;uploaderName&quot;: &quot;User Name&quot;,
+  &quot;createdAt&quot;: &quot;Firestore Timestamp&quot;
+}
+</code></pre>
+<h3>meetings</h3>
+<pre><code class="language-json">{
+  &quot;title&quot;: &quot;Meeting Title&quot;,
+  &quot;description&quot;: &quot;Meeting description&quot;,
+  &quot;dateTime&quot;: &quot;ISO Date String&quot;,
+  &quot;joinCode&quot;: &quot;Meeting Code&quot;,
+  &quot;createdBy&quot;: &quot;user UID&quot;,
+  &quot;creatorName&quot;: &quot;User Name&quot;,
+  &quot;createdAt&quot;: &quot;Firestore Timestamp&quot;
+}
+</code></pre>
+<h3>admins</h3>
+<pre><code class="language-json">{
+  &quot;admin&quot;: true
+}
+</code></pre>
+<p>Document ID: user UID</p>
+<h2>Usage</h2>
+<h3>For Users</h3>
+<ol>
+<li>Browse academy homepage</li>
+<li>Use filters to find videos by category</li>
+<li>Search for specific topics</li>
+<li>Click video to watch</li>
+<li>View related videos in sidebar</li>
+</ol>
+<h3>For Admins</h3>
+<ol>
+<li>Login with admin email or admin code</li>
+<li>Navigate to Admin Panel</li>
+<li>Upload videos (max file size depends on Firebase Storage)</li>
+<li>Create meetings with join codes</li>
+<li>Delete meetings from Meetings page</li>
+</ol>
+<h2>Development</h2>
+<h3>Adding New Categories</h3>
+<ol>
+<li>Update filter buttons in <code>academy/index.html</code></li>
+<li>Update <code>getCategoryIcon()</code> in <code>video-list.js</code> and <code>view.js</code></li>
+<li>Add category option in admin panel form</li>
+</ol>
+<h3>Customizing Theme</h3>
+<p>Edit CSS variables in <code>academy/css/academy.css</code>:</p>
+<pre><code class="language-css">[data-theme=&quot;light&quot;] {
+  --primary: #ffcc00;
+  /* ... other variables */
+}
+
+[data-theme=&quot;dark&quot;] {
+  --primary: #ffcc00;
+  /* ... other variables */
+}
+</code></pre>
+<h2>Browser Support</h2>
+<ul>
+<li>Modern browsers (Chrome, Firefox, Safari, Edge)</li>
+<li>ES6 Modules support required</li>
+<li>CSS Grid and Flexbox</li>
+<li>CSS Custom Properties (CSS Variables)</li>
+</ul>
+<h2>Dependencies</h2>
+<ul>
+<li>Firebase 10.12.2 (via CDN)
+<ul>
+<li>Firebase Auth</li>
+<li>Cloud Firestore</li>
+<li>Firebase Storage</li>
+</ul>
+</li>
+<li>Font Awesome 6.x (icons)</li>
+</ul>
+<h2>License</h2>
+<p>Part of YAL Thunders 9160 official website.</p>

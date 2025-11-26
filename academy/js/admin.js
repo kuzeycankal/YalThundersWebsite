@@ -7,15 +7,34 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase
 
 console.log("Admin Panel JS Loaded");
 
-// Check if user is admin
+// Admin email list (fallback method)
+const ADMIN_EMAILS = [
+    "kuzeycankal@gmail.com"
+];
+
+// Check if user is admin (checks both email list and Firestore)
 async function checkIfAdmin(user) {
+    if (!user) return false;
+    
+    // First check email list (faster and always works)
+    if (ADMIN_EMAILS.includes(user.email)) {
+        console.log("Admin verified by email:", user.email);
+        return true;
+    }
+    
+    // Then check Firestore (for users added via admin code during registration)
     try {
         const adminDoc = await getDoc(doc(db, "admins", user.uid));
-        return adminDoc.exists();
+        if (adminDoc.exists()) {
+            console.log("Admin verified by Firestore:", user.email);
+            return true;
+        }
     } catch (err) {
-        console.error("Error checking admin status:", err);
-        return false;
+        console.error("Error checking admin status in Firestore:", err);
+        // Continue anyway, email check already failed
     }
+    
+    return false;
 }
 
 // Verify admin and show/hide content
