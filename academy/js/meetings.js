@@ -2,8 +2,7 @@
 // Meeting creation and management functionality
 
 import { auth, db } from './firebase.js';
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, addDoc, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 console.log("Meetings JS Loaded");
 
@@ -94,7 +93,7 @@ async function handleMeetingCreate(e) {
         // Success
         if (messageElement) {
             messageElement.textContent = "✅ Meeting created successfully!";
-            messageElement.style.color = "#44ff44";
+            messageElement.style.color = "#10b981";
         }
         
         // Reset form

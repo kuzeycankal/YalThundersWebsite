@@ -186,15 +186,48 @@ User registers with admin code: <code>YALTHUNDERS2026</code></p>
 <li>CSS Custom Properties (CSS Variables)</li>
 </ul>
 <h2>Dependencies</h2>
+<h3>Frontend (CDN)</h3>
 <ul>
-<li>Firebase 10.12.2 (via CDN)
+<li>Firebase 10.12.2
 <ul>
 <li>Firebase Auth</li>
 <li>Cloud Firestore</li>
-<li>Firebase Storage</li>
 </ul>
 </li>
 <li>Font Awesome 6.x (icons)</li>
 </ul>
+<h3>Backend (npm)</h3>
+<ul>
+<li><code>@vercel/blob</code> - Vercel Blob Storage</li>
+<li><code>formidable</code> - Form data parsing</li>
+<li><code>@11ty/eleventy</code> - Static site generator</li>
+</ul>
+<h2>Deployment</h2>
+<h3>Quick Deploy to Vercel:</h3>
+<pre><code class="language-bash"># 1. Install dependencies
+npm install
+
+# 2. Deploy
+vercel
+
+# 3. Add environment variable in Vercel Dashboard:
+BLOB_READ_WRITE_TOKEN = your_vercel_blob_token
+</code></pre>
+<p>See <code>DEPLOYMENT.md</code> for detailed instructions.</p>
+<h2>System Architecture</h2>
+<p><strong>Storage:</strong></p>
+<ul>
+<li>Videos &amp; Thumbnails: Vercel Blob Storage (public URLs)</li>
+<li>Metadata: Firebase Firestore</li>
+<li>Authentication: Firebase Auth</li>
+</ul>
+<p><strong>Upload Flow:</strong></p>
+<ol>
+<li>User selects files in admin panel</li>
+<li>Frontend sends to <code>/api/upload</code> (Vercel Function)</li>
+<li>Vercel Function uploads to Blob Storage</li>
+<li>Returns public URL</li>
+<li>Frontend saves URL + metadata to Firestore</li>
+</ol>
 <h2>License</h2>
 <p>Part of YAL Thunders 9160 official website.</p>
