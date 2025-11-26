@@ -1,0 +1,14 @@
+node_modules
+Desktop
+.git
+.env
+.env.local
+_site
+package-lock.json
+README.md
+DEPLOYMENT.md
+SETUP_INSTRUCTIONS.md
+VERCEL_SETUP.md
+*.log
+.vercel
+

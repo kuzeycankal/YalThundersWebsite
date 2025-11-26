@@ -5,12 +5,15 @@
   "scripts": {
     "dev": "eleventy --serve",
     "build": "eleventy",
-    "start": "eleventy --serve"
+    "start": "eleventy --serve",
+    "vercel-build": "eleventy"
   },
   "dependencies": {
     "@11ty/eleventy": "^2.0.1",
     "@vercel/blob": "^0.22.0",
-    "formidable": "^3.5.1"
+    "formidable": "^3.5.1",
+    "luxon": "^3.4.4",
+    "markdown-it": "^14.0.0"
   },
   "devDependencies": {}
 }
