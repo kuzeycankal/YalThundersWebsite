@@ -5,7 +5,7 @@ import { auth, db } from './firebase.js';
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-console.log("Admin Panel JS Loaded - Vercel Blob");
+console.log("Admin Panel JS Loaded - Cloudflare R2");
 
 // Admin email list
 const ADMIN_EMAILS = ["kuzeycankal@gmail.com"];
@@ -24,19 +24,23 @@ async function checkIfAdmin(user) {
     }
 }
 
-// Upload file to Vercel Blob
-async function uploadToBlob(file, type) {
+// Upload file to R2 (via Vercel API proxy)
+async function uploadToR2(file, type) {
     try {
         const timestamp = Date.now();
         const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const filename = `academy/${type}s/${timestamp}_${safeName}`;
         
-        console.log(`📤 Uploading ${type}:`, filename);
+        console.log(`📤 Uploading ${type} to R2:`, filename);
         
-        const response = await fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('filename', filename);
+        formData.append('type', type);
+        
+        const response = await fetch('/api/r2-upload', {
             method: 'POST',
-            headers: { 'Content-Type': file.type },
-            body: file,
+            body: formData,
         });
         
         if (!response.ok) {
@@ -48,7 +52,7 @@ async function uploadToBlob(file, type) {
         const data = await response.json();
         if (!data.success) throw new Error(data.error || 'Upload failed');
         
-        console.log(`✅ ${type} uploaded:`, data.url);
+        console.log(`✅ ${type} uploaded to R2:`, data.url);
         return data.url;
     } catch (err) {
         console.error(`❌ ${type} upload error:`, err);
@@ -95,11 +99,11 @@ async function handleVideoUpload(e) {
         // Upload thumbnail
         messageEl.textContent = "⏳ Uploading thumbnail...";
         messageEl.style.color = "#10b981";
-        const thumbnailURL = await uploadToBlob(thumbnailFile, 'thumbnail');
+        const thumbnailURL = await uploadToR2(thumbnailFile, 'thumbnail');
         
         // Upload video
         messageEl.textContent = "⏳ Uploading video...";
-        const videoURL = await uploadToBlob(videoFile, 'video');
+        const videoURL = await uploadToR2(videoFile, 'video');
         
         // Save to Firestore
         messageEl.textContent = "⏳ Saving...";

@@ -14,7 +14,11 @@ FINAL_SETUP.md
 VERCEL_DEPLOY_NOW.md
 READY_TO_DEPLOY.md
 DEPLOY_FIX.md
+CLOUDFLARE_SETUP.md
+wrangler.toml
 *.log
 .vercel
+.wrangler
 api/
+functions/
 
