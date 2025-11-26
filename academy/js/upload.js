@@ -4,8 +4,33 @@
 import { auth, db, storage } from './firebase.js';
 import { ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 console.log("Upload JS Loaded");
+
+// Admin email list (fallback method)
+const ADMIN_EMAILS = [
+    "kuzeycankal@gmail.com"
+];
+
+// Check if user is admin
+async function checkIfAdmin(user) {
+    if (!user) return false;
+    
+    // First check email list
+    if (ADMIN_EMAILS.includes(user.email)) {
+        return true;
+    }
+    
+    // Then check Firestore
+    try {
+        const adminDoc = await getDoc(doc(db, "admins", user.uid));
+        return adminDoc.exists();
+    } catch (err) {
+        console.error("Error checking admin status:", err);
+        return false;
+    }
+}
 
 // Upload file to Firebase Storage
 async function uploadFile(file, path, onProgress) {
@@ -74,6 +99,17 @@ async function handleVideoUpload(e) {
     }
     
     try {
+        // Check if user is admin
+        const isAdmin = await checkIfAdmin(auth.currentUser);
+        
+        if (!isAdmin) {
+            if (messageElement) {
+                messageElement.textContent = "❌ You do not have permission to upload videos.";
+                messageElement.style.color = "#ff4444";
+            }
+            return;
+        }
+        
         // Upload thumbnail
         if (messageElement) {
             messageElement.textContent = "⏳ Uploading thumbnail...";

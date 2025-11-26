@@ -2,14 +2,26 @@
 // Meeting creation and management functionality
 
 import { auth, db } from './firebase.js';
-import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 console.log("Meetings JS Loaded");
 
+// Admin email list (fallback method)
+const ADMIN_EMAILS = [
+    "kuzeycankal@gmail.com"
+];
+
 // Check if user is admin
 async function checkIfAdmin(user) {
+    if (!user) return false;
+    
+    // First check email list
+    if (ADMIN_EMAILS.includes(user.email)) {
+        return true;
+    }
+    
+    // Then check Firestore
     try {
         const adminDoc = await getDoc(doc(db, "admins", user.uid));
         return adminDoc.exists();

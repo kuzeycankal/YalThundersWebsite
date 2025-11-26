@@ -6,9 +6,21 @@ import { collection, getDocs, deleteDoc, doc, query, orderBy, getDoc } from "htt
 
 console.log("List Meetings JS Loaded");
 
+// Admin email list (fallback method)
+const ADMIN_EMAILS = [
+    "kuzeycankal@gmail.com"
+];
+
 // Check if user is admin
 async function checkIfAdmin(user) {
     if (!user) return false;
+    
+    // First check email list
+    if (ADMIN_EMAILS.includes(user.email)) {
+        return true;
+    }
+    
+    // Then check Firestore
     try {
         const adminDoc = await getDoc(doc(db, "admins", user.uid));
         return adminDoc.exists();
