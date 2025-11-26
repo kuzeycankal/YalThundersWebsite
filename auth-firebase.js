@@ -8,19 +8,16 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     updateProfile 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import { 
     getFirestore, 
     doc, 
     setDoc, 
     getDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { app } from "./firebase-init.js";
-
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { auth, db } from "./firebase-init.js";
 
 
 // ===============================
