@@ -39,18 +39,13 @@ async function uploadToR2(file, type) {
         
         console.log(`📤 Uploading ${type}:`, filename);
         
-        // Direct PUT to R2 public endpoint
-        // Note: This requires R2 bucket to allow public uploads OR
-        // we need a presigned URL from backend
-        
-        // For now, use Cloudflare Worker endpoint
         const uploadUrl = `/api/r2-upload`;
-        
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append('filename', filename);
         formData.append('type', type);
-        
+
         const response = await fetch(uploadUrl, {
             method: 'POST',
             body: formData
