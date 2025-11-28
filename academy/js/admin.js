@@ -24,7 +24,7 @@ async function checkIfAdmin(user) {
     }
 }
 
-// Upload file to R2 through Cloudflare Pages Function
+// Upload file to R2 via the API proxy
 async function uploadToR2(file, type) {
     try {
         const timestamp = Date.now();
@@ -33,14 +33,14 @@ async function uploadToR2(file, type) {
 
         console.log(`📤 Uploading ${type} to R2:`, filename);
 
-        const uploadUrl = `/api/upload?filename=${encodeURIComponent(filename)}`;
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('filename', filename);
+        formData.append('type', type);
 
-        const response = await fetch(uploadUrl, {
+        const response = await fetch('/api/r2-upload', {
             method: 'POST',
-            headers: {
-                'Content-Type': file.type || 'application/octet-stream'
-            },
-            body: file,
+            body: formData,
         });
         
         if (!response.ok) {

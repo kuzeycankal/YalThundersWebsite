@@ -39,18 +39,16 @@ async function uploadToR2(file, type) {
         
         console.log(`📤 Uploading ${type}:`, filename);
         
-        // Direct PUT to R2 public endpoint
-        // Note: This requires R2 bucket to allow public uploads OR
-        // we need a presigned URL from backend
-        
-        const uploadUrl = `/api/upload?filename=${encodeURIComponent(filename)}`;
+        const uploadUrl = `/api/r2-upload`;
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('filename', filename);
+        formData.append('type', type);
 
         const response = await fetch(uploadUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': file.type || 'application/octet-stream'
-            },
-            body: file
+            body: formData
         });
         
         if (!response.ok) {
