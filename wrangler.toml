@@ -19,3 +19,4 @@ dir = "_site"
 # Environment Variables (set these in Cloudflare Dashboard)
 # R2_PUBLIC_URL = "https://your-custom-domain.com" or "https://pub-xxx.r2.dev"
 
+
