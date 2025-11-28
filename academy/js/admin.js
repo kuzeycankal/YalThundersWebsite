@@ -24,23 +24,23 @@ async function checkIfAdmin(user) {
     }
 }
 
-// Upload file to R2 (via Vercel API proxy)
+// Upload file to R2 through Cloudflare Pages Function
 async function uploadToR2(file, type) {
     try {
         const timestamp = Date.now();
         const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const filename = `academy/${type}s/${timestamp}_${safeName}`;
-        
+
         console.log(`📤 Uploading ${type} to R2:`, filename);
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('filename', filename);
-        formData.append('type', type);
-        
-        const response = await fetch('/api/r2-upload', {
+
+        const uploadUrl = `/api/upload?filename=${encodeURIComponent(filename)}`;
+
+        const response = await fetch(uploadUrl, {
             method: 'POST',
-            body: formData,
+            headers: {
+                'Content-Type': file.type || 'application/octet-stream'
+            },
+            body: file,
         });
         
         if (!response.ok) {

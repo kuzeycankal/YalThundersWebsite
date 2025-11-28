@@ -43,18 +43,14 @@ async function uploadToR2(file, type) {
         // Note: This requires R2 bucket to allow public uploads OR
         // we need a presigned URL from backend
         
-        // For now, use Cloudflare Worker endpoint (Cloudflare Pages Function)
-        // The function is available at /api/upload
-        const uploadUrl = `/api/upload`;
-        
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('filename', filename);
-        formData.append('type', type);
-        
+        const uploadUrl = `/api/upload?filename=${encodeURIComponent(filename)}`;
+
         const response = await fetch(uploadUrl, {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': file.type || 'application/octet-stream'
+            },
+            body: file
         });
         
         if (!response.ok) {
