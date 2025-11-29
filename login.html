@@ -156,34 +156,10 @@ permalink: /login.html
             });
         }
         
-        // Password toggle functionality
-        function initPasswordToggle() {
-            const toggleButtons = document.querySelectorAll('.toggle-password');
-            
-            toggleButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const input = document.getElementById(targetId);
-                    const icon = this.querySelector('i');
-                    
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        icon.classList.remove('fa-eye');
-                        icon.classList.add('fa-eye-slash');
-                    } else {
-                        input.type = 'password';
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    }
-                });
-            });
-        }
-        
         // Sayfa yüklendiğinde
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             initMobileMenu();
-            initPasswordToggle();
             // Not: auth-firebase.js, 'loginForm' ID'sini kendi içinde
             // otomatik olarak bulup 'submit' dinleyicisini atayacak.
         });

@@ -6,10 +6,6 @@ const markdownIt = require("markdown-it");
 
 module.exports = function (eleventyConfig) {
     
-    // Ignore API routes (Vercel serverless functions)
-    eleventyConfig.ignores.add("api/**");
-    eleventyConfig.ignores.add("functions/**");
-    
     // Markdown ayarları
     let md = new markdownIt({
         html: true,

@@ -1,21 +1,20 @@
 {
-  "name": "yal-thunders-website",
+  "name": "yal-thunders-eleventy-site",
   "version": "1.0.0",
-  "description": "YAL Thunders 9160 FRC Team Official Website",
+  "description": "",
+  "main": "eleventy.config.js",
   "scripts": {
-    "dev": "eleventy --serve",
-    "build": "eleventy",
     "start": "eleventy --serve",
-    "vercel-build": "eleventy"
+    "build": "eleventy"
   },
-  "dependencies": {
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
     "@11ty/eleventy": "^2.0.1",
-    "@aws-sdk/client-s3": "^3.940.0",
-    "@vercel/blob": "^0.22.0",
-    "busboy": "^1.6.0",
-    "contentful": "^10.6.21",
-    "formidable": "^3.5.1",
-    "luxon": "^3.4.4",
-    "markdown-it": "^14.0.0"
+    "contentful": "^10.12.10",
+    "dotenv": "^16.4.5",
+    "luxon": "^3.7.2",
+    "markdown-it": "^14.1.0"
   }
 }

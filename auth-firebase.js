@@ -8,16 +8,19 @@ import {
     createUserWithEmailAndPassword,
     signOut,
     updateProfile 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import { 
     getFirestore, 
     doc, 
     setDoc, 
     getDoc 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-import { auth, db } from "./firebase-init.js";
+import { app } from "./firebase-init.js";
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 // ===============================
@@ -30,28 +33,16 @@ function updateHeaderUI(user) {
 
     if (!authButtons) return;
 
-    // Check if we're on Turkish page
-    const isTurkish = window.location.pathname.startsWith('/tr/');
-    const profilePath = isTurkish ? '/tr/profile.html' : '/profile.html';
-    const loginPath = isTurkish ? '/tr/login.html' : '/login.html';
-    const registerPath = isTurkish ? '/tr/register.html' : '/register.html';
-
     if (user) {
-        const userName = user.displayName || user.email?.split('@')[0] || 'User';
         authButtons.innerHTML = `
-            <a href="${profilePath}" class="user-profile-btn">
-                <i class="fa-solid fa-user-circle"></i>
-                <span>${userName}</span>
-            </a>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
+            <div class="user-info">
+                <span>${user.displayName || user.email}</span>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
         `;
 
         if (mobileAuth) {
             mobileAuth.innerHTML = `
-                <a href="${profilePath}" class="user-profile-btn">
-                    <i class="fa-solid fa-user-circle"></i>
-                    <span>${userName}</span>
-                </a>
                 <button id="logoutBtnMobile" class="logout-btn">Logout</button>
             `;
         }
@@ -61,24 +52,17 @@ function updateHeaderUI(user) {
     } 
     else {
         authButtons.innerHTML = `
-            <a href="${loginPath}" class="login-btn">Login</a>
-            <a href="${registerPath}" class="register-btn">Register</a>
+            <a href="/login.html" class="login-btn">Login</a>
+            <a href="/register.html" class="register-btn">Register</a>
         `;
 
         if (mobileAuth) {
             mobileAuth.innerHTML = `
-                <a href="${loginPath}" class="login-btn">Login</a>
-                <a href="${registerPath}" class="register-btn">Register</a>
+                <a href="/login.html" class="login-btn">Login</a>
             `;
         }
     }
 }
-
-// Make it available globally for other scripts
-window.updateAuthButtons = function() {
-    const user = auth.currentUser;
-    updateHeaderUI(user);
-};
 
 
 
@@ -190,84 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // AUTH STATE CHANGE LISTENER
 // ===============================
 
-let authReady = false;
-let currentUserData = null;
-let currentUserProfileData = null;
-
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, user => {
     updateHeaderUI(user);
-    
-    if (user) {
-        // Get user profile from Firestore
-        try {
-            const userDoc = await getDoc(doc(db, "users", user.uid));
-            if (userDoc.exists()) {
-                currentUserProfileData = {
-                    name: userDoc.data().name || user.displayName || user.email?.split('@')[0] || 'User',
-                    email: user.email,
-                    createdAt: userDoc.data().createdAt || user.metadata.creationTime,
-                    attendedEvents: userDoc.data().attendedEvents || 0,
-                    isAdmin: userDoc.data().isAdmin || false
-                };
-            } else {
-                // Create user profile if it doesn't exist
-                currentUserProfileData = {
-                    name: user.displayName || user.email?.split('@')[0] || 'User',
-                    email: user.email,
-                    createdAt: user.metadata.creationTime,
-                    attendedEvents: 0,
-                    isAdmin: false
-                };
-                await setDoc(doc(db, "users", user.uid), {
-                    name: currentUserProfileData.name,
-                    email: currentUserProfileData.email,
-                    createdAt: currentUserProfileData.createdAt,
-                    attendedEvents: 0
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching user profile:", error);
-            currentUserProfileData = {
-                name: user.displayName || user.email?.split('@')[0] || 'User',
-                email: user.email,
-                createdAt: user.metadata.creationTime,
-                attendedEvents: 0,
-                isAdmin: false
-            };
-        }
-        currentUserData = user;
-    } else {
-        currentUserData = null;
-        currentUserProfileData = null;
-    }
-    
-    if (!authReady) {
-        authReady = true;
-        document.dispatchEvent(new CustomEvent('authStateReady'));
-    }
 });
 
-// ===============================
-// EXPORTED FUNCTIONS
-// ===============================
-
-export function getCurrentUser() {
-    return currentUserData;
-}
-
-export function getCurrentUserProfile() {
-    return currentUserProfileData;
-}
-
-export function isAuthReady() {
-    return authReady;
-}
-
-export async function logout() {
-    await signOut(auth);
-    const isTurkish = window.location.pathname.startsWith('/tr/');
-    window.location.href = isTurkish ? '/tr/index.html' : '/index.html';
-}
 
 // Export
 export { auth, db };
