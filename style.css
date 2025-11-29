@@ -1238,6 +1238,8 @@ html.is-animating .swup-transition-container {
 .section-header {
     text-align: center;
     margin-bottom: 70px;
+    position: relative;
+    z-index: 2;
 }
 
 .section-label {
@@ -1555,7 +1557,7 @@ html.is-animating .swup-transition-container {
 /* Latest News Section */
 .section-latest-news {
     padding: 120px 100px;
-    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e8 50%, #d4ead9 100%);
+    background: linear-gradient(135deg, #f0f9f4 0%, #e8f5e8 50%, #d4ead9 70%, #c4d9c9 85%, #b8d0b8 100%);
     position: relative;
     overflow: hidden;
 }
@@ -1570,10 +1572,11 @@ html.is-animating .swup-transition-container {
     background: radial-gradient(circle at 20% 50%, rgba(45, 90, 61, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(168, 213, 186, 0.08) 0%, transparent 50%);
     pointer-events: none;
+    z-index: 0;
 }
 
 [data-theme="dark"] .section-latest-news {
-    background: linear-gradient(135deg, #0f1f14 0%, #1a2e1f 50%, #1a3a26 100%) !important;
+    background: linear-gradient(135deg, #0f1f14 0%, #1a2e1f 30%, #1a3a26 60%, #1f4229 80%, #24422d 100%) !important;
 }
 
 [data-theme="dark"] .section-latest-news::before {
@@ -1586,6 +1589,8 @@ html.is-animating .swup-transition-container {
     grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
     gap: 35px;
     margin-bottom: 60px;
+    position: relative;
+    z-index: 2;
 }
 
 .news-card {
@@ -1911,10 +1916,11 @@ html.is-animating .swup-transition-container {
 /* About Team Section */
 .section-about-team {
     padding: 120px 100px;
-    background: linear-gradient(135deg, #2d5a3d 0%, #1a3a26 50%, #0f1f14 100%);
+    background: linear-gradient(135deg, #24422d 0%, #1f4229 20%, #1a3a26 50%, #153020 80%, #0f1f14 100%);
     position: relative;
     overflow: hidden;
     color: #ffffff;
+    margin-top: -1px; /* Geçişi daha yumuşak yapmak için */
 }
 
 .section-about-team::before {
@@ -1924,9 +1930,15 @@ html.is-animating .swup-transition-container {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 10% 20%, rgba(168, 213, 186, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 90% 70%, rgba(45, 90, 61, 0.15) 0%, transparent 50%);
+    background: 
+        linear-gradient(to bottom, 
+            rgba(36, 66, 45, 0.3) 0%,
+            rgba(31, 66, 41, 0.2) 15%,
+            transparent 30%),
+        radial-gradient(circle at 10% 20%, rgba(168, 213, 186, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 70%, rgba(45, 90, 61, 0.15) 0%, transparent 50%);
     pointer-events: none;
+    z-index: 0;
 }
 
 .section-about-team::after {
@@ -1948,7 +1960,7 @@ html.is-animating .swup-transition-container {
 }
 
 [data-theme="dark"] .section-about-team {
-    background: linear-gradient(135deg, #1a3a26 0%, #0f1f14 50%, #0a1f0f 100%) !important;
+    background: linear-gradient(135deg, #1a3a26 0%, #153020 30%, #0f1f14 60%, #0d1a12 80%, #0a1f0f 100%) !important;
 }
 
 [data-theme="dark"] .section-about-team::before {
@@ -2180,6 +2192,8 @@ html.is-animating .swup-transition-container {
 /* Section CTA */
 .section-cta {
     text-align: center;
+    position: relative;
+    z-index: 2;
 }
 
 .btn-outline {
@@ -2333,24 +2347,31 @@ html.is-animating .swup-transition-container {
     background: linear-gradient(180deg, #0f1f14 0%, #1a2e1f 100%) !important;
 }
 
-/* Latest News ve About Team arası geçiş */
-.section-latest-news {
-    position: relative;
-}
-
+/* Latest News ve About Team arası yumuşak geçiş */
 .section-latest-news::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 100px;
-    background: linear-gradient(to bottom, transparent, rgba(45, 90, 61, 0.1));
+    height: 200px;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(45, 90, 61, 0.05) 20%,
+        rgba(45, 90, 61, 0.15) 50%,
+        rgba(45, 90, 61, 0.3) 80%,
+        rgba(45, 90, 61, 0.5) 100%);
     pointer-events: none;
+    z-index: 0;
 }
 
 [data-theme="dark"] .section-latest-news::after {
-    background: linear-gradient(to bottom, transparent, rgba(26, 58, 38, 0.3));
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(26, 58, 38, 0.2) 20%,
+        rgba(26, 58, 38, 0.4) 50%,
+        rgba(26, 58, 38, 0.6) 80%,
+        rgba(15, 31, 20, 0.8) 100%);
 }
 
 [data-theme="dark"] .section-sponsors {
