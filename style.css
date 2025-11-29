@@ -51,20 +51,24 @@ body {
 /* --------------------------------- */
 .theme-toggle { background: transparent; border: none; cursor: pointer; color: var(--color-text-header); font-size: 1.2em; padding: 10px; border-radius: 50%; transition: background-color 0.2s ease; margin-left: 20px; outline: none !important; }
 .theme-toggle:hover { background-color: rgba(255, 255, 255, 0.1); }
-.site-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background-color: var(--color-bg-header); box-shadow: 0 2px 5px var(--color-shadow-light); position: sticky; top: 0; z-index: 1000; }
-.logo-container { display: flex; align-items: center; background-color: var(--color-bg-header); }
-.site-brand-link { text-decoration: none; padding: 5px; margin: -5px; border-radius: 8px; transition: transform 0.2s ease, background-color 0.2s ease; display: inline-flex; align-items: center; outline: none; }
-.site-brand-link:hover { transform: scale(1.03); background-color: var(--color-bg-primary); }
-.site-brand-link:focus-visible { box-shadow: 0 0 0 3px var(--color-text-primary); transform: scale(1.03); }
-.logo { height: 60px; width: 60px; margin-right: 15px; display: block; }
-.team-name { font-family: 'Cabin', sans-serif; font-weight: bold; font-size: 1.2em; color: var(--color-text-header); position: relative; top: 2px; }
-nav ul { list-style: none; display: flex; margin: 0; padding: 0; }
-nav li { margin-left: 30px; }
-nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Cabin', sans-serif; font-weight: bold; font-size: 1.0em; padding: 20px 5px; display: block; letter-spacing: 0.5px; border-bottom: 3px solid transparent; position: relative; transition: transform 0.2s ease; outline: none; }
-nav a:not(.active):hover { transform: translateY(-2px); }
-nav a:focus-visible { background-color: rgba(181, 214, 181, 0.5); border-radius: 4px; outline: none; }
-nav a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 100%; height: 3px; background-color: var(--color-text-header); transform: scaleX(0); transform-origin: center; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+.site-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 50px; background: linear-gradient(135deg, var(--color-bg-header) 0%, rgba(197, 224, 197, 0.95) 100%); backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 1000; transition: all 0.3s ease; }
+[data-theme="dark"] .site-header { background: linear-gradient(135deg, var(--color-bg-header) 0%, rgba(59, 90, 59, 0.95) 100%); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+.logo-container { display: flex; align-items: center; background-color: transparent; }
+.site-brand-link { text-decoration: none; padding: 8px 12px; margin: -8px -12px; border-radius: 12px; transition: all 0.3s ease; display: inline-flex; align-items: center; outline: none; }
+.site-brand-link:hover { transform: scale(1.05); background-color: rgba(255, 255, 255, 0.2); }
+[data-theme="dark"] .site-brand-link:hover { background-color: rgba(255, 255, 255, 0.1); }
+.site-brand-link:focus-visible { box-shadow: 0 0 0 3px var(--color-text-primary); transform: scale(1.05); }
+.logo { height: 65px; width: 65px; margin-right: 18px; display: block; transition: transform 0.3s ease; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); }
+.site-brand-link:hover .logo { transform: rotate(5deg); }
+.team-name { font-family: 'Cabin', sans-serif; font-weight: 700; font-size: 1.3em; color: var(--color-text-header); position: relative; top: 2px; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+nav ul { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
+nav li { margin-left: 35px; }
+nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Cabin', sans-serif; font-weight: 600; font-size: 1.05em; padding: 12px 8px; display: block; letter-spacing: 0.3px; border-bottom: 3px solid transparent; position: relative; transition: all 0.3s ease; outline: none; }
+nav a:not(.active):hover { transform: translateY(-3px); color: var(--color-text-primary); }
+nav a:focus-visible { background-color: rgba(181, 214, 181, 0.3); border-radius: 6px; outline: none; }
+nav a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--color-text-header), var(--color-text-primary)); transform: scaleX(0); transform-origin: center; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-radius: 2px; }
 nav a.active::after { transform: scaleX(1); }
+nav a.active { color: var(--color-text-primary); font-weight: 700; }
 
 /* 'animation' kuralı buradan kaldırıldı */
 main { 
@@ -1819,6 +1823,91 @@ html.is-animating .swup-transition-container {
     transform: translateY(-3px);
 }
 
+/* About Team Section */
+.section-about-team {
+    padding: 100px 100px;
+    background-color: var(--yal-white) !important;
+}
+
+[data-theme="dark"] .section-about-team {
+    background-color: #0f0f0f !important;
+}
+
+.team-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 35px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.team-feature-card {
+    background-color: var(--yal-gray-light) !important;
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 10px 30px rgba(45, 90, 61, 0.08);
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+[data-theme="dark"] .team-feature-card {
+    background-color: #1a1a1a !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: #2d2d2d;
+}
+
+.team-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(45, 90, 61, 0.15);
+    border-color: var(--yal-green-accent);
+}
+
+[data-theme="dark"] .team-feature-card:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+    border-color: var(--yal-green-primary);
+}
+
+.team-feature-card .feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 25px;
+    background: linear-gradient(135deg, var(--yal-green-primary), var(--yal-green-accent));
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(45, 90, 61, 0.2);
+}
+
+.team-feature-card .feature-icon i {
+    font-size: 2.5em;
+    color: #ffffff;
+}
+
+.team-feature-card h3 {
+    font-family: 'Cabin', sans-serif;
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--yal-text-dark);
+    margin-bottom: 15px;
+}
+
+[data-theme="dark"] .team-feature-card h3 {
+    color: #ffffff;
+}
+
+.team-feature-card p {
+    font-family: 'Cabin', sans-serif;
+    font-size: 1em;
+    line-height: 1.7;
+    color: var(--yal-text-gray);
+}
+
+[data-theme="dark"] .team-feature-card p {
+    color: #c0c0c0;
+}
+
 /* Sponsors Section */
 .section-sponsors {
     padding: 100px 100px;
@@ -1957,9 +2046,15 @@ html.is-animating .swup-transition-container {
     
     .section-upcoming-events,
     .section-latest-news,
+    .section-about-team,
     .section-membership-cta,
     .section-sponsors {
         padding: 80px 50px;
+    }
+    
+    .team-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
     }
     
     .events-grid {
@@ -2009,9 +2104,19 @@ html.is-animating .swup-transition-container {
     
     .section-upcoming-events,
     .section-latest-news,
+    .section-about-team,
     .section-membership-cta,
     .section-sponsors {
         padding: 50px 25px;
+    }
+    
+    .team-features-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .team-feature-card {
+        padding: 30px 20px;
     }
     
     .event-card,
@@ -2031,6 +2136,10 @@ html.is-animating .swup-transition-container {
 
 [data-theme="dark"] .section-latest-news {
     background: linear-gradient(180deg, #1a2e1f 0%, #0f1f14 100%) !important;
+}
+
+[data-theme="dark"] .section-about-team {
+    background: linear-gradient(180deg, #0f1f14 0%, #1a2e1f 100%) !important;
 }
 
 [data-theme="dark"] .section-sponsors {
