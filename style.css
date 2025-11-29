@@ -63,11 +63,12 @@ body {
 .site-brand-link:focus-visible { box-shadow: 0 0 0 3px var(--color-text-primary); transform: scale(1.05); }
 .logo { height: 65px; width: 65px; margin-right: 18px; display: block; transition: transform 0.3s ease; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1)); }
 .site-brand-link:hover .logo { transform: rotate(5deg); }
-.team-name { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3em; color: var(--color-text-header); position: relative; top: 2px; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.team-name { font-family: 'Cabin', sans-serif; font-weight: 700; font-size: 1.3em; color: var(--color-text-header); position: relative; top: 2px; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
 nav ul { list-style: none; display: flex; margin: 0; padding: 0; align-items: center; }
 nav li { margin-left: 35px; }
-nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 1.05em; padding: 12px 8px; display: block; letter-spacing: 0.3px; border-bottom: 3px solid transparent; position: relative; transition: all 0.3s ease; outline: none; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+nav a { text-decoration: none; color: var(--color-text-header); font-family: 'Cabin', sans-serif; font-weight: 600; font-size: 1.05em; padding: 12px 8px; display: block; letter-spacing: 0.3px; border-bottom: 3px solid transparent; position: relative; transition: all 0.3s ease; outline: none; }
 nav a:not(.active):hover { transform: translateY(-3px); color: var(--color-text-primary); }
+nav a:not(.active):hover::after { transform: scaleX(1); }
 nav a:focus-visible { background-color: rgba(181, 214, 181, 0.3); border-radius: 6px; outline: none; }
 nav a::after { content: ''; position: absolute; bottom: -3px; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--color-text-header), var(--color-text-primary)); transform: scaleX(0); transform-origin: center; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); border-radius: 2px; }
 nav a.active::after { transform: scaleX(1); }
@@ -542,6 +543,37 @@ html.is-animating .swup-transition-container {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.profile-link {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-family: 'Cabin', sans-serif;
+    font-weight: 600;
+    font-size: 0.95em;
+    color: var(--color-text-header);
+    background-color: transparent;
+    border: 2px solid var(--color-text-header);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.profile-link:hover {
+    background-color: var(--color-text-header);
+    color: var(--color-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .profile-link {
+    border-color: var(--color-text-header);
+    color: var(--color-text-header);
+}
+
+[data-theme="dark"] .profile-link:hover {
+    background-color: var(--color-text-header);
+    color: var(--color-white);
 }
 
 .user-profile-btn .user-avatar {
@@ -1115,20 +1147,7 @@ html.is-animating .swup-transition-container {
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-.hero-title > span {
-    display: inline-block;
-    opacity: 0;
-    animation: slideInFromLeft 0.8s ease-out forwards;
-}
-
-.hero-title > span:nth-child(1) {
-    animation-delay: 0.2s;
-}
-
-.hero-title > span:nth-child(2) {
-    animation-delay: 0.4s;
+    animation: fadeInUp 0.8s ease-out;
 }
 
 .hero-title .highlight {
@@ -1137,9 +1156,8 @@ html.is-animating .swup-transition-container {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    position: relative;
-    animation: slideInFromRight 0.8s ease-out 0.6s forwards, gradientShift 3s ease-in-out infinite;
-    opacity: 0;
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease-in-out infinite;
 }
 
 @keyframes slideInFromLeft {

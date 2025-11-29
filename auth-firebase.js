@@ -34,15 +34,18 @@ function updateHeaderUI(user) {
     if (!authButtons) return;
 
     if (user) {
+        // Determine language for profile link
+        const isTurkish = window.location.pathname.startsWith('/tr/');
+        const profileLink = isTurkish ? '/tr/profile.html' : '/profile.html';
+        
         authButtons.innerHTML = `
-            <div class="user-info">
-                <span>${user.displayName || user.email}</span>
-                <button id="logoutBtn" class="logout-btn">Logout</button>
-            </div>
+            <a href="${profileLink}" class="profile-link">Profile</a>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
         `;
 
         if (mobileAuth) {
             mobileAuth.innerHTML = `
+                <a href="${profileLink}" class="profile-link">Profile</a>
                 <button id="logoutBtnMobile" class="logout-btn">Logout</button>
             `;
         }
