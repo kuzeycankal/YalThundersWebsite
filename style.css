@@ -643,6 +643,28 @@ html.is-animating .swup-transition-container {
     text-align: center;
 }
 
+.logout-dropdown-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: var(--color-text-header);
+}
+
+.logout-dropdown-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding-left: 24px;
+}
+
+[data-theme="dark"] .logout-dropdown-btn {
+    color: var(--color-text-header);
+}
+
+[data-theme="dark"] .logout-dropdown-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .dropdown-divider {
     height: 1px;
     background-color: rgba(255, 255, 255, 0.3);
@@ -3402,9 +3424,35 @@ html.is-animating .swup-transition-container {
     }
 }
 
-/* Remove old logout button styles if present */
+/* Logout button for mobile */
 .logout-btn {
-    display: none !important;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 2px solid var(--color-text-header);
+    background-color: transparent;
+    color: var(--color-text-header);
+    font-family: 'Cabin', sans-serif;
+    font-weight: 600;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.logout-btn:hover {
+    background-color: var(--color-text-header);
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+[data-theme="dark"] .logout-btn {
+    border-color: var(--color-text-header);
+    color: var(--color-text-header);
+}
+
+[data-theme="dark"] .logout-btn:hover {
+    background-color: var(--color-text-header);
+    color: var(--color-white);
 }
 
 /* Show class for dropdown toggle - TIKLANABİLİR */
