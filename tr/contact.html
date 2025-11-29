@@ -67,8 +67,8 @@ permalink: /tr/contact.html
             </div>
             
             <div class="language-switcher">
-                <a href="/contact.html" class="lang-en">EN</a>
-                <a href="/tr/contact.html" class="lang-tr lang-active">TR</a>
+                <a href="/contact.html" class="lang-en" data-no-swup>EN</a>
+                <a href="/tr/contact.html" class="lang-tr lang-active" data-no-swup>TR</a>
             </div>
             
             <button id="theme-toggle" class="theme-toggle" aria-label="Karanlık modu aç/kapat">
@@ -210,7 +210,10 @@ permalink: /tr/contact.html
             }
         }
         
-        const swup = new Swup();
+        const swup = new Swup({
+            // data-no-swup attribute'u olan linkleri bypass et
+            linkSelector: 'a[href]:not([data-no-swup])'
+        });
         document.addEventListener('DOMContentLoaded', initPage);
         swup.hooks.on('page:view', initPage);
     </script>
