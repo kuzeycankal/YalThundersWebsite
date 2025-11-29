@@ -20,9 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Export the services to be used by other files
-// app: The initialized Firebase app
 // auth: Handles user login, registration, etc.
 // db: Handles the Cloud Firestore database
-export { app };
 export const auth = getAuth(app);
 export const db = getFirestore(app);
