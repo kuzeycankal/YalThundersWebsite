@@ -30,16 +30,28 @@ function updateHeaderUI(user) {
 
     if (!authButtons) return;
 
+    // Check if we're on Turkish page
+    const isTurkish = window.location.pathname.startsWith('/tr/');
+    const profilePath = isTurkish ? '/tr/profile.html' : '/profile.html';
+    const loginPath = isTurkish ? '/tr/login.html' : '/login.html';
+    const registerPath = isTurkish ? '/tr/register.html' : '/register.html';
+
     if (user) {
+        const userName = user.displayName || user.email?.split('@')[0] || 'User';
         authButtons.innerHTML = `
-            <div class="user-info">
-                <span>${user.displayName || user.email}</span>
-                <button id="logoutBtn" class="logout-btn">Logout</button>
-            </div>
+            <a href="${profilePath}" class="user-profile-btn">
+                <i class="fa-solid fa-user-circle"></i>
+                <span>${userName}</span>
+            </a>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
         `;
 
         if (mobileAuth) {
             mobileAuth.innerHTML = `
+                <a href="${profilePath}" class="user-profile-btn">
+                    <i class="fa-solid fa-user-circle"></i>
+                    <span>${userName}</span>
+                </a>
                 <button id="logoutBtnMobile" class="logout-btn">Logout</button>
             `;
         }
@@ -49,17 +61,24 @@ function updateHeaderUI(user) {
     } 
     else {
         authButtons.innerHTML = `
-            <a href="/login.html" class="login-btn">Login</a>
-            <a href="/register.html" class="register-btn">Register</a>
+            <a href="${loginPath}" class="login-btn">Login</a>
+            <a href="${registerPath}" class="register-btn">Register</a>
         `;
 
         if (mobileAuth) {
             mobileAuth.innerHTML = `
-                <a href="/login.html" class="login-btn">Login</a>
+                <a href="${loginPath}" class="login-btn">Login</a>
+                <a href="${registerPath}" class="register-btn">Register</a>
             `;
         }
     }
 }
+
+// Make it available globally for other scripts
+window.updateAuthButtons = function() {
+    const user = auth.currentUser;
+    updateHeaderUI(user);
+};
 
 
 
