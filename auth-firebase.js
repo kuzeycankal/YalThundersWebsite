@@ -190,10 +190,84 @@ document.addEventListener("DOMContentLoaded", () => {
 // AUTH STATE CHANGE LISTENER
 // ===============================
 
-onAuthStateChanged(auth, user => {
+let authReady = false;
+let currentUserData = null;
+let currentUserProfileData = null;
+
+onAuthStateChanged(auth, async (user) => {
     updateHeaderUI(user);
+    
+    if (user) {
+        // Get user profile from Firestore
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                currentUserProfileData = {
+                    name: userDoc.data().name || user.displayName || user.email?.split('@')[0] || 'User',
+                    email: user.email,
+                    createdAt: userDoc.data().createdAt || user.metadata.creationTime,
+                    attendedEvents: userDoc.data().attendedEvents || 0,
+                    isAdmin: userDoc.data().isAdmin || false
+                };
+            } else {
+                // Create user profile if it doesn't exist
+                currentUserProfileData = {
+                    name: user.displayName || user.email?.split('@')[0] || 'User',
+                    email: user.email,
+                    createdAt: user.metadata.creationTime,
+                    attendedEvents: 0,
+                    isAdmin: false
+                };
+                await setDoc(doc(db, "users", user.uid), {
+                    name: currentUserProfileData.name,
+                    email: currentUserProfileData.email,
+                    createdAt: currentUserProfileData.createdAt,
+                    attendedEvents: 0
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching user profile:", error);
+            currentUserProfileData = {
+                name: user.displayName || user.email?.split('@')[0] || 'User',
+                email: user.email,
+                createdAt: user.metadata.creationTime,
+                attendedEvents: 0,
+                isAdmin: false
+            };
+        }
+        currentUserData = user;
+    } else {
+        currentUserData = null;
+        currentUserProfileData = null;
+    }
+    
+    if (!authReady) {
+        authReady = true;
+        document.dispatchEvent(new CustomEvent('authStateReady'));
+    }
 });
 
+// ===============================
+// EXPORTED FUNCTIONS
+// ===============================
+
+export function getCurrentUser() {
+    return currentUserData;
+}
+
+export function getCurrentUserProfile() {
+    return currentUserProfileData;
+}
+
+export function isAuthReady() {
+    return authReady;
+}
+
+export async function logout() {
+    await signOut(auth);
+    const isTurkish = window.location.pathname.startsWith('/tr/');
+    window.location.href = isTurkish ? '/tr/index.html' : '/index.html';
+}
 
 // Export
 export { auth, db };
