@@ -4803,23 +4803,22 @@ html.is-animating .swup-transition-container {
 }
 
 /* ================================
-   MODERN INDEX. HTML ANIMATIONS
-   Add this at the end of style.css
+   INDEX.HTML İÇİN MODERN ANİMASYONLAR
    ================================ */
 
-/* Smooth scroll reveal animations */
-. scroll-reveal {
+/* Scroll reveal animasyonları */
+.scroll-reveal {
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-.scroll-reveal. visible {
+.scroll-reveal.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Hero section animations on load */
+/* Hero bölümü yükleme animasyonları */
 .hero-badge {
     animation: fadeInUp 0.8s ease forwards 0.2s;
     opacity: 0;
@@ -4830,23 +4829,23 @@ html.is-animating .swup-transition-container {
     opacity: 0;
 }
 
-. hero-description {
-    animation: fadeInUp 0.8s ease forwards 0.4s;
+.hero-description {
+    animation: fadeInUp 0.8s ease forwards 0. 4s;
     opacity: 0;
 }
 
-. hero-buttons {
+.hero-buttons {
     animation: fadeInUp 0.8s ease forwards 0.5s;
     opacity: 0;
 }
 
-. hero-stats {
+.hero-stats {
     animation: fadeInUp 0.8s ease forwards 0.6s;
     opacity: 0;
 }
 
-. hero-visual {
-    animation: fadeInRight 1s ease forwards 0.4s;
+.hero-visual {
+    animation: fadeInRight 1s ease forwards 0. 4s;
     opacity: 0;
 }
 
@@ -4872,9 +4871,10 @@ html.is-animating .swup-transition-container {
     }
 }
 
-/* Parallax background elements for hero section */
+/* Hero bölümü için parallax arka plan */
 .hero-section {
     position: relative;
+    overflow: hidden;
 }
 
 .hero-section::before {
@@ -4910,16 +4910,16 @@ html.is-animating .swup-transition-container {
     50% { transform: translate(20px, -20px); }
 }
 
-/* Ensure hero content is above decorations */
+/* Hero içeriğinin dekorasyon üstünde olmasını sağla */
 .hero-content,
 .hero-visual {
     position: relative;
     z-index: 1;
 }
 
-/* Enhanced hover effects for news cards */
+/* Haber kartları için gelişmiş hover efektleri */
 .news-card {
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transition: transform 0. 4s ease, box-shadow 0.4s ease;
 }
 
 .news-card:hover {
@@ -4927,7 +4927,7 @@ html.is-animating .swup-transition-container {
     box-shadow: 0 12px 40px var(--color-shadow-dark);
 }
 
-. news-card . news-image img {
+. news-card .news-image img {
     transition: transform 0.5s ease;
 }
 
@@ -4935,7 +4935,7 @@ html.is-animating .swup-transition-container {
     transform: scale(1.08);
 }
 
-/* Enhanced hover effects for team feature cards */
+/* Takım kartları için gelişmiş hover efektleri */
 .team-feature-card {
     transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
@@ -4945,7 +4945,7 @@ html.is-animating .swup-transition-container {
     box-shadow: 0 12px 40px var(--color-shadow-dark);
 }
 
-. team-feature-card .feature-icon {
+.team-feature-card .feature-icon {
     transition: transform 0.3s ease;
 }
 
@@ -4953,16 +4953,16 @@ html.is-animating .swup-transition-container {
     transform: scale(1.08) rotate(5deg);
 }
 
-/* Enhanced button hover effects */
+/* Buton hover efektleri */
 .btn-primary,
 .btn-secondary,
 .btn-outline {
-    transition: all 0. 3s ease;
+    transition: all 0.3s ease;
 }
 
-. btn-primary:hover,
-. btn-secondary:hover,
-. btn-outline:hover {
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-outline:hover {
     transform: translateY(-3px) scale(1.03);
 }
 
@@ -4974,9 +4974,9 @@ html.is-animating .swup-transition-container {
     gap: 12px;
 }
 
-/* Smooth hero image container hover */
+/* Hero resim hover efekti */
 .hero-image-container {
-    transition: transform 0. 5s ease;
+    transition: transform 0.5s ease;
 }
 
 .hero-image-container:hover {
@@ -4991,13 +4991,7 @@ html.is-animating .swup-transition-container {
     transform: scale(1.05);
 }
 
-/* Header scroll effect */
-.site-header. scrolled {
-    padding: 15px 50px;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
-}
-
-/* Stat icon hover animation */
+/* İstatistik ikonları hover animasyonu */
 .stat-icon-wrapper {
     transition: transform 0.3s ease;
 }
@@ -5006,13 +5000,13 @@ html.is-animating .swup-transition-container {
     transform: scale(1.1) rotate(5deg);
 }
 
-/* Reduce motion for users who prefer it */
+/* Hareket azaltma tercihi olan kullanıcılar için */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
+        animation-iteration-count: 1 ! important;
         transition-duration: 0.01ms !important;
     }
     
@@ -5029,5 +5023,14 @@ html.is-animating .swup-transition-container {
     .hero-visual {
         opacity: 1;
         animation: none;
+    }
+}
+
+/* Mobil responsive */
+@media (max-width: 768px) {
+    . hero-section::before,
+    .hero-section::after {
+        width: 300px;
+        height: 300px;
     }
 }
