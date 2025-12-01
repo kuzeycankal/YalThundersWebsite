@@ -8,241 +8,16 @@
     <script>
         (function() {
             const storageKey = 'theme-preference';
-            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)'). matches ? 'dark' : 'light');
+            const theme = localStorage.getItem(storageKey) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
     
-    <link rel="stylesheet" href="/style. css">
+    <link rel="stylesheet" href="/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts. googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <style>
-        /* ================================
-           ANIMATION ENHANCEMENTS ONLY
-           Preserving all original YAL Thunders design
-           ================================ */
-        
-        /* Smooth scroll reveal animations */
-        .scroll-reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.7s ease, transform 0.7s ease;
-        }
-        
-        .scroll-reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* Hero animations on load */
-        .hero-badge {
-            animation: fadeInUp 0.8s ease forwards 0.2s;
-            opacity: 0;
-        }
-        
-        . hero-title {
-            animation: fadeInUp 0.8s ease forwards 0. 3s;
-            opacity: 0;
-        }
-        
-        .hero-description {
-            animation: fadeInUp 0.8s ease forwards 0.4s;
-            opacity: 0;
-        }
-        
-        .hero-buttons {
-            animation: fadeInUp 0.8s ease forwards 0.5s;
-            opacity: 0;
-        }
-        
-        .hero-stats {
-            animation: fadeInUp 0.8s ease forwards 0.6s;
-            opacity: 0;
-        }
-        
-        .hero-visual {
-            animation: fadeInRight 1s ease forwards 0.4s;
-            opacity: 0;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        /* Parallax background elements */
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            top: -20%;
-            right: -5%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(197, 224, 197, 0.25) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatSlow 20s ease-in-out infinite;
-        }
-        
-        . hero-section::after {
-            content: '';
-            position: absolute;
-            bottom: -15%;
-            left: -3%;
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, rgba(122, 154, 122, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatSlow 15s ease-in-out infinite reverse;
-        }
-        
-        @keyframes floatSlow {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, -20px); }
-        }
-        
-        /* Ensure hero content is above decorations */
-        .hero-content,
-        .hero-visual {
-            position: relative;
-            z-index: 1;
-        }
-        
-        /* Enhanced hover effects for cards */
-        .news-card {
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        
-        .news-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 40px var(--color-shadow-dark);
-        }
-        
-        . news-card . news-image img {
-            transition: transform 0.5s ease;
-        }
-        
-        .news-card:hover .news-image img {
-            transform: scale(1.08);
-        }
-        
-        .team-feature-card {
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-        
-        .team-feature-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 12px 40px var(--color-shadow-dark);
-        }
-        
-        .team-feature-card .feature-icon {
-            transition: transform 0.3s ease;
-        }
-        
-        .team-feature-card:hover .feature-icon {
-            transform: scale(1.08) rotate(5deg);
-        }
-        
-        /* Enhanced button hover effects */
-        .btn-primary,
-        .btn-secondary,
-        .btn-outline {
-            transition: all 0. 3s ease;
-        }
-        
-        .btn-primary:hover,
-        .btn-secondary:hover,
-        .btn-outline:hover {
-            transform: translateY(-3px) scale(1.03);
-        }
-        
-        .news-link {
-            transition: gap 0.3s ease, color 0.3s ease;
-        }
-        
-        .news-link:hover {
-            gap: 12px;
-        }
-        
-        /* Smooth hero image container hover */
-        .hero-image-container {
-            transition: transform 0.5s ease;
-        }
-        
-        .hero-image-container:hover {
-            transform: translateY(-8px);
-        }
-        
-        . hero-team-photo {
-            transition: transform 0.5s ease;
-        }
-        
-        .hero-image-container:hover .hero-team-photo {
-            transform: scale(1.05);
-        }
-        
-        /* Header scroll effect */
-        .site-header {
-            transition: padding 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .site-header. scrolled {
-            padding: 15px 50px;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
-        }
-        
-        /* Stat icon hover animation */
-        .stat-icon-wrapper {
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-item:hover .stat-icon-wrapper {
-            transform: scale(1. 1) rotate(5deg);
-        }
-        
-        /* Theme toggle rotation on hover */
-        .theme-toggle {
-            transition: transform 0. 3s ease, background-color 0.2s ease;
-        }
-        
-        .theme-toggle:hover {
-            transform: rotate(15deg);
-        }
-        
-        /* Reduce motion for users who prefer it */
-        @media (prefers-reduced-motion: reduce) {
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -258,12 +33,12 @@
         
         <nav>
             <ul>
-                <li><a href="/news.html">NEWS</a></li>
+                <li><a href="/news. html">NEWS</a></li>
                 <li><a href="/index.html" class="active">HOME</a></li>
                 <li><a href="/frc.html">WHAT IS FRC</a></li>
                 
                 <li class="dropdown">
-                    <a href="/about. html">
+                    <a href="/about.html">
                         ABOUT US 
                         <i class="fa-solid fa-caret-down dropdown-caret"></i>
                     </a>
@@ -368,7 +143,7 @@
                 
             </div>
             <div class="section-cta">
-                <a href="/news.html" class="btn-outline">
+                <a href="/news. html" class="btn-outline">
                     <span>View All News</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
@@ -443,28 +218,25 @@
     <script src="https://unpkg.com/swup@4"></script>
     
     <script type="module">
-        // Import Auth module
         import * as Auth from '/auth-firebase.js';
 
-        // Scroll Reveal Animation Observer
         const observerOptions = {
             threshold: 0.15,
             rootMargin: '0px 0px -80px 0px'
         };
         
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry. isIntersecting) {
+            entries. forEach(entry => {
+                if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
         }, observerOptions);
         
-        // Header scroll effect
         function initScrollEffects() {
             let lastScroll = 0;
             window.addEventListener('scroll', () => {
-                const header = document.querySelector('.site-header');
+                const header = document.querySelector('. site-header');
                 const currentScroll = window.pageYOffset;
                 
                 if (currentScroll > 100) {
@@ -477,15 +249,14 @@
             });
         }
         
-        // Theme Toggle
         function initTheme() {
             const storageKey = 'theme-preference';
             const toggle = document.getElementById('theme-toggle');
             
             const getTheme = () => { 
-                return document. documentElement.getAttribute('data-theme') || 
+                return document.documentElement.getAttribute('data-theme') || 
                        localStorage.getItem(storageKey) || 
-                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                       (window.matchMedia('(prefers-color-scheme: dark)'). matches ? 'dark' : 'light');
             }
             
             const setTheme = (theme) => {
@@ -515,7 +286,6 @@
             updateIcon(getTheme());
         }
         
-        // Mobile Menu
         function initMobileMenu() {
             const menuToggle = document.getElementById('mobileMenuToggle');
             const nav = document.querySelector('nav');
@@ -571,22 +341,18 @@
             }
         }
         
-        // Initialize page
         function initPage() {
             initTheme();
             initMobileMenu();
             initScrollEffects();
             
-            // Observe scroll-reveal elements
-            document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+            document.querySelectorAll('. scroll-reveal').forEach(el => observer.observe(el));
             
-            // Auth buttons
             if (Auth.isAuthReady() && typeof window. updateAuthButtons === 'function') {
                 window.updateAuthButtons();
             }
         }
         
-        // Auth ready event
         document.addEventListener('authStateReady', () => {
             initPage();
             updateMobileAuthButtons();
@@ -596,7 +362,6 @@
             initPage();
         }
         
-        // Swup page transitions
         function initSwup() {
             if (typeof Swup === 'undefined') return; 
             
