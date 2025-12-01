@@ -11,7 +11,6 @@ const firebaseConfig = {
   apiKey: "AIzaSyBw8zLcIc8bB9ru8yQzqf4s5S3eJdYEgl0",
   authDomain: "yalthundersauth.firebaseapp.com",
   projectId: "yalthundersauth",
-  storageBucket: "yalthundersauth.firebasestorage.app",
   messagingSenderId: "4689191399",
   appId: "1:4689191399:web:e76187186ff48b0af45d42"
 };
